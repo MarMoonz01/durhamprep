@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(curl:*)",
+      "Bash(for sheet:*)",
+      "Bash(do echo:*)",
+      "Bash(grep -c '\"\"id\"\":' src/App.jsx)",
+      "Bash(node --input-type=module --eval \"import\\(''''./src/App.jsx''''\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(npx vite:*)",
+      "Bash(node -e \":*)",
+      "Bash(npm --version)",
+      "Bash(git --version)"
+    ]
+  }
+}

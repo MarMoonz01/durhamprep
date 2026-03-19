@@ -1,0 +1,5 @@
+@media print {
+  body * { visibility: hidden; }
+  #print-pack, #print-pack * { visibility: visible; }
+  #print-pack { position: fixed; top: 0; left: 0; width: 100%; }
+}
