@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchAllData, isSheetsConfigured } from "./services/googleSheets";
 import {
   defaultAccom,
+  defaultCollegeAccom,
   defaultVaccines,
   defaultPacking,
   defaultShopping,
@@ -97,6 +98,105 @@ export default function App() {
   // Quick memo
   const [memo, setMemo] = useState(function() { return localStorage.getItem('durham_memo') || ''; });
 
+  // ─── User Profile ─────────────────────────────────────────────────────────
+  var DEFAULT_PROFILE = { ieltsL:'', ieltsR:'', ieltsW:'', ieltsS:'', budget:'', preference:'balanced', risk:'medium', courseStart:'2026-09-28', preSess:true, preSessWeeks:6, fundsAmount:'' };
+  const [profile, setProfile] = useState(function() {
+    try { return Object.assign({}, DEFAULT_PROFILE, JSON.parse(localStorage.getItem('durham_profile') || '{}')); } catch { return DEFAULT_PROFILE; }
+  });
+  useEffect(function() { localStorage.setItem('durham_profile', JSON.stringify(profile)); }, [profile]);
+  function updateProfile(key, val) { setProfile(function(p) { return Object.assign({}, p, { [key]: val }); }); }
+
+  // ─── Decision Engine ───────────────────────────────────────────────────────
+  function computeDecision(p) {
+    var L = parseFloat(p.ieltsL)||0, R = parseFloat(p.ieltsR)||0, W = parseFloat(p.ieltsW)||0, S = parseFloat(p.ieltsS)||0;
+    var hasIELTS = L>0 && R>0 && W>0 && S>0;
+    var overall = hasIELTS ? Math.round((L+R+W+S)/4*10)/10 : 0;
+    var minComp = hasIELTS ? Math.min(L,R,W,S) : 9;
+    // Durham LLM requirement: Overall 7.0, Writing 7.0, all other bands min 6.5
+    var weak = hasIELTS ? [['L',L,6.5],['R',R,6.5],['W',W,7.0],['S',S,6.5]].filter(function(c){return c[1]<c[2];}).map(function(c){return c[0]+' (ต้อง '+c[2]+', ได้ '+c[1]+')';}) : [];
+    var meetsDurham = hasIELTS && overall >= 7.0 && W >= 7.0 && L >= 6.5 && R >= 6.5 && S >= 6.5;
+
+    var ielts = null;
+    if (hasIELTS) {
+      if (meetsDurham)
+        ielts = { status:'pass', label:'✅ ผ่านเกณฑ์ Durham LLM', msg:'IELTS ผ่านครบ — Overall 7.0, W 7.0+, ทุก band ≥6.5', color:'#2E7D32', bg:'#E8F5E9' };
+      else if (overall >= 6.5 || (overall >= 6.0 && minComp >= 5.5))
+        ielts = { status:'presess', label:'📚 ต้องผ่าน Pre-sessional', msg:'ยังไม่ผ่านเกณฑ์ Durham'+(weak.length?' · ต้องปรับ: '+weak.join(', '):''), color:'#E65100', bg:'#FFF3E0' };
+      else
+        ielts = { status:'retake', label:'🔄 Retake IELTS', msg:'Overall ต่ำกว่า 6.5 — ควร retake ก่อนยื่นสมัคร', color:'#C62828', bg:'#FFEBEE' };
+    }
+
+    var budget = parseFloat(p.budget)||0, pref = p.preference;
+    var accomRec = null;
+    if (pref === 'social')
+      accomRec = { name:'College Accommodation', sub:'Josephine Butler / Ustinov College', reason:'Community events, social life, ถูกกว่า private — เหมาะคนชอบเจอผู้คน', badge:'👥 SOCIAL PICK', color:'#1565C0', bg:'#E3F2FD', tab:'accom' };
+    else if (pref === 'privacy' && budget >= 350)
+      accomRec = { name:'Student Castle — Bellamy Studio', sub:'£363/wk · 20 Claypath', reason:'Facilities ดีสุด 24/7 Gym + Cinema ใกล้กลางเมือง ห้องส่วนตัวสมบูรณ์แบบ', badge:'🎬 BEST FACILITIES', color:'#6A1B9A', bg:'#F3E5F5', tab:'accom' };
+    else if (budget > 0 && budget < 270)
+      accomRec = { name:'St Giles Studios — Standard Studio', sub:'£265/wk · 110 Gilesgate', reason:'ราคาถูกที่สุด King-size bed ประหยัดได้ ~£1,700/ปีเมื่อเทียบ Duresme', badge:'💰 BEST VALUE', color:'#0D47A1', bg:'#E8EAF6', tab:'accom' };
+    else
+      accomRec = { name:'Duresme Court — Classic Studio', sub:'£299/wk · Newcastle Road', reason:'ใกล้ Law School มากที่สุด ส่วนตัว คุ้มค่า รีวิว 4.8 — สมดุลที่สุด', badge:'🏆 BEST PICK', color:'#1B5E20', bg:'#E8F5E9', tab:'accom' };
+
+    return { ielts, accomRec, overall, hasIELTS, minComp, weak, meetsDurham, L, R, W, S };
+  }
+
+  // ─── Dynamic Timeline ──────────────────────────────────────────────────────
+  function computeTimeline(p) {
+    var start = new Date(p.courseStart || '2026-09-28');
+    var preSessWks = p.preSess ? (parseInt(p.preSessWeeks)||6) : 0;
+    var today = new Date(); today.setHours(0,0,0,0);
+    function addDays(d,n) { var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+    function fmt(d) { return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}); }
+    function days(d) { return Math.ceil((d-today)/864e5); }
+
+    var preSessStart = addDays(start, -preSessWks*7);
+    var arrival     = addDays(preSessStart, -1);
+    var visaApply   = addDays(arrival, -70);   // target: 10wk before arrival
+    var fundsDeposit= addDays(visaApply, -28);  // 28 days before visa app
+    var casExpected = addDays(start, -90);       // ~3 months before start
+    var vaccineDue  = addDays(arrival, -42);     // 6wk before departure
+
+    return [
+      { key:'funds',   label:'💰 ฝากเงินค้ำวีซ่า £37,579',       date:fundsDeposit,  fmt:fmt(fundsDeposit),  days:days(fundsDeposit),  risk:'high' },
+      { key:'vaccine', label:'💉 ฉีดวัคซีน MenACWY + MenB',      date:vaccineDue,    fmt:fmt(vaccineDue),    days:days(vaccineDue),    risk:'high' },
+      { key:'cas',     label:'📋 รับ CAS จาก Durham',             date:casExpected,   fmt:fmt(casExpected),   days:days(casExpected),   risk:'medium' },
+      { key:'visa',    label:'📋 ยื่นวีซ่า Student UK ที่ VFS',   date:visaApply,     fmt:fmt(visaApply),     days:days(visaApply),     risk:'high' },
+      { key:'arrival', label:'✈️ บินถึง UK',                       date:arrival,       fmt:fmt(arrival),       days:days(arrival),       risk:'high' },
+      { key:'presess', label:'🎓 Pre-sessional เริ่ม',             date:preSessStart,  fmt:fmt(preSessStart),  days:days(preSessStart),  risk:'high' },
+      { key:'course',  label:'🎓 เริ่มเรียน LLM',                 date:start,         fmt:fmt(start),         days:days(start),         risk:'low'  },
+    ].sort(function(a,b){ return a.date-b.date; });
+  }
+
+  // ─── Next Actions ──────────────────────────────────────────────────────────
+  function computeNextActions(p, chk, tl, dec) {
+    var actions = [];
+    var checkKey = function(txt) { return !!chk['check_'+txt]; };
+
+    if (!p.ieltsL) actions.push({ id:'setup', task:'👤 กรอก IELTS scores ของคุณ', sub:'ให้ระบบแนะนำได้แม่นยำขึ้น', days:null, risk:'medium', tab:'decide' });
+    if (dec.ielts && dec.ielts.status==='retake') actions.push({ id:'ielts_retake', task:'🔄 จอง IELTS Retake ด่วน!', sub:'Overall ยังต่ำกว่าเกณฑ์ Durham 7.0', days:null, risk:'high', tab:'decide' });
+    if (!checkKey('จอง Private PBSA ผ่าน uhomes.com')) actions.push({ id:'accom', task:'🏠 จองที่พัก (No Visa No Pay!)', sub:'จองก่อน ยกเลิกได้ถ้าวีซ่าไม่ผ่าน ไม่เสียเงิน', days:null, risk:'high', tab:'accom' });
+
+    var deadlineActions = {
+      funds:   { task:'💰 ฝากเงิน £37,579 เข้าบัญชี', sub:'ต้องอยู่ครบ 28 วันติดต่อกันก่อนยื่นวีซ่า', tab:'decide' },
+      vaccine: { task:'💉 ฉีดวัคซีน MenACWY + MenB', sub:'ต้องฉีด 2 เข็มห่าง 1 เดือน ทำก่อนได้เลย', tab:'vax' },
+      cas:     { task:'📋 ติดตาม CAS จาก Durham', sub:'ต้องได้ CAS ก่อนยื่นวีซ่า — email Durham ถ้าช้า', tab:'visa' },
+      visa:    { task:'📋 ยื่น Student Visa ที่ VFS', sub:'ค่าวีซ่า £524 + IHS £388 — เตรียมเอกสารให้ครบ', tab:'visa' },
+    };
+    var doneMap = {
+      funds: checkKey('เริ่มเตรียมเงิน £37,579 ในบัญชี 28 วัน'),
+      cas:   checkKey('รอ CAS จาก Durham'),
+      visa:  checkKey('ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)'),
+    };
+
+    tl.forEach(function(t) {
+      if (deadlineActions[t.key] && !doneMap[t.key] && t.days > 0 && t.days <= 120) {
+        actions.push({ id:t.key, task:deadlineActions[t.key].task, sub:deadlineActions[t.key].sub, days:t.days, risk:t.risk, tab:deadlineActions[t.key].tab });
+      }
+    });
+
+    return actions.slice(0, 3);
+  }
+
   // Expense Tracker state
   var BUDGETS = { "🍽️ อาหาร": 250, "🚌 เดินทาง": 25, "📚 หนังสือ/เรียน": 50, "🎉 สังสรรค์": 60, "🛒 ของใช้": 40, "💊 สุขภาพ": 20, "✈️ ท่องเที่ยว": 80, "📦 อื่นๆ": 50 };
   var EXPENSE_CATS = Object.keys(BUDGETS);
@@ -112,8 +212,12 @@ export default function App() {
   }
   function delExpense(id) { setExpenses(function(prev) { return prev.filter(function(e) { return e.id !== id; }); }); }
 
+  // Accommodation view toggle
+  const [accomView, setAccomView] = useState("private"); // "private" | "college"
+
   // Data state — starts with defaults, replaced by Google Sheets if configured
   const [accom, setAccom] = useState(defaultAccom);
+  const [colAccom, setColAccom] = useState(defaultCollegeAccom);
   const [vaccines, setVaccines] = useState(defaultVaccines);
   const [packing, setPacking] = useState(defaultPacking);
   const [shopping, setShopping] = useState(defaultShopping);
@@ -146,6 +250,7 @@ export default function App() {
     fetchAllData()
       .then(function (data) {
         if (data.accom.length) setAccom(data.accom);
+        if (data.colAccom && data.colAccom.length) setColAccom(data.colAccom);
         if (data.vaccines.length) setVaccines(data.vaccines);
         if (data.packing.length) setPacking(data.packing);
         if (data.shopping.length) setShopping(data.shopping);
@@ -154,7 +259,9 @@ export default function App() {
         if (data.places.length) setPlaces(data.places);
         if (data.contacts.length) setContacts(data.contacts);
         if (data.checklist.length) setChecklist(data.checklist);
-        if (data.checklistGroups.length) setChecklistGroups(data.checklistGroups);
+        // Do NOT replace checklistGroups from Sheets — the phase-based grouping
+        // (✅ เสร็จแล้ว, 🔴 มี.ค.-เม.ย., etc.) is the designed UI structure.
+        // Sheets `checklist` above already provides updated deadline dates via deadlineMap.
         if (data.homeStatus.length) setHomeStatus(data.homeStatus);
         if (data.academic.length) setAcademic(data.academic);
         if (data.career.length) setCareer(data.career);
@@ -201,22 +308,23 @@ export default function App() {
 
   // Navigation constants
   var BOTTOM_NAV = [
-    { id: "home",  icon: "📊", l: "สรุป" },
-    { id: "check", icon: "✅", l: "Checklist" },
-    { id: "cost",  icon: "🧮", l: "คำนวณงบ" },
-    { id: "accom", icon: "🏠", l: "ที่พัก" },
-    { id: "_more", icon: "⋯",  l: "อื่นๆ" },
+    { id: "home",   icon: "📊", l: "สรุป" },
+    { id: "decide", icon: "🎯", l: "แนะนำ" },
+    { id: "check",  icon: "✅", l: "Checklist" },
+    { id: "accom",  icon: "🏠", l: "ที่พัก" },
+    { id: "_more",  icon: "⋯",  l: "อื่นๆ" },
   ];
   var MORE_GROUPS = [
     { g: "📅 แผนการ",     ids: ["timeline", "visa", "vax", "fly"] },
     { g: "🛍️ จัดเตรียม",  ids: ["shop", "pack", "life"] },
     { g: "📍 Durham",      ids: ["places", "contacts"] },
-    { g: "💰 การเงิน",    ids: ["money", "expense"] },
+    { g: "💰 การเงิน",    ids: ["money", "cost", "expense"] },
     { g: "🎓 เรียน/งาน",  ids: ["academic", "career", "intro"] },
   ];
 
   var tabs = [
     { id: "home",      l: "📊 สรุป" },
+    { id: "decide",    l: "🎯 แนะนำเลย" },
     { id: "check",     l: "✅ Checklist" },
     { id: "timeline",  l: "📅 Timeline" },
     { id: "accom",     l: "🏠 ที่พัก" },
@@ -256,6 +364,11 @@ export default function App() {
     return a + g[3].filter(function(it) { return !checked['check_' + it]; }).length;
   }, 0);
 
+  // ─── Decision Engine Outputs (computed on every render, cheap pure functions) ─
+  var decision    = computeDecision(profile);
+  var dynTimeline = computeTimeline(profile);
+  var nextActions = computeNextActions(profile, checked, dynTimeline, decision);
+
   // Deadline map from flat checklist: { itemText: "YYYY-MM-DD" }
   var deadlineMap = {};
   checklist.forEach(function(it) {
@@ -263,8 +376,14 @@ export default function App() {
   });
   function daysUntil(dateStr) {
     if (!dateStr) return null;
-    var d = new Date(dateStr) - new Date();
-    return Math.ceil(d / 864e5);
+    var s = String(dateStr).trim();
+    // Handle GViz format: "Date(2026,2,30)" — month is 0-indexed
+    var gviz = s.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+    if (gviz) s = gviz[1] + '-' + String(+gviz[2]+1).padStart(2,'0') + '-' + String(+gviz[3]).padStart(2,'0');
+    var deadline = new Date(s + 'T00:00:00');
+    if (isNaN(deadline.getTime())) return null;
+    var today = new Date(); today.setHours(0,0,0,0);
+    return Math.ceil((deadline - today) / 864e5);
   }
 
   return (
@@ -466,6 +585,37 @@ export default function App() {
       {/* ── HOME ── */}
       {tab === "home" && (
         <div>
+          {/* ── Next Actions Hero ── */}
+          {nextActions.length > 0 && (
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: C.sub, letterSpacing: 1, padding: "0 2px 4px", textTransform: "uppercase" }}>🎯 ทำสิ่งนี้ก่อน</div>
+              {nextActions.map(function(a, i) {
+                var rc = a.risk==='high' ? "#C62828" : a.risk==='medium' ? "#E65100" : "#2E7D32";
+                var rb = a.risk==='high' ? "#FFEBEE" : a.risk==='medium' ? "#FFF3E0" : "#E8F5E9";
+                return (
+                  <div key={a.id} onClick={function() { setTab(a.tab||'decide'); setShowMore(false); }}
+                    style={{ background: i===0 ? rb : C.card, borderRadius: 12, padding: "10px 12px", marginBottom: 5, cursor:"pointer", border:"1px solid "+(i===0?rc:C.border), display:"flex", alignItems:"center", gap:10 }}>
+                    <div style={{ width:26, height:26, borderRadius:"50%", background:rc, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800, flexShrink:0 }}>{i+1}</div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:11, fontWeight:800, color:i===0?rc:C.text }}>{a.task}</div>
+                      <div style={{ fontSize:9, color:C.sub, marginTop:1 }}>{a.sub}</div>
+                    </div>
+                    {a.days !== null && (
+                      <div style={{ textAlign:"center", flexShrink:0 }}>
+                        <div style={{ fontSize:18, fontWeight:800, color:rc, lineHeight:1 }}>{a.days}</div>
+                        <div style={{ fontSize:8, color:C.sub }}>วัน</div>
+                      </div>
+                    )}
+                    <span style={{ color:C.sub, fontSize:12 }}>›</span>
+                  </div>
+                );
+              })}
+              <button onClick={function(){ setTab('decide'); setShowMore(false); }}
+                style={{ width:"100%", padding:"8px", border:"1px dashed "+C.border, borderRadius:10, background:"none", color:C.sub, fontSize:10, cursor:"pointer", marginTop:2 }}>
+                ดูคำแนะนำทั้งหมด →
+              </button>
+            </div>
+          )}
           {/* Progress bars */}
           <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
             <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📊 ความคืบหน้า</div>
@@ -587,7 +737,7 @@ export default function App() {
                 <div style={{ fontSize: 12, fontWeight: 800, color: cat[2], marginBottom: 6 }}>
                   {cat[1]}
                 </div>
-                {cat[3].map(function (it, ii) {
+                {(cat[3] || []).map(function (it, ii) {
                   var key = 'check_' + it;
                   var isCh = isDoneGroup ? true : !!checked[key];
                   var days = daysUntil(deadlineMap[it]);
@@ -626,11 +776,18 @@ export default function App() {
                         {days !== null && !isCh && (
                           <span style={{
                             fontSize: 9, fontWeight: 700, flexShrink: 0,
-                            padding: "1px 6px", borderRadius: 8,
-                            background: days <= 7 ? "#FFEBEE" : days <= 30 ? "#FFF3E0" : "#E8F5E9",
-                            color: days <= 7 ? "#C62828" : days <= 30 ? "#E65100" : "#2E7D32",
+                            padding: "2px 7px", borderRadius: 8, textAlign: "center", lineHeight: 1.4,
+                            background: days < 0 ? "#F3E5F5" : days <= 7 ? "#FFEBEE" : days <= 30 ? "#FFF3E0" : "#E8F5E9",
+                            color: days < 0 ? "#6A1B9A" : days <= 7 ? "#C62828" : days <= 30 ? "#E65100" : "#2E7D32",
                           }}>
-                            {days <= 0 ? "หมดเขต!" : "เหลือ " + days + " วัน"}
+                            {days < 0
+                              ? "เลย " + Math.abs(days) + " วัน"
+                              : days === 0
+                              ? "🔴 วันนี้!"
+                              : days <= 30
+                              ? days + " วัน"
+                              : (function(){ var d=new Date(); var s=String(deadlineMap[it]||'').trim(); var g=s.match(/^Date\((\d+),(\d+),(\d+)\)$/); if(g) s=g[1]+'-'+String(+g[2]+1).padStart(2,'0')+'-'+String(+g[3]).padStart(2,'0'); d=new Date(s+'T00:00:00'); return isNaN(d.getTime())?'':d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}); })()
+                            }
                           </span>
                         )}
                       </div>
@@ -683,6 +840,99 @@ export default function App() {
       {/* ── ACCOMMODATION ── */}
       {tab === "accom" && (
         <div>
+          {/* Toggle: Private / College */}
+          <div style={{ display: "flex", background: C.border, borderRadius: 10, padding: 3, marginBottom: 10, gap: 3 }}>
+            {[["private","🏠 Private Studio"],["college","🏛️ College"]].map(function(v) {
+              var active = accomView === v[0];
+              return (
+                <button key={v[0]} onClick={function(){ setAccomView(v[0]); }}
+                  style={{ flex:1, padding:"8px 0", borderRadius:8, border:"none", cursor:"pointer", fontWeight:active?800:500, fontSize:12,
+                    background: active ? "#1a237e" : "transparent", color: active ? "#fff" : C.sub, transition:"all 0.2s" }}>
+                  {v[1]}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ── COLLEGE ACCOMMODATION VIEW ── */}
+          {accomView === "college" && (
+            <div>
+              <div style={{ background:"linear-gradient(135deg,#1a237e,#283593)", borderRadius:12, padding:12, color:"#fff", marginBottom:8 }}>
+                <div style={{ fontSize:13, fontWeight:800 }}>🏛️ University College Accommodation</div>
+                <div style={{ fontSize:10, opacity:0.8, marginTop:2 }}>รวม Bills · มีอาหาร Formal Dinner · Community life — สมัครผ่าน College Preference</div>
+              </div>
+              <div style={{ background:"#FFF9C4", borderRadius:8, padding:10, marginBottom:8, fontSize:10 }}>
+                <strong>💡 วิธีสมัคร:</strong> Durham Applicant Portal → College Preference → เลือก 1st/2nd/3rd choice<br/>
+                <strong>Deadline:</strong> ~30 มี.ค. 2026 · ไม่ได้การันตี แต่มีโอกาสได้สูงถ้าสมัครเร็ว
+              </div>
+              {colAccom.map(function(c, ci) {
+                var isOpen = openA === (100 + ci);
+                return (
+                  <div key={ci} style={{ background:C.card, borderRadius:12, marginBottom:6, borderLeft:"4px solid "+c.color, overflow:"hidden" }}>
+                    <div onClick={function(){ setOpenA(isOpen ? -1 : 100+ci); }} style={{ padding:"10px 14px", cursor:"pointer" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                        <div style={{ flex:1 }}>
+                          <span style={{ background:c.color, color:"#fff", padding:"2px 8px", borderRadius:10, fontSize:9, fontWeight:700 }}>{c.badge}</span>
+                          <div style={{ fontSize:14, fontWeight:800, color:c.color, marginTop:3 }}>{c.name}</div>
+                          <div style={{ fontSize:10, color:C.sub }}>{c.forWho} · {c.dist}</div>
+                        </div>
+                        <div style={{ textAlign:"right", flexShrink:0, marginLeft:8 }}>
+                          <div style={{ fontSize:13, fontWeight:800, color:c.color }}>£{c.rooms[0]?.pw}<span style={{ fontSize:9, fontWeight:400 }}>/wk</span></div>
+                          <div style={{ fontSize:9, color:C.sub }}>{isOpen?"▲ ซ่อน":"▼ รายละเอียด"}</div>
+                        </div>
+                      </div>
+                    </div>
+                    {isOpen && (
+                      <div style={{ padding:"0 14px 14px", borderTop:"1px solid "+C.border }}>
+                        {c.why && <div style={{ fontSize:10, color:C.text, marginBottom:8, background:c.bg, padding:"6px 8px", borderRadius:6 }}>{c.why}</div>}
+                        <div style={{ fontSize:11, fontWeight:700, color:c.color, marginBottom:4 }}>🛏️ ตัวเลือกห้อง:</div>
+                        <div style={{ display:"flex", flexDirection:"column", gap:4, marginBottom:8 }}>
+                          {c.rooms.map(function(rm, ri) {
+                            return (
+                              <div key={ri} style={{ display:"grid", gridTemplateColumns:"1fr auto auto auto", gap:4, alignItems:"center", background:C.border, borderRadius:6, padding:"6px 8px" }}>
+                                <div style={{ fontSize:10, fontWeight:600, color:C.text }}>{rm.type}</div>
+                                <div style={{ fontSize:10, color:C.sub }}>{rm.bath}</div>
+                                <div style={{ fontSize:10, color:C.sub }}>{rm.wk}wk</div>
+                                <div style={{ fontSize:13, fontWeight:800, color:c.color }}>£{rm.pw}/wk</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {c.features.length > 0 && (
+                          <>
+                            <div style={{ fontSize:11, fontWeight:700, color:c.color, marginBottom:4 }}>✨ Facilities & สิ่งอำนวยความสะดวก:</div>
+                            <div style={{ display:"flex", flexWrap:"wrap", gap:3, marginBottom:8 }}>
+                              {c.features.map(function(f,fi){ return <span key={fi} style={{ fontSize:9, padding:"2px 8px", background:c.bg, borderRadius:10, color:c.color }}>{f}</span>; })}
+                            </div>
+                          </>
+                        )}
+                        {/* Cost comparison */}
+                        <div style={{ background:C.border, borderRadius:6, padding:"6px 8px", fontSize:10 }}>
+                          <strong>💰 ค่าใช้จ่ายรวม:</strong>{" "}
+                          {c.rooms.map(function(rm,ri){
+                            return <span key={ri} style={{ marginRight:8 }}>{rm.type}: <strong>£{(rm.pw*rm.wk).toLocaleString()}</strong> (~฿{Math.round(rm.pw*rm.wk*rate).toLocaleString()})</span>;
+                          })}
+                        </div>
+                        {c.note && <div style={{ fontSize:9, color:"#E65100", fontWeight:700, marginTop:6 }}>💡 {c.note}</div>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              {/* vs Private comparison note */}
+              <div style={{ background:C.card, borderRadius:10, padding:10, marginTop:4, fontSize:10, borderLeft:"3px solid #1a237e" }}>
+                <strong style={{ color:"#1a237e" }}>🆚 College vs Private Studio</strong>
+                <div style={{ marginTop:4, color:C.sub }}>
+                  College (~£150-200/wk): Bills รวม, Formal Dinners, Community life — แต่ครัวรวม ห้องเล็กกว่า<br/>
+                  Private (~£265-363/wk): ครัวส่วนตัว ห้องน้ำส่วนตัว privacy สูง — แต่แพงกว่าและโดดเดี่ยวกว่า
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── PRIVATE ACCOMMODATION VIEW ── */}
+          {accomView === "private" && (
+          <div>
           <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
             <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>🏨 Pre-sessional 6wk (3 ส.ค.-11 ก.ย.)</div>
             <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 11 }}>
@@ -830,6 +1080,9 @@ export default function App() {
               </div>
             );
           })}
+          </div>
+          )}
+
         </div>
       )}
 
@@ -1850,6 +2103,170 @@ export default function App() {
               <div style={{ fontSize: 10, marginTop: 4 }}>สร้าง tab ชื่อ "💼 Career" ใน Spreadsheet</div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── DECIDE TAB ── */}
+      {tab === "decide" && (
+        <div>
+          {/* ── Profile Inputs ── */}
+          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 12 }}>👤 โปรไฟล์ของคุณ</div>
+
+            {/* IELTS Scores */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 6 }}>IELTS Scores — Durham LLM: Overall 7.0 · W ≥7.0 · L/R/S ≥6.5</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+                {[['ieltsL','L','Listening',6.5],['ieltsR','R','Reading',6.5],['ieltsW','W','Writing ⚠️',7.0],['ieltsS','S','Speaking',6.5]].map(function(x) {
+                  var val = parseFloat(profile[x[0]])||0;
+                  var ok = val >= x[3];
+                  var entered = !!profile[x[0]];
+                  return (
+                    <div key={x[0]}>
+                      <div style={{ fontSize: 9, color: x[3]===7.0?"#E65100":C.sub, marginBottom: 3, textAlign: "center", fontWeight: x[3]===7.0?700:400 }}>{x[2]}</div>
+                      <input type="number" min="0" max="9" step="0.5" value={profile[x[0]]} onChange={function(e){ updateProfile(x[0], e.target.value); }} placeholder="0.0"
+                        style={{ width:"100%", boxSizing:"border-box", padding:"8px 4px", border:"2px solid "+(entered?(ok?"#4CAF50":"#C62828"):C.border), borderRadius:8, fontSize:16, fontWeight:800, textAlign:"center", background:C.bg, color:C.text, outline:"none" }} />
+                      {entered && <div style={{ fontSize:8, textAlign:"center", color: ok?"#4CAF50":"#C62828", marginTop:2 }}>min {x[3]}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+              {decision.hasIELTS && (
+                <div style={{ marginTop: 6, padding:"6px 10px", borderRadius:8, background:decision.ielts.bg, border:"1px solid "+decision.ielts.color }}>
+                  <span style={{ fontSize:10, fontWeight:800, color:decision.ielts.color }}>{decision.ielts.label}</span>
+                  <span style={{ fontSize:10, color:decision.ielts.color }}> · Overall {decision.overall.toFixed(1)}</span>
+                  <div style={{ fontSize:9, color:decision.ielts.color, marginTop:2 }}>{decision.ielts.msg}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Budget + Preference + Risk */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12 }}>
+              <div>
+                <div style={{ fontSize:10, fontWeight:700, color:C.sub, marginBottom:5 }}>งบที่พัก (£/สัปดาห์)</div>
+                <input type="number" value={profile.budget} onChange={function(e){updateProfile('budget',e.target.value);}} placeholder="เช่น 299"
+                  style={{ width:"100%", boxSizing:"border-box", padding:"8px", border:"1px solid "+C.border, borderRadius:8, fontSize:13, background:C.bg, color:C.text }} />
+              </div>
+              <div>
+                <div style={{ fontSize:10, fontWeight:700, color:C.sub, marginBottom:5 }}>เงินที่มีตอนนี้ (฿)</div>
+                <input type="number" value={profile.fundsAmount} onChange={function(e){updateProfile('fundsAmount',e.target.value);}} placeholder="เช่น 1650000"
+                  style={{ width:"100%", boxSizing:"border-box", padding:"8px", border:"1px solid "+C.border, borderRadius:8, fontSize:13, background:C.bg, color:C.text }} />
+              </div>
+            </div>
+
+            <div style={{ marginBottom:12 }}>
+              <div style={{ fontSize:10, fontWeight:700, color:C.sub, marginBottom:6 }}>ความชอบ</div>
+              <div style={{ display:"flex", gap:6 }}>
+                {[['privacy','🏠 ส่วนตัว'],['balanced','⚖️ สมดุล'],['social','👥 Social']].map(function(x){
+                  var a = profile.preference===x[0];
+                  return <button key={x[0]} onClick={function(){updateProfile('preference',x[0]);}}
+                    style={{ flex:1, padding:"8px 4px", border:"2px solid "+(a?"#1a237e":C.border), borderRadius:8, background:a?"#1a237e":C.bg, color:a?"#fff":C.text, fontSize:10, fontWeight:700, cursor:"pointer" }}>{x[1]}</button>;
+                })}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontSize:10, fontWeight:700, color:C.sub, marginBottom:6 }}>วันเริ่มเรียน</div>
+              <input type="date" value={profile.courseStart} onChange={function(e){updateProfile('courseStart',e.target.value);}}
+                style={{ width:"100%", boxSizing:"border-box", padding:"8px", border:"1px solid "+C.border, borderRadius:8, fontSize:13, background:C.bg, color:C.text }} />
+            </div>
+          </div>
+
+          {/* ── Accommodation Recommendation ── */}
+          {decision.accomRec && (
+            <div style={{ background:decision.accomRec.bg, border:"2px solid "+decision.accomRec.color, borderRadius:12, padding:14, marginBottom:8 }}>
+              <div style={{ fontSize:9, fontWeight:800, color:decision.accomRec.color, letterSpacing:0.5, marginBottom:4 }}>{decision.accomRec.badge}</div>
+              <div style={{ fontSize:14, fontWeight:800, color:decision.accomRec.color }}>{decision.accomRec.name}</div>
+              <div style={{ fontSize:10, color:C.sub, marginBottom:4 }}>{decision.accomRec.sub}</div>
+              <div style={{ fontSize:11, color:C.text, lineHeight:1.6 }}>{decision.accomRec.reason}</div>
+              <button onClick={function(){setTab('accom');setShowMore(false);}}
+                style={{ marginTop:10, padding:"7px 18px", background:decision.accomRec.color, color:"#fff", border:"none", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                ดูรายละเอียดที่พัก →
+              </button>
+            </div>
+          )}
+
+          {/* ── Financial Status ── */}
+          {(function(){
+            var required = Math.round(37579 * r);
+            var have = parseFloat(profile.fundsAmount)||0;
+            var pct = have ? Math.min(100, have/required*100) : 0;
+            var ok = have >= required;
+            var deficit = required - have;
+            var tl = dynTimeline.find(function(t){return t.key==='funds';});
+            return (
+              <div style={{ background:C.card, borderRadius:12, padding:14, marginBottom:8 }}>
+                <div style={{ fontSize:12, fontWeight:800, color:"#1a237e", marginBottom:10 }}>💰 สถานะการเงิน — Visa Funds</div>
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                  <div>
+                    <div style={{ fontSize:9, color:C.sub }}>ต้องมีในบัญชี</div>
+                    <div style={{ fontSize:18, fontWeight:800, color:C.text }}>฿{required.toLocaleString()}</div>
+                    <div style={{ fontSize:9, color:C.sub }}>= £37,579</div>
+                  </div>
+                  {have > 0 && (
+                    <div style={{ textAlign:"right" }}>
+                      <div style={{ fontSize:9, color:C.sub }}>ที่มีอยู่ตอนนี้</div>
+                      <div style={{ fontSize:18, fontWeight:800, color:ok?"#2E7D32":"#C62828" }}>฿{have.toLocaleString()}</div>
+                      <div style={{ fontSize:9, color:ok?"#2E7D32":"#C62828", fontWeight:700 }}>{ok?"✅ พอแล้ว!":"⚠️ ขาด ฿"+deficit.toLocaleString()}</div>
+                    </div>
+                  )}
+                </div>
+                {have > 0 && (
+                  <div>
+                    <div style={{ background:C.border, borderRadius:6, height:10, marginBottom:6 }}>
+                      <div style={{ background:ok?"#2E7D32":"#E65100", borderRadius:6, height:10, width:pct+"%", transition:"width 0.4s" }} />
+                    </div>
+                    <div style={{ fontSize:9, color:C.sub }}>{pct.toFixed(0)}% ของเงินที่ต้องการ</div>
+                  </div>
+                )}
+                {tl && (
+                  <div style={{ marginTop:8, padding:"6px 10px", borderRadius:8, background: tl.days<=30?"#FFEBEE":"#FFF3E0" }}>
+                    <span style={{ fontSize:10, fontWeight:700, color:tl.days<=30?"#C62828":"#E65100" }}>
+                      ⏰ ต้องฝากเงินก่อน {tl.fmt} (อีก {tl.days} วัน)
+                    </span>
+                    <div style={{ fontSize:9, color:C.sub, marginTop:2 }}>ต้องอยู่ในบัญชีครบ 28 วันก่อนวันยื่นวีซ่า</div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* ── Dynamic Timeline ── */}
+          <div style={{ background:C.card, borderRadius:12, padding:14, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:800, color:"#1a237e", marginBottom:4 }}>⏱️ Timeline ส่วนตัวของคุณ</div>
+            <div style={{ fontSize:9, color:C.sub, marginBottom:10 }}>คำนวณจากวันเริ่มเรียน · {profile.preSess ? "Pre-sessional "+profile.preSessWeeks+" สัปดาห์" : "ไม่มี Pre-sessional"}</div>
+            {dynTimeline.map(function(t) {
+              var past = t.days < 0;
+              var urgent = !past && t.days <= 30;
+              var soon = !past && t.days <= 90;
+              var dotColor = past?"#ccc":urgent?"#C62828":soon?"#E65100":"#1a237e";
+              return (
+                <div key={t.key} style={{ display:"flex", gap:10, marginBottom:10, alignItems:"flex-start" }}>
+                  <div style={{ width:60, fontSize:9, fontWeight:800, color:past?"#aaa":urgent?"#C62828":C.sub, textAlign:"right", flexShrink:0, paddingTop:1 }}>
+                    {past ? "ผ่านแล้ว" : t.days===0 ? "วันนี้!" : "อีก "+t.days+" วัน"}
+                  </div>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:dotColor, flexShrink:0, marginTop:3, boxShadow:urgent?"0 0 0 3px rgba(198,40,40,0.2)":"none" }} />
+                  <div>
+                    <div style={{ fontSize:11, fontWeight:urgent?800:600, color:past?C.sub:C.text }}>{t.label}</div>
+                    <div style={{ fontSize:9, color:C.sub }}>{t.fmt}</div>
+                    {urgent && <div style={{ fontSize:9, color:"#C62828", fontWeight:700, marginTop:2 }}>⚠️ เร่งด่วน!</div>}
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{ display:"flex", gap:8, marginTop:8, paddingTop:8, borderTop:"1px solid "+C.border }}>
+              <label style={{ display:"flex", alignItems:"center", gap:6, fontSize:10, color:C.text, cursor:"pointer" }}>
+                <input type="checkbox" checked={!!profile.preSess} onChange={function(e){updateProfile('preSess',e.target.checked);}} />
+                Pre-sessional
+              </label>
+              {profile.preSess && (
+                <select value={profile.preSessWeeks} onChange={function(e){updateProfile('preSessWeeks',e.target.value);}}
+                  style={{ padding:"2px 6px", border:"1px solid "+C.border, borderRadius:6, fontSize:10, background:C.bg, color:C.text }}>
+                  {[4,6,8,10].map(function(w){ return <option key={w} value={w}>{w} สัปดาห์</option>; })}
+                </select>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

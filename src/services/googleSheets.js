@@ -426,6 +426,14 @@ function parseContacts(rows) {
  * Col 4  กำหนดเสร็จ, Col 5  ความสำคัญ, Col 6  ค่าใช้จ่าย,
  * Col 7  สกุลเงิน, Col 8  หมายเหตุ
  */
+function normalizeDate(val) {
+  if (!val) return "";
+  var s = String(val).trim();
+  var g = s.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+  if (g) return g[1] + '-' + String(+g[2]+1).padStart(2,'0') + '-' + String(+g[3]).padStart(2,'0');
+  return s;
+}
+
 function parseChecklist(rows) {
   return rows
     .filter((r) => r[0])
@@ -433,7 +441,7 @@ function parseChecklist(rows) {
       item:     String(r[1] || "").trim(),
       cat:      String(r[2] || "").trim(),
       status:   String(r[3] || "").trim(),
-      deadline: String(r[4] || "").trim(),
+      deadline: normalizeDate(r[4]),
       imp:      String(r[5] || "").trim(),
       cost:     r[6] ? Number(r[6]) : 0,
       currency: String(r[7] || "").trim(),
@@ -519,6 +527,70 @@ function parseFlat(rows) {
   }));
 }
 
+/**
+ * College Accommodation — 🏛️ College
+ *
+ * Col 0  #
+ * Col 1  College name
+ * Col 2  For who (PG/UG/All)
+ * Col 3  Room type
+ * Col 4  Price/week (£)    — number
+ * Col 5  Contract (wk)     — number
+ * Col 6  Bills included (Yes/No)
+ * Col 7  Bed type
+ * Col 8  Bathroom (En-suite/Shared)
+ * Col 9  Distance to Law School
+ * Col 10 Key features (comma-separated)
+ * Col 11 Notes
+ */
+const COLLEGE_META = {
+  "Ustinov":      { badge: "🎓 POSTGRAD ONLY", color: "#1a237e", bg: "#E8EAF6" },
+  "Josephine":    { badge: "🌟 PRE-SESS VENUE", color: "#E65100", bg: "#FFF3E0" },
+  "South":        { badge: "🆕 NEWEST COLLEGE", color: "#00695C", bg: "#E0F2F1" },
+  "St Cuthbert":  { badge: "🏛️ CITY CENTRE", color: "#6A1B9A", bg: "#F3E5F5" },
+  "Grey":         { badge: "🏆 POPULAR PG", color: "#BF360C", bg: "#FBE9E7" },
+  "Trevelyan":    { badge: "⭐ SOUTH ROAD", color: "#1565C0", bg: "#E3F2FD" },
+  "Collingwood":  { badge: "🏫 LARGE COLLEGE", color: "#4A148C", bg: "#EDE7F6" },
+};
+
+function parseCollegeAccom(rows) {
+  const colMap = new Map();
+  rows.filter((r) => r[0]).forEach((r) => {
+    const name = String(r[1] || "").trim();
+    if (!name) return;
+    const pw = parseFloat(r[4]) || 0;
+    if (!pw) return;
+
+    const meta = Object.entries(COLLEGE_META).find(([k]) => name.includes(k))?.[1]
+      || { badge: "🏛️ COLLEGE", color: "#555", bg: "#f8f8f8" };
+
+    if (!colMap.has(name)) {
+      colMap.set(name, {
+        name,
+        badge: meta.badge,
+        color: meta.color,
+        bg: meta.bg,
+        forWho: String(r[2] || "").trim(),
+        dist: String(r[9] || "").trim(),
+        addr: "",
+        why: String(r[11] || "").trim(),
+        rooms: [],
+        features: String(r[10] || "").split(",").map((s) => s.trim()).filter(Boolean),
+        note: "",
+      });
+    }
+    colMap.get(name).rooms.push({
+      type: String(r[3] || "").trim(),
+      pw,
+      wk: parseInt(r[5]) || 40,
+      bills: String(r[6] || "").trim(),
+      bed: String(r[7] || "").trim(),
+      bath: String(r[8] || "").trim(),
+    });
+  });
+  return [...colMap.values()];
+}
+
 // ─── Safe fetcher (returns [] if tab missing / on error) ─────────────────────
 async function fetchGVizSafe(tabRef) {
   try { return await fetchGViz(tabRef); } catch { return []; }
@@ -551,6 +623,7 @@ export async function fetchAllData() {
   const contactsRows    = await fetchGViz("📞 Contact Directory");
   const checklistRows   = await fetchGViz("📋 Checklist");
   // Optional new tabs — return [] silently if tab doesn't exist yet
+  const collegeAccomRows = await fetchGVizSafe("🏛️ College");
   const academicRows    = await fetchGVizSafe("🎓 Academic");
   const careerRows      = await fetchGVizSafe("💼 Career");
   const lifeukRows      = await fetchGVizSafe("📱 Life UK");
@@ -558,6 +631,7 @@ export async function fetchAllData() {
 
   return {
     accom:           parseAccom(accomRows),
+    colAccom:        parseCollegeAccom(collegeAccomRows),
     vaccines:        parseVaccines(vaccineRows),
     packing:         parsePacking(packingRows),
     shopping:        parseShopping(shoppingRows),

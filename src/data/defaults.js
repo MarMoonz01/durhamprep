@@ -1,3 +1,66 @@
+export const defaultCollegeAccom = [
+  {
+    name: "Ustinov College", badge: "🎓 POSTGRAD ONLY", color: "#1a237e", bg: "#E8EAF6",
+    forWho: "PG เท่านั้น", dist: "~15 นาทีเดิน จาก Palatine Centre",
+    addr: "Sheraton Road, DH1 3JH",
+    why: "College เดียวที่รับเฉพาะ Postgrad! บรรยากาศดีมาก มี Bar, Common room, Formal Dinners",
+    rooms: [
+      { type: "En-Suite Single", pw: 185, wk: 40, bills: "รวม", bed: "Single", bath: "En-suite" },
+      { type: "En-Suite Large", pw: 200, wk: 40, bills: "รวม", bed: "Single (large)", bath: "En-suite" },
+    ],
+    features: ["Postgrad-only community", "Senior Common Room", "Bar & Social Events", "Formal Dinners", "Garden & common areas", "ใกล้ Law School"],
+    note: "⭐ แนะนำสำหรับ PG! สมัคร College Preference → เลือก Ustinov เป็นอันดับ 1",
+  },
+  {
+    name: "Josephine Butler College", badge: "🌟 PRE-SESS VENUE", color: "#E65100", bg: "#FFF3E0",
+    forWho: "PG/UG (ใช้ Pre-sessional)",  dist: "~20 นาทีเดิน",
+    addr: "South Road, DH1 3TS",
+    why: "สถานที่จัด Pre-sessional 6wk — En-Suite ครัวรวม community ดีมาก รูปลักษณ์สวยงาม",
+    rooms: [
+      { type: "En-Suite (Pre-sessional)", pw: 200, wk: 6, bills: "รวม", bed: "Single", bath: "En-suite" },
+      { type: "En-Suite (Full Year)", pw: 175, wk: 40, bills: "รวม", bed: "Single", bath: "En-suite" },
+    ],
+    features: ["Pre-sessional 3 Aug–11 Sep", "En-Suite rooms", "ครัวรวม 6 คน", "Common room & Bar", "Formal Dinners", "Garden"],
+    note: "Pre-sessional จะพักที่นี่ — เป็นโอกาสดูก่อนตัดสินใจ",
+  },
+  {
+    name: "South College", badge: "🆕 NEWEST COLLEGE", color: "#00695C", bg: "#E0F2F1",
+    forWho: "PG/UG", dist: "~10 นาทีเดิน จาก Palatine Centre",
+    addr: "South Road, DH1 3TU",
+    why: "College ใหม่ที่สุด (เปิด 2020) สิ่งอำนวยความสะดวกทันสมัย ใกล้ Law School มาก",
+    rooms: [
+      { type: "En-Suite Standard", pw: 170, wk: 40, bills: "รวม", bed: "Single", bath: "En-suite" },
+      { type: "En-Suite Premium", pw: 190, wk: 40, bills: "รวม", bed: "Single (large)", bath: "En-suite" },
+    ],
+    features: ["ใหม่ที่สุด เปิด 2020", "ใกล้ Palatine Centre (Law School)", "Modern facilities", "Common room", "Bar", "Formal Dinners"],
+    note: "ตัวเลือกดีสำหรับ PG ที่อยากอยู่ใกล้ Law School",
+  },
+  {
+    name: "St Cuthbert's Society", badge: "🏛️ OLDEST SOCIETY", color: "#6A1B9A", bg: "#F3E5F5",
+    forWho: "PG/UG", dist: "~20 นาทีเดิน (City centre)",
+    addr: "12 South Bailey, DH1 3EE",
+    why: "ตั้งอยู่ใจกลางเมืองใกล้ Cathedral บรรยากาศประวัติศาสตร์ PG-friendly",
+    rooms: [
+      { type: "Single (Shared bathroom)", pw: 145, wk: 40, bills: "รวม", bed: "Single", bath: "Shared" },
+      { type: "En-Suite Single", pw: 165, wk: 40, bills: "รวม", bed: "Single", bath: "En-suite" },
+    ],
+    features: ["ใจกลางเมือง Durham", "ใกล้ Cathedral & Castle", "Historic buildings", "Common room", "Bar", "Formal Dinners"],
+    note: "ดีสำหรับคนอยากอยู่ใกล้ city centre — แต่ไกล Law School กว่า",
+  },
+  {
+    name: "Grey College", badge: "🏆 POPULAR PG", color: "#BF360C", bg: "#FBE9E7",
+    forWho: "PG/UG", dist: "~15 นาทีเดิน",
+    addr: "South Road, DH1 3LG",
+    why: "College ที่ได้รับความนิยมมากที่สุดแห่งหนึ่ง มี PG section แยกต่างหาก",
+    rooms: [
+      { type: "Single (Shared bathroom)", pw: 150, wk: 40, bills: "รวม", bed: "Single", bath: "Shared" },
+      { type: "En-Suite Single", pw: 172, wk: 40, bills: "รวม", bed: "Single", bath: "En-suite" },
+    ],
+    features: ["PG section แยก", "Common room", "Bar", "Formal Dinners", "Sports facilities", "Garden"],
+    note: "มี Postgrad-specific area ที่ค่อนข้าง quiet",
+  },
+];
+
 export const defaultAccom = [
   {name:"Duresme Court",badge:"🏆 BEST PICK",color:"#1B5E20",bg:"#E8F5E9",provider:"Prestige Student Living",addr:"Newcastle Road, DH1 4FA",dist:"~15 นาทีเดิน ผ่าน Potters Bank → Palatine Centre",rating:"4.8/5",
    stars:{location:4.5,clean:5,facilities:4,value:4.5,safety:4.5},
