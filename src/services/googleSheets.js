@@ -591,6 +591,87 @@ function parseCollegeAccom(rows) {
   return [...colMap.values()];
 }
 
+/**
+ * Price Comparison — 💰 เปรียบเทียบราคา
+ *
+ * Col 0  ที่พัก (property name)
+ * Col 1  ชื่อห้อง (room name)
+ * Col 2  ราคา Direct £/wk    — number
+ * Col 3  ราคา uhomes £/wk    — string (may be range or "ask")
+ * Col 4  ราคา Casita £/wk    — string
+ * Col 5  ส่วนต่าง uhomes vs Direct
+ * Col 6  ถูกสุดที่ไหน?
+ * Col 7  Cashback/Promotion
+ * Col 8  หมายเหตุ
+ */
+function parsePriceComparison(rows) {
+  return rows
+    .filter((r) => r[0] || r[1])
+    .map((r) => ({
+      provider: String(r[0] || "").trim(),
+      room:     String(r[1] || "").trim(),
+      direct:   r[2] ? parseFloat(r[2]) : null,
+      uhomes:   String(r[3] || "").trim(),
+      casita:   String(r[4] || "").trim(),
+      diff:     String(r[5] || "").trim(),
+      cheapest: String(r[6] || "").trim(),
+      cashback: String(r[7] || "").trim(),
+      note:     String(r[8] || "").trim(),
+    }))
+    .filter((r) => r.provider || r.room);
+}
+
+/**
+ * Accommodation Rating — 🏠 ที่พัก Rating
+ *
+ * First data row: column headers (property names in cols 1–3)
+ * Subsequent rows: Col 0=criteria, Col 1-3=values per property, Col 4=note
+ */
+function parseAccomRating(rows) {
+  const filtered = rows.filter((r) => r[0]);
+  if (!filtered.length) return { headers: [], rows: [] };
+  const [headerRow, ...dataRows] = filtered;
+  return {
+    headers: [
+      String(headerRow[1] || "").trim(),
+      String(headerRow[2] || "").trim(),
+      String(headerRow[3] || "").trim(),
+    ].filter(Boolean),
+    rows: dataRows.map((r) => ({
+      label: String(r[0] || "").trim(),
+      vals: [
+        String(r[1] || "").trim(),
+        String(r[2] || "").trim(),
+        String(r[3] || "").trim(),
+      ],
+      note: String(r[4] || "").trim(),
+    })),
+  };
+}
+
+/**
+ * Expense Tracker — 💷 Expense Tracker
+ *
+ * Col 0  วันที่ (date)
+ * Col 1  รายการ (description)
+ * Col 2  หมวด (category)
+ * Col 3  จำนวนเงิน £   — number
+ * Col 4  จ่ายด้วย (payment method)
+ * Col 5  หมายเหตุ
+ */
+function parseExpenseTracker(rows) {
+  return rows
+    .filter((r) => r[1])
+    .map((r) => ({
+      date:    normalizeDate(r[0]),
+      item:    String(r[1] || "").trim(),
+      cat:     String(r[2] || "").trim(),
+      amount:  r[3] ? parseFloat(r[3]) : 0,
+      payment: String(r[4] || "").trim(),
+      note:    String(r[5] || "").trim(),
+    }));
+}
+
 // ─── Safe fetcher (returns [] if tab missing / on error) ─────────────────────
 async function fetchGVizSafe(tabRef) {
   try { return await fetchGViz(tabRef); } catch { return []; }
@@ -628,6 +709,9 @@ export async function fetchAllData() {
   const careerRows      = await fetchGVizSafe("💼 Career");
   const lifeukRows      = await fetchGVizSafe("📱 Life UK");
   const homeStatusRows  = await fetchGVizSafe("📊 Status");
+  const priceCompRows   = await fetchGVizSafe("💰 เปรียบเทียบราคา");
+  const accomRatingRows = await fetchGVizSafe("🏠 ที่พัก Rating");
+  const expenseRows     = await fetchGVizSafe("💷 Expense Tracker");
 
   return {
     accom:           parseAccom(accomRows),
@@ -645,5 +729,8 @@ export async function fetchAllData() {
     career:          parseFlat(careerRows),
     lifeuk:          parseFlat(lifeukRows),
     homeStatus:      parseFlat(homeStatusRows),
+    priceComparison: parsePriceComparison(priceCompRows),
+    accomRating:     parseAccomRating(accomRatingRows),
+    sheetExpenses:   parseExpenseTracker(expenseRows),
   };
 }

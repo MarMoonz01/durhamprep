@@ -232,6 +232,9 @@ export default function App() {
   const [academic, setAcademic] = useState(defaultAcademic);
   const [career, setCareer] = useState(defaultCareer);
   const [lifeuk, setLifeUK] = useState(defaultLifeUK);
+  const [priceComparison, setPriceComparison] = useState([]);
+  const [accomRating, setAccomRating] = useState({ headers: [], rows: [] });
+  const [sheetExpenses, setSheetExpenses] = useState([]);
   const [sheetsStatus, setSheetsStatus] = useState(
     isSheetsConfigured() ? "loading" : "not-configured"
   );
@@ -266,6 +269,10 @@ export default function App() {
         if (data.academic.length) setAcademic(data.academic);
         if (data.career.length) setCareer(data.career);
         if (data.lifeuk.length) setLifeUK(data.lifeuk);
+        if (data.priceComparison && data.priceComparison.length) setPriceComparison(data.priceComparison);
+        if (data.accomRating && data.accomRating.headers && data.accomRating.headers.length) setAccomRating(data.accomRating);
+        if (data.sheetExpenses && data.sheetExpenses.length) setSheetExpenses(data.sheetExpenses);
+        if (data.checklistGroups && data.checklistGroups.length) setChecklistGroups(data.checklistGroups);
         setSheetsStatus("ok");
       })
       .catch(function (err) {
@@ -345,9 +352,6 @@ export default function App() {
   ];
 
   var r = rate;
-  // Find key properties by name for the comparison table (robust against sheet ordering)
-  var duresme = accom.find(function(a) { return a.name && a.name.includes("Duresme"); }) || {};
-  var sc = accom.find(function(a) { return a.name && a.name.includes("Student Castle"); }) || {};
 
   // checkGroups — derived from Sheets state (defaults to built-in data in defaults.js)
   var checkGroups = checklistGroups.map(function(g) { return [g.preDone ? 1 : 0, g.phase, g.color, g.items]; });
@@ -842,7 +846,7 @@ export default function App() {
         <div>
           {/* Toggle: Private / College */}
           <div style={{ display: "flex", background: C.border, borderRadius: 10, padding: 3, marginBottom: 10, gap: 3 }}>
-            {[["private","🏠 Private Studio"],["college","🏛️ College"]].map(function(v) {
+            {[["private","🏠 Private"],["college","🏛️ College"],["prices","💰 Prices"]].map(function(v) {
               var active = accomView === v[0];
               return (
                 <button key={v[0]} onClick={function(){ setAccomView(v[0]); }}
@@ -930,62 +934,158 @@ export default function App() {
             </div>
           )}
 
+          {/* ── PRICE COMPARISON VIEW ── */}
+          {accomView === "prices" && (
+            <div>
+              <div style={{ background: "linear-gradient(135deg,#1565C0,#1976D2)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 800 }}>💰 เปรียบเทียบราคา Direct vs uhomes vs Casita</div>
+                <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>ราคาจากหลาย platform — เลือกถูกที่สุดก่อนจอง</div>
+              </div>
+
+              {/* Quick links */}
+              <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                {[
+                  { label: "Casita", url: "https://casita.com/search/durham-city", bg: "#6A1B9A" },
+                  { label: "Durhomes", url: "https://www.durhomes.co.uk", bg: "#1565C0" },
+                  { label: "Uhomes", url: "https://www.uhomes.com/uk/durham", bg: "#00695C" },
+                ].map(function(p, pi) {
+                  return (
+                    <a key={pi} href={p.url} target="_blank" rel="noopener noreferrer"
+                      style={{ flex: 1, padding: "8px 4px", background: p.bg, borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 700, textAlign: "center", textDecoration: "none" }}>
+                      {p.label} →
+                    </a>
+                  );
+                })}
+              </div>
+
+              {priceComparison.length === 0 ? (
+                <div style={{ textAlign: "center", padding: 40, color: C.sub }}>⏳ กำลังโหลด...</div>
+              ) : (
+                (function() {
+                  var providers = [...new Set(priceComparison.map(function(r) { return r.provider; }).filter(Boolean))];
+                  return providers.map(function(prov, pi) {
+                    var rooms = priceComparison.filter(function(r) { return r.provider === prov; });
+                    return (
+                      <div key={pi} style={{ background: C.card, borderRadius: 12, marginBottom: 8, overflow: "hidden" }}>
+                        <div style={{ padding: "10px 14px", background: C.border, fontWeight: 800, fontSize: 12, color: "#1a237e" }}>{prov}</div>
+                        {rooms.map(function(rm, ri) {
+                          var cheapestIsUhomes = rm.cheapest && rm.cheapest.toLowerCase().includes("uhomes");
+                          var cheapestIsCasita = rm.cheapest && rm.cheapest.toLowerCase().includes("casita");
+                          return (
+                            <div key={ri} style={{ padding: "10px 14px", borderBottom: ri < rooms.length - 1 ? "1px solid " + C.border : "none" }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 6 }}>{rm.room}</div>
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginBottom: 4 }}>
+                                {[
+                                  { l: "Direct", v: rm.direct ? "£" + rm.direct : "–", hi: !cheapestIsUhomes && !cheapestIsCasita },
+                                  { l: "uhomes", v: rm.uhomes || "–", hi: cheapestIsUhomes },
+                                  { l: "Casita", v: rm.casita || "–", hi: cheapestIsCasita },
+                                ].map(function(p, pli) {
+                                  return (
+                                    <div key={pli} style={{ background: p.hi ? "#E8F5E9" : C.border, borderRadius: 6, padding: "5px 6px", textAlign: "center", border: p.hi ? "1px solid #4CAF50" : "none" }}>
+                                      <div style={{ fontSize: 8, color: p.hi ? "#2E7D32" : C.sub }}>{p.l}{p.hi ? " ✓" : ""}</div>
+                                      <div style={{ fontSize: 11, fontWeight: 800, color: p.hi ? "#1B5E20" : C.text }}>{p.v}</div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              {rm.diff && <div style={{ fontSize: 9, color: "#2E7D32", fontWeight: 700 }}>💰 ประหยัด: {rm.diff}</div>}
+                              {rm.cashback && <div style={{ fontSize: 9, color: "#E65100", fontWeight: 700 }}>🎁 {rm.cashback}</div>}
+                              {rm.note && <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>💡 {rm.note}</div>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  });
+                })()
+              )}
+            </div>
+          )}
+
           {/* ── PRIVATE ACCOMMODATION VIEW ── */}
           {accomView === "private" && (
           <div>
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>🏨 Pre-sessional 6wk (3 ส.ค.-11 ก.ย.)</div>
-            <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 11 }}>
-              <strong>Josephine Butler College</strong> · En-Suite (ห้องน้ำส่วนตัว ครัวรวม 6 คน) · ~£200/wk x 6 = ~£1,200
-              <div style={{ fontSize: 10, color: "#2E7D32", fontWeight: 700, marginTop: 3 }}>
-                ✅ แนะนำ! ได้ community + ใกล้ Law School + มีกิจกรรม social + ถูกกว่า private
-              </div>
+
+          {/* ── Quick Links: Booking Platforms ── */}
+          <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🔗 จองที่พักได้ที่ — Quick Links</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <a href="https://casita.com/search/durham-city" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
+                  background: "linear-gradient(135deg,#6A1B9A,#8E24AA)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
+                <span style={{ fontSize: 18 }}>🏠</span>
+                <span style={{ fontSize: 11, fontWeight: 800 }}>Casita</span>
+                <span style={{ fontSize: 9, opacity: 0.85 }}>casita.com</span>
+              </a>
+              <a href="https://www.durhomes.co.uk" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
+                  background: "linear-gradient(135deg,#1565C0,#1976D2)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
+                <span style={{ fontSize: 18 }}>🏡</span>
+                <span style={{ fontSize: 11, fontWeight: 800 }}>Durhomes</span>
+                <span style={{ fontSize: 9, opacity: 0.85 }}>durhomes.co.uk</span>
+              </a>
+              <a href="https://www.uhomes.com/uk/durham" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
+                  background: "linear-gradient(135deg,#00695C,#00897B)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
+                <span style={{ fontSize: 18 }}>🌐</span>
+                <span style={{ fontSize: 11, fontWeight: 800 }}>Uhomes</span>
+                <span style={{ fontSize: 9, opacity: 0.85 }}>uhomes.com</span>
+              </a>
             </div>
+            <div style={{ fontSize: 9, color: C.sub, marginTop: 6, textAlign: "center" }}>กดเพื่อเปิดเว็บไซต์ · เปรียบเทียบราคาก่อนจอง</div>
           </div>
 
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#333", marginBottom: 8 }}>⚔️ เปรียบเทียบ Duresme Court vs Student Castle</div>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: C.border }}>
-                    <td style={{ padding: "6px 8px", fontWeight: 700, color: C.sub }}></td>
-                    <td style={{ padding: "6px 8px", fontWeight: 800, color: "#1B5E20", textAlign: "center" }}>🏆 Duresme</td>
-                    <td style={{ padding: "6px 8px", fontWeight: 800, color: "#6A1B9A", textAlign: "center" }}>🎬 Student Castle</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ["📍 ทำเล", <Stars val={4.5} />, <Stars val={5} />],
-                    ["🧹 ความสะอาด", <Stars val={5} />, <Stars val={4.5} />],
-                    ["🏢 Facilities", <Stars val={4} />, <Stars val={5} />],
-                    ["💰 คุ้มค่า", <Stars val={4.5} />, <Stars val={3.5} />],
-                    ["🔒 ปลอดภัย", <Stars val={4.5} />, <Stars val={5} />],
-                    ["📊 Overall", <Stars val={4.5} />, <Stars val={4.6} />],
-                  ].map(function (row, ri) {
-                    return (
-                      <tr key={ri} style={{ borderBottom: "1px solid " + C.border }}>
-                        <td style={{ padding: "5px 8px", fontWeight: 600, color: C.sub }}>{row[0]}</td>
-                        <td style={{ padding: "5px 8px", textAlign: "center" }}>{row[1]}</td>
-                        <td style={{ padding: "5px 8px", textAlign: "center" }}>{row[2]}</td>
-                      </tr>
-                    );
-                  })}
-                  <tr style={{ background: C.border }}>
-                    <td style={{ padding: "5px 8px", fontWeight: 700, color: C.text }}>ราคา/wk</td>
-                    <td style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#1B5E20" }}>£{duresme.room?.pw || 299}</td>
-                    <td style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#6A1B9A" }}>£{sc.room?.pw || 363}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: "5px 8px", fontWeight: 700, color: C.text }}>ส่วนต่าง/ปี</td>
-                    <td colSpan={2} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#C62828" }}>
-                      Student Castle แพงกว่า ~£{((sc.room?.pw || 363) - (duresme.room?.pw || 299)) * 51}/ปี (~฿{Math.round(((sc.room?.pw || 363) - (duresme.room?.pw || 299)) * 51 * r).toLocaleString()})
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          {(function() {
+            var jb = colAccom.find(function(c) { return c.name && c.name.includes("Josephine"); }) || {};
+            var jbRoom = (jb.rooms || []).find(function(rm) { return rm.wk <= 6; }) || (jb.rooms || [])[0] || {};
+            return (
+              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>🏨 Pre-sessional 6wk (3 ส.ค.-11 ก.ย.)</div>
+                <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 11 }}>
+                  <strong>{jb.name || "Josephine Butler College"}</strong>
+                  {jbRoom.type ? " · " + jbRoom.type : ""}
+                  {jbRoom.pw && jbRoom.wk ? " · £" + jbRoom.pw + "/wk × " + jbRoom.wk + "wk = £" + (jbRoom.pw * jbRoom.wk).toLocaleString() : ""}
+                  {jb.why && <div style={{ fontSize: 10, color: "#2E7D32", fontWeight: 700, marginTop: 3 }}>✅ {jb.why}</div>}
+                </div>
+              </div>
+            );
+          })()}
+
+          {accomRating.rows.length > 0 && (
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "#333", marginBottom: 8 }}>⚔️ เปรียบเทียบที่พัก</div>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ background: C.border }}>
+                      <td style={{ padding: "6px 8px", fontWeight: 700, color: C.sub }}></td>
+                      {accomRating.headers.map(function(h, hi) {
+                        return <td key={hi} style={{ padding: "6px 8px", fontWeight: 800, color: "#1a237e", textAlign: "center", whiteSpace: "nowrap" }}>{h}</td>;
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {accomRating.rows.map(function(row, ri) {
+                      return (
+                        <tr key={ri} style={{ borderBottom: "1px solid " + C.border }}>
+                          <td style={{ padding: "5px 8px", fontWeight: 600, color: C.sub, whiteSpace: "nowrap" }}>{row.label}</td>
+                          {row.vals.slice(0, accomRating.headers.length).map(function(v, vi) {
+                            var n = parseFloat(v);
+                            var isStar = !isNaN(n) && n >= 0 && n <= 5 && /^\d+\.?\d*$/.test(v.trim());
+                            return (
+                              <td key={vi} style={{ padding: "5px 8px", textAlign: "center" }}>
+                                {isStar ? <Stars val={n} /> : <span style={{ fontSize: 10, color: C.text }}>{v}</span>}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
 
           <div style={{ fontSize: 12, fontWeight: 800, color: C.text, padding: "4px 4px 2px" }}>
             🏠 Studio 51wk แนะนำ 3 อันดับ (แตะดูรายละเอียด)
@@ -1857,9 +1957,52 @@ export default function App() {
       {/* ── EXPENSE TRACKER ── */}
       {tab === "expense" && (
         <div>
+          {/* Sheet expenses from Google Sheets */}
+          {sheetExpenses.length > 0 && (function() {
+            var cats = [...new Set(sheetExpenses.map(function(e) { return e.cat; }).filter(Boolean))];
+            var total = sheetExpenses.reduce(function(a, e) { return a + (e.amount || 0); }, 0);
+            return (
+              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1B5E20" }}>📊 Google Sheets — รายจ่ายทั้งหมด</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: "#1B5E20" }}>£{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                </div>
+                {/* By category summary */}
+                {cats.map(function(cat) {
+                  var catTotal = sheetExpenses.filter(function(e) { return e.cat === cat; }).reduce(function(a, e) { return a + (e.amount || 0); }, 0);
+                  return (
+                    <div key={cat} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid " + C.border, fontSize: 10 }}>
+                      <span style={{ color: C.text }}>{cat || "อื่นๆ"}</span>
+                      <span style={{ fontWeight: 700, color: "#1a237e" }}>£{catTotal.toFixed(2)}</span>
+                    </div>
+                  );
+                })}
+                {/* Line items */}
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.sub, marginBottom: 6 }}>รายการล่าสุด</div>
+                  {sheetExpenses.slice(0, 10).map(function(e, ei) {
+                    return (
+                      <div key={ei} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: "1px solid " + C.border }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{e.item}</div>
+                          <div style={{ fontSize: 9, color: C.sub }}>{e.cat}{e.payment ? " · " + e.payment : ""}{e.date ? " · " + e.date : ""}</div>
+                          {e.note && <div style={{ fontSize: 9, color: C.sub, fontStyle: "italic" }}>{e.note}</div>}
+                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>£{(e.amount || 0).toFixed(2)}</div>
+                      </div>
+                    );
+                  })}
+                  {sheetExpenses.length > 10 && (
+                    <div style={{ fontSize: 9, color: C.sub, textAlign: "center", paddingTop: 6 }}>+ {sheetExpenses.length - 10} รายการ — เพิ่มใน Google Sheets</div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Add form */}
           <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>➕ บันทึกค่าใช้จ่าย</div>
+            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>➕ บันทึกค่าใช้จ่ายชั่วคราว (local)</div>
             <input
               value={expForm.desc}
               onChange={function(e) { setExpForm(function(f) { return { ...f, desc: e.target.value }; }); }}
