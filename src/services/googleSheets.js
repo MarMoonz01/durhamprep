@@ -196,6 +196,47 @@ function parseAccom(rows) {
 }
 
 /**
+ * Accommodation Full — returns ALL rooms (one entry per row), not just first per property.
+ * Used for the multi-select cost comparison tool.
+ */
+function parseAccomFull(rows) {
+  const results = [];
+  rows.forEach((r) => {
+    const propStr = String(r[0] || "").trim();
+    if (!propStr) return;
+    const lines = propStr.split("\n");
+    const propName = lines[0].trim();
+    const provider = (lines[1] || "").replace(/[()]/g, "").trim();
+    const pw = parseFloat(r[4]) || 0;
+    if (!pw) return;
+    const meta =
+      Object.entries(ACCOM_META).find(([k]) => propName.includes(k))?.[1] ||
+      { badge: "", color: "#333", bg: "#f8f8f8", addr: "" };
+    const dist = String(r[11] || "").replace(/\n/g, " ").trim();
+    const roomName = String(r[1] || "").trim();
+    results.push({
+      id: propName + " · " + roomName,
+      propName,
+      provider: provider || propName,
+      badge: meta.badge,
+      color: meta.color,
+      bg: meta.bg,
+      addr: meta.addr,
+      dist,
+      room: {
+        name: roomName,
+        size: r[2] ? `${r[2]}m²` : "",
+        bed: String(r[3] || ""),
+        pw,
+        wk: parseInt(r[5]) || 51,
+        dep: parseInt(r[10]) || 0,
+      },
+    });
+  });
+  return results;
+}
+
+/**
  * Vaccines — 💉 วัคซีน
  *
  * Col 0  #
@@ -760,6 +801,7 @@ export async function fetchAllData() {
 
   return {
     accom:           parseAccom(accomRows),
+    accomFull:       parseAccomFull(accomRows),
     colAccom:        parseCollegeAccom(collegeAccomRows),
     vaccines:        parseVaccines(vaccineRows),
     packing:         parsePacking(packingRows),

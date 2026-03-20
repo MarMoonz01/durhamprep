@@ -86,8 +86,11 @@ export default function App() {
   const [packSearch, setPackSearch] = useState('');
   const [shopSearch, setShopSearch] = useState('');
 
-  // Cost Calculator — selected accommodation
+  // Cost Calculator — selected accommodation (legacy single-select, unused in new UI)
   const [selectedAccomIdx, setSelectedAccomIdx] = useState(0);
+  // Multi-select cost comparison
+  const [accomFull, setAccomFull] = useState([]);
+  const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 
   // Navigation drawer
   const [showMore, setShowMore] = useState(false);
@@ -254,6 +257,7 @@ export default function App() {
     fetchAllData()
       .then(function (data) {
         if (data.accom.length) setAccom(data.accom);
+        if (data.accomFull && data.accomFull.length) setAccomFull(data.accomFull);
         if (data.colAccom && data.colAccom.length) setColAccom(data.colAccom);
         if (data.vaccines.length) setVaccines(data.vaccines);
         if (data.packing.length) setPacking(data.packing);
@@ -1114,7 +1118,18 @@ export default function App() {
                     <div>
                       <span style={{ background: a.color, color: "#fff", padding: "2px 8px", borderRadius: 10, fontSize: 9, fontWeight: 700 }}>{a.badge}</span>
                       <div style={{ fontSize: 14, fontWeight: 800, color: a.color, marginTop: 3 }}>{a.name}</div>
-                      <div style={{ fontSize: 10, color: C.sub }}>{a.provider} · {a.dist}</div>
+                      <div style={{ fontSize: 10, color: C.sub }}>
+                        {a.provider}
+                        {a.dist ? (
+                          <span> · <a
+                            href={"https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent((a.addr || a.name) + ", Durham, UK") + "&destination=Palatine+Centre+Stockton+Road+Durham+DH1+3LE&travelmode=walking"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "#1565C0", textDecoration: "none" }}
+                            onClick={function(e) { e.stopPropagation(); }}
+                          >🗺️ {a.dist}</a></span>
+                        ) : null}
+                      </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 18, fontWeight: 800, color: a.color }}>£{rm.pw}<span style={{ fontSize: 10, fontWeight: 400 }}>/wk</span></div>
@@ -1258,196 +1273,270 @@ export default function App() {
 
       {/* ── COST CALCULATOR ── */}
       {tab === "cost" && (function() {
-        var selA = accom[selectedAccomIdx] || accom[0] || {};
-        var studioPW = selA.room ? selA.room.pw : 299;
-        var studioWK = selA.room ? (selA.room.wk || 51) : 51;
-        var studioCost = studioPW * studioWK;
-        var studioLabel = (selA.name || "Studio") + " " + (selA.room ? selA.room.name : "") + " " + studioWK + "wk";
+        // All available rooms — fall back to accom (one room per property) if accomFull not yet loaded
+        var allRooms = accomFull.length > 0 ? accomFull : accom.map(function(a) {
+          return {
+            id: a.name + " · " + (a.room ? a.room.name : ""),
+            propName: a.name,
+            provider: a.provider,
+            badge: a.badge,
+            color: a.color,
+            bg: a.bg,
+            dist: a.dist,
+            addr: a.addr,
+            room: a.room || { pw: 0, wk: 51, dep: 0, name: "", size: "" },
+          };
+        });
 
-        // Fixed costs (all in GBP)
-        var COSTS = [
-          { c: "📚 ค่าเรียน", color: "#1a237e", items: [
-            { l: "Tuition LLM (หลังหัก Scholarship £5k)", v: 25500 },
-            { l: "Pre-sessional 6wk @ Josephine Butler", v: 3540 },
-            { l: "Scholarship (หัก)", v: -5000 },
-            { l: "Deposit (จ่ายไปแล้ว + หักจาก Tuition)", v: -2000 },
-          ]},
-          { c: "🏠 ค่าที่พัก", color: "#1B5E20", dynamic: true, items: [
-            { l: "Pre-sess 6wk (Josephine Butler En-Suite)", v: 1300 },
-            { l: studioLabel, v: studioCost, dynamic: true },
-            { l: "Deposit ที่พัก (" + (selA.name || "") + ")", v: selA.room ? (selA.room.dep || 0) : 0 },
-          ]},
-          { c: "🛂 ค่าวีซ่า+เอกสาร", color: "#C62828", items: [
-            { l: "Student Visa", v: 524 },
-            { l: "Health Surcharge IHS (6 เดือน)", v: 388 },
-            { l: "TB Test (IOM Bangkok)", v: 65 },
-          ]},
-          { c: "💉 วัคซีน", color: "#E65100", items: [
-            { l: "MenACWY + MenB (2 เข็ม) + MMR", v: 120 },
-          ]},
-          { c: "✈️ ตั๋วเครื่องบิน", color: "#4A148C", items: [
-            { l: "BKK → NCL (ขาไป, Emirates/Qatar)", v: 500 },
-            { l: "NCL → BKK (ขากลับ)", v: 450 },
-          ]},
-          { c: "🛒 ของเตรียมก่อนไป (ประมาณ)", color: "#0D47A1", items: [
-            { l: "UK Type G Adapter + Cable", v: 10 },
-            { l: "เสื้อกันหนาว + Waterproof jacket", v: 80 },
-            { l: "ของใช้ส่วนตัว + ยา", v: 30 },
-          ]},
-          { c: "🍽️ ค่าครองชีพ ~12 เดือน", color: "#1B5E20", items: [
-            { l: "อาหาร (ทำเองที่หอ เฉลี่ย £250/เดือน)", v: 3000 },
-            { l: "เดินทางในเมือง + Bus Pass", v: 300 },
-            { l: "หนังสือ + อุปกรณ์การเรียน", v: 300 },
-            { l: "สังสรรค์ + ท่องเที่ยว UK", v: 1200 },
-            { l: "เสื้อผ้า + ของใช้ระหว่างปี", v: 500 },
-            { l: "ค่า SIM UK 12 เดือน", v: 120 },
-          ]},
+        function toggleRoom(id) {
+          setSelectedRoomIds(function(prev) {
+            return prev.includes(id) ? prev.filter(function(x) { return x !== id; }) : prev.concat([id]);
+          });
+        }
+
+        // Fixed costs common to all options (GBP)
+        var FIXED_ROWS = [
+          { l: "📚 ค่าเรียน LLM + Pre-sess (หลัง scholarship & deposit)", v: 22040 },
+          { l: "🏡 Pre-sess Accom 6wk (Josephine Butler)", v: 1300 },
+          { l: "🛂 Student Visa + IHS + TB Test", v: 977 },
+          { l: "💉 วัคซีน (MenACWY + MenB + MMR)", v: 120 },
+          { l: "✈️ ตั๋วเครื่องบิน ไป+กลับ", v: 950 },
+          { l: "🛒 ของเตรียมก่อนไป", v: 120 },
+          { l: "🍽️ ค่าครองชีพ ~12 เดือน", v: 5420 },
         ];
+        var FIXED_TOTAL = FIXED_ROWS.reduce(function(a, x) { return a + x.v; }, 0);
 
-        var grandTotal = COSTS.reduce(function(a, cat) {
-          return a + cat.items.reduce(function(b, it) { return b + it.v; }, 0);
-        }, 0);
+        // Group allRooms by property for the selector UI
+        var propGroups = [];
+        allRooms.forEach(function(rm) {
+          var grp = propGroups.find(function(g) { return g.propName === rm.propName; });
+          if (!grp) {
+            grp = { propName: rm.propName, color: rm.color, bg: rm.bg, rooms: [] };
+            propGroups.push(grp);
+          }
+          grp.rooms.push(rm);
+        });
 
-        var cheapestAccom = accom.length > 0 ? accom.reduce(function(min, a) { return (a.room && a.room.pw < (min.room ? min.room.pw : 9999)) ? a : min; }, accom[0]) : null;
-        var mostExpensiveAccom = accom.length > 0 ? accom.reduce(function(max, a) { return (a.room && a.room.pw > (max.room ? max.room.pw : 0)) ? a : max; }, accom[0]) : null;
-        var cheapestTotal = cheapestAccom && cheapestAccom.room ? grandTotal - studioCost + (cheapestAccom.room.pw * (cheapestAccom.room.wk || 51)) : grandTotal;
-        var saving = grandTotal - cheapestTotal;
+        // Resolved selected room objects in selection order
+        var selectedRooms = selectedRoomIds.map(function(id) {
+          return allRooms.find(function(rm) { return rm.id === id; });
+        }).filter(Boolean);
 
         return (
           <div>
-            {/* Accom Selector */}
+            {/* Room selector */}
             <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>🏠 เลือกที่พัก Studio — งบเปลี่ยนทันที</div>
-              <div style={{ overflowX: "auto", display: "flex", gap: 6, paddingBottom: 6 }}>
-                {accom.map(function(a, i) {
-                  var sel = selectedAccomIdx === i;
-                  var pw = a.room ? a.room.pw : 0;
-                  var wk = a.room ? (a.room.wk || 51) : 51;
-                  return (
-                    <div
-                      key={i}
-                      onClick={function() { setSelectedAccomIdx(i); }}
-                      style={{
-                        flexShrink: 0, minWidth: 130, padding: "10px 10px", borderRadius: 10,
-                        border: "2px solid " + (sel ? a.color : C.border),
-                        background: sel ? a.bg : C.card,
-                        cursor: "pointer", transition: "all 0.2s",
-                      }}
-                    >
-                      <div style={{ fontSize: 8, fontWeight: 800, color: a.color, marginBottom: 2 }}>{a.badge}</div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: sel ? a.color : C.text, marginBottom: 4 }}>{a.name}</div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: a.color }}>£{pw}<span style={{ fontSize: 9, fontWeight: 400 }}>/wk</span></div>
-                      <div style={{ fontSize: 9, color: C.sub }}>× {wk}wk</div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: a.color }}>= £{(pw * wk).toLocaleString()}</div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 เลือกห้องที่ต้องการเปรียบเทียบ</div>
+              <div style={{ fontSize: 10, color: C.sub, marginBottom: 10 }}>กดเลือกได้หลายห้อง — ตารางด้านล่างจะแสดงต้นทุนรวมทุกอย่าง</div>
+              {propGroups.map(function(grp, gi) {
+                return (
+                  <div key={gi} style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: grp.color, marginBottom: 4 }}>{grp.propName}</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                      {grp.rooms.map(function(rm, ri) {
+                        var sel = selectedRoomIds.includes(rm.id);
+                        return (
+                          <div
+                            key={ri}
+                            onClick={function() { toggleRoom(rm.id); }}
+                            style={{
+                              padding: "5px 10px", borderRadius: 8, cursor: "pointer",
+                              border: "2px solid " + (sel ? grp.color : C.border),
+                              background: sel ? grp.bg : C.card,
+                              fontSize: 10, fontWeight: sel ? 700 : 400,
+                              color: sel ? grp.color : C.sub,
+                            }}
+                          >
+                            {rm.room.name || rm.propName} <strong>£{rm.room.pw}/wk</strong>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-              </div>
-              {selA.room && (
-                <div style={{ marginTop: 8, padding: "8px 12px", background: selA.bg || C.border, borderRadius: 8, borderLeft: "3px solid " + (selA.color || "#333") }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: selA.color }}>{selA.name} · {selA.room.name} · {selA.room.size}</div>
-                  <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>{selA.dist}</div>
+                  </div>
+                );
+              })}
+              {selectedRooms.length > 0 && (
+                <div style={{ marginTop: 8, display: "flex", justifyContent: "flex-end" }}>
+                  <div
+                    onClick={function() { setSelectedRoomIds([]); }}
+                    style={{ fontSize: 9, color: C.sub, cursor: "pointer", padding: "3px 8px", border: "1px solid " + C.border, borderRadius: 6 }}
+                  >
+                    ✕ ล้างทั้งหมด
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Cost Breakdown */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>💰 งบประมาณรวม</div>
-              {COSTS.map(function(cat, ci) {
-                var catTotal = cat.items.reduce(function(a, it) { return a + it.v; }, 0);
-                return (
-                  <div key={ci} style={{ marginBottom: 12 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: cat.color }}>{cat.c}</span>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: cat.color }}>£{catTotal.toLocaleString()}</span>
+            {/* Prompt when nothing selected */}
+            {selectedRooms.length === 0 && (
+              <div style={{ textAlign: "center", padding: "30px 20px", color: C.sub, fontSize: 11, background: C.card, borderRadius: 12, marginBottom: 8 }}>
+                ☝️ กดเลือกห้องด้านบนเพื่อดูเปรียบเทียบค่าใช้จ่ายทั้งหมด
+              </div>
+            )}
+
+            {/* Comparison table */}
+            {selectedRooms.length > 0 && (
+              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>📊 เปรียบเทียบต้นทุนรวมทั้งหมด</div>
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ borderCollapse: "collapse", fontSize: 10, width: "100%" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "6px 8px", textAlign: "left", background: C.border, fontWeight: 700, fontSize: 9, minWidth: 130 }}>รายการ</th>
+                        {selectedRooms.map(function(rm, ci) {
+                          return (
+                            <th key={ci} style={{ padding: "6px 8px", textAlign: "center", background: rm.bg, color: rm.color, fontWeight: 800, fontSize: 9, minWidth: 120, whiteSpace: "nowrap" }}>
+                              <div style={{ fontSize: 9 }}>{rm.propName}</div>
+                              <div style={{ fontSize: 8, opacity: 0.75 }}>{rm.room.name}</div>
+                              <div style={{ fontSize: 12, fontWeight: 800 }}>£{rm.room.pw}/wk</div>
+                              <div style={{ fontSize: 8, opacity: 0.75 }}>× {rm.room.wk}wk</div>
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Room cost */}
+                      <tr style={{ background: "#E8F5E9" }}>
+                        <td style={{ padding: "5px 8px", fontWeight: 700, fontSize: 9, color: "#1B5E20" }}>🏠 ค่าห้องรวม</td>
+                        {selectedRooms.map(function(rm, ci) {
+                          var roomTotal = rm.room.pw * rm.room.wk;
+                          return (
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#1B5E20", fontSize: 11 }}>
+                              £{roomTotal.toLocaleString()}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {/* Deposit */}
+                      <tr>
+                        <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>Deposit</td>
+                        {selectedRooms.map(function(rm, ci) {
+                          return (
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: rm.room.dep === 0 ? "#2E7D32" : C.text }}>
+                              {rm.room.dep === 0 ? "ไม่มี 🎉" : "£" + rm.room.dep}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {/* Fixed cost rows */}
+                      {FIXED_ROWS.map(function(fixRow, fi) {
+                        return (
+                          <tr key={fi} style={{ background: fi % 2 === 0 ? C.card : C.border + "44" }}>
+                            <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>{fixRow.l}</td>
+                            {selectedRooms.map(function(rm, ci) {
+                              return (
+                                <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: C.text }}>
+                                  £{fixRow.v.toLocaleString()}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                      {/* Grand Total GBP */}
+                      <tr style={{ borderTop: "2px solid #1a237e" }}>
+                        <td style={{ padding: "8px 8px", fontWeight: 800, fontSize: 10, color: "#1a237e" }}>💰 รวมทั้งหมด £</td>
+                        {selectedRooms.map(function(rm, ci) {
+                          var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
+                          return (
+                            <td key={ci} style={{ padding: "8px 8px", textAlign: "center", fontWeight: 800, fontSize: 13, color: "#C62828" }}>
+                              £{grand.toLocaleString()}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {/* Grand Total THB */}
+                      <tr style={{ background: "#FFF3E0" }}>
+                        <td style={{ padding: "5px 8px", fontWeight: 800, fontSize: 10, color: "#E65100" }}>฿ เงินไทย</td>
+                        {selectedRooms.map(function(rm, ci) {
+                          var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
+                          return (
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, fontSize: 11, color: "#E65100" }}>
+                              ฿{Math.round(grand * r).toLocaleString()}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {/* Per month */}
+                      <tr>
+                        <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>เฉลี่ย/เดือน ~14 เดือน</td>
+                        {selectedRooms.map(function(rm, ci) {
+                          var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
+                          return (
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: C.sub }}>
+                              ฿{Math.round(grand * r / 14).toLocaleString()}/เดือน
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Best option highlight */}
+                {selectedRooms.length > 1 && (function() {
+                  var cheapest = selectedRooms.reduce(function(min, rm) {
+                    return (FIXED_TOTAL + rm.room.pw * rm.room.wk + rm.room.dep) < (FIXED_TOTAL + min.room.pw * min.room.wk + min.room.dep) ? rm : min;
+                  }, selectedRooms[0]);
+                  var mostExp = selectedRooms.reduce(function(max, rm) {
+                    return (FIXED_TOTAL + rm.room.pw * rm.room.wk + rm.room.dep) > (FIXED_TOTAL + max.room.pw * max.room.wk + max.room.dep) ? rm : max;
+                  }, selectedRooms[0]);
+                  var saving = (FIXED_TOTAL + mostExp.room.pw * mostExp.room.wk + mostExp.room.dep) - (FIXED_TOTAL + cheapest.room.pw * cheapest.room.wk + cheapest.room.dep);
+                  return (
+                    <div style={{ marginTop: 10, padding: "8px 12px", background: "#E8F5E9", borderRadius: 8, borderLeft: "3px solid #2E7D32" }}>
+                      <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>✅ ถูกสุด: {cheapest.propName} — {cheapest.room.name || cheapest.propName}</div>
+                      <div style={{ fontSize: 10, color: "#2E7D32", marginTop: 2 }}>
+                        ประหยัดกว่าแพงสุดถึง <strong>£{saving.toLocaleString()} (~฿{Math.round(saving * r).toLocaleString()})</strong>
+                      </div>
                     </div>
-                    {cat.items.map(function(it, ii) {
-                      var isNeg = it.v < 0;
-                      var isDyn = it.dynamic;
-                      return (
-                        <div key={ii} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0 3px 8px", borderLeft: "2px solid " + (isDyn ? cat.color : C.border) }}>
-                          <span style={{ fontSize: 10, color: isDyn ? cat.color : C.sub, fontWeight: isDyn ? 700 : 400 }}>{it.l}</span>
-                          <span style={{ fontSize: 10, fontWeight: isDyn ? 800 : 600, color: isNeg ? "#2E7D32" : isDyn ? cat.color : C.text }}>
-                            {isNeg ? "-" : ""}£{Math.abs(it.v).toLocaleString()}
-                          </span>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* Monthly breakdown for first selected room */}
+            {selectedRooms.length > 0 && (function() {
+              var selA = selectedRooms[0];
+              var studioPW = selA.room.pw;
+              var studioWK = selA.room.wk || 51;
+              return (
+                <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 งบต่อเดือน — {selA.propName}</div>
+                  {[
+                    { l: "อาหาร", v: 250, note: "ทำเองที่ครัวหอ" },
+                    { l: "Studio rent", v: Math.round(studioPW * studioWK / 12), note: selA.propName },
+                    { l: "เดินทาง + Bus", v: 25, note: "Arriva bus pass" },
+                    { l: "หนังสือ + เรียน", v: 25, note: "เฉลี่ยตลอดปี" },
+                    { l: "สังสรรค์ + เที่ยว", v: 100, note: "UK weekends" },
+                    { l: "เสื้อผ้า + ของใช้", v: 42, note: "เฉลี่ยตลอดปี" },
+                    { l: "SIM + Internet", v: 10, note: "giffgaff/Three" },
+                  ].map(function(it, i, arr) {
+                    var monthlyTotal = arr.reduce(function(a, x) { return a + x.v; }, 0);
+                    var pct = (it.v / monthlyTotal * 100).toFixed(0);
+                    return (
+                      <div key={i} style={{ marginBottom: 8 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+                          <span style={{ fontSize: 10, color: C.text }}>{it.l} <span style={{ fontSize: 9, color: C.sub }}>— {it.note}</span></span>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>£{it.v}/เดือน</span>
                         </div>
-                      );
-                    })}
+                        <div style={{ background: C.border, borderRadius: 3, height: 6 }}>
+                          <div style={{ background: "#1a237e", borderRadius: 3, height: 6, width: pct + "%" }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div style={{ borderTop: "1px solid " + C.border, paddingTop: 8, marginTop: 4, display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวมต่อเดือน</span>
+                    <span style={{ fontSize: 12, fontWeight: 800, color: "#C62828" }}>
+                      £{(250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10).toLocaleString()}
+                      {" ≈ ฿"}
+                      {Math.round((250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10) * r).toLocaleString()}
+                    </span>
                   </div>
-                );
-              })}
-
-              {/* Grand Total */}
-              <div style={{ borderTop: "2px solid #1a237e", paddingTop: 10, marginTop: 4 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด</span>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 12, color: C.sub }}>เป็นเงินไทย (฿{r.toFixed(2)}/£)</span>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>฿{Math.round(grandTotal * r).toLocaleString()}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 10, color: C.sub }}>เฉลี่ย ~14 เดือน</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Savings vs cheapest */}
-            {saving > 0 && cheapestAccom && (
-              <div style={{ background: "#E8F5E9", borderRadius: 12, padding: 12, marginBottom: 8, borderLeft: "4px solid #2E7D32" }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>💡 ถ้าเลือก {cheapestAccom.name} แทน</div>
-                <div style={{ fontSize: 10, color: "#2E7D32", marginTop: 4 }}>
-                  ประหยัดได้ <strong>£{saving.toLocaleString()} (~฿{Math.round(saving * r).toLocaleString()})</strong> ตลอดปี
-                </div>
-              </div>
-            )}
-            {saving < 0 && cheapestAccom && (
-              <div style={{ background: "#FFF3E0", borderRadius: 12, padding: 12, marginBottom: 8, borderLeft: "4px solid #E65100" }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#E65100" }}>📊 เทียบกับที่พักถูกสุด ({cheapestAccom.name})</div>
-                <div style={{ fontSize: 10, color: "#E65100", marginTop: 4 }}>
-                  แพงกว่า <strong>£{Math.abs(saving).toLocaleString()} (~฿{Math.round(Math.abs(saving) * r).toLocaleString()})</strong> ตลอดปี
-                </div>
-              </div>
-            )}
-
-            {/* Monthly living breakdown */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 งบต่อเดือน (ค่าครองชีพ)</div>
-              {[
-                { l: "อาหาร", v: 250, note: "ทำเองที่ครัวหอ" },
-                { l: "Studio rent", v: Math.round(studioPW * studioWK / 12), note: selA.name || "ค่าหอ" },
-                { l: "เดินทาง + Bus", v: 25, note: "Arriva bus pass" },
-                { l: "หนังสือ + เรียน", v: 25, note: "เฉลี่ยตลอดปี" },
-                { l: "สังสรรค์ + เที่ยว", v: 100, note: "UK weekends" },
-                { l: "เสื้อผ้า + ของใช้", v: 42, note: "เฉลี่ยตลอดปี" },
-                { l: "SIM + Internet", v: 10, note: "giffgaff/Three" },
-              ].map(function(it, i, arr) {
-                var monthlyTotal = arr.reduce(function(a, x) { return a + x.v; }, 0);
-                var pct = (it.v / monthlyTotal * 100).toFixed(0);
-                return (
-                  <div key={i} style={{ marginBottom: 8 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                      <span style={{ fontSize: 10, color: C.text }}>{it.l} <span style={{ fontSize: 9, color: C.sub }}>— {it.note}</span></span>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>£{it.v}/เดือน</span>
-                    </div>
-                    <div style={{ background: C.border, borderRadius: 3, height: 6 }}>
-                      <div style={{ background: "#1a237e", borderRadius: 3, height: 6, width: pct + "%" }} />
-                    </div>
-                  </div>
-                );
-              })}
-              <div style={{ borderTop: "1px solid " + C.border, paddingTop: 8, marginTop: 4, display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวมต่อเดือน</span>
-                <span style={{ fontSize: 12, fontWeight: 800, color: "#C62828" }}>
-                  £{(250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10).toLocaleString()}
-                  {" ≈ ฿"}
-                  {Math.round((250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10) * r).toLocaleString()}
-                </span>
-              </div>
-            </div>
+              );
+            })()}
           </div>
         );
       })()}
