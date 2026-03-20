@@ -48,6 +48,7 @@ export default function App() {
     return h || "home";
   });
   const [openA, setOpenA] = useState(-1);
+  const [accomQuiz, setAccomQuiz] = useState({ budget: null, priority: null, deposit: null });
   const [rate, setRate] = useState(44);
   const [openIntro, setOpenIntro] = useState(0);
   const [openShop, setOpenShop] = useState(0);
@@ -2315,19 +2316,154 @@ export default function App() {
             </div>
           </div>
 
-          {/* ── Accommodation Recommendation ── */}
-          {decision.accomRec && (
-            <div style={{ background:decision.accomRec.bg, border:"2px solid "+decision.accomRec.color, borderRadius:12, padding:14, marginBottom:8 }}>
-              <div style={{ fontSize:9, fontWeight:800, color:decision.accomRec.color, letterSpacing:0.5, marginBottom:4 }}>{decision.accomRec.badge}</div>
-              <div style={{ fontSize:14, fontWeight:800, color:decision.accomRec.color }}>{decision.accomRec.name}</div>
-              <div style={{ fontSize:10, color:C.sub, marginBottom:4 }}>{decision.accomRec.sub}</div>
-              <div style={{ fontSize:11, color:C.text, lineHeight:1.6 }}>{decision.accomRec.reason}</div>
-              <button onClick={function(){setTab('accom');setShowMore(false);}}
-                style={{ marginTop:10, padding:"7px 18px", background:decision.accomRec.color, color:"#fff", border:"none", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer" }}>
-                ดูรายละเอียดที่พัก →
-              </button>
+          {/* ── Accommodation Quiz ── */}
+          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 ช่วยเลือกที่พัก</div>
+            <div style={{ fontSize: 10, color: C.sub, marginBottom: 14 }}>ตอบ 3 คำถาม → ได้ Top 3 แนะนำจากข้อมูลจริง</div>
+
+            {/* Q1: Budget */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>1. งบต่อสัปดาห์?</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                {[
+                  ['low',   '≤ £270',    'ถูกที่สุด'],
+                  ['mid',   '£271–300',  'กลางๆ คุ้มค่า'],
+                  ['high',  '£301–360',  'สบายขึ้นหน่อย'],
+                  ['any',   'ไม่จำกัด',  'Facilities ก่อน'],
+                ].map(function(x) {
+                  var sel = accomQuiz.budget === x[0];
+                  return (
+                    <button key={x[0]} onClick={function(){ setAccomQuiz(function(q){ return {...q, budget: x[0]}; }); }}
+                      style={{ padding:"9px 8px", border:"2px solid "+(sel?"#1a237e":C.border), borderRadius:8,
+                        background: sel?"#1a237e":C.bg, color: sel?"#fff":C.text, cursor:"pointer", textAlign:"left" }}>
+                      <div style={{ fontSize:12, fontWeight:800 }}>{x[1]}</div>
+                      <div style={{ fontSize:9, opacity:0.75 }}>{x[2]}</div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          )}
+
+            {/* Q2: Top priority */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>2. สิ่งสำคัญที่สุด?</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                {[
+                  ['distance',   '📍 ใกล้ Law School', 'เดินถึงเร็ว'],
+                  ['facilities', '🏋️ Facilities ครบ',  'Gym, Cinema'],
+                  ['price',      '💰 ราคาถูกสุด',       'ประหยัดก่อน'],
+                  ['safety',     '🔒 ความปลอดภัย',      '24h Security'],
+                ].map(function(x) {
+                  var sel = accomQuiz.priority === x[0];
+                  return (
+                    <button key={x[0]} onClick={function(){ setAccomQuiz(function(q){ return {...q, priority: x[0]}; }); }}
+                      style={{ padding:"9px 8px", border:"2px solid "+(sel?"#1a237e":C.border), borderRadius:8,
+                        background: sel?"#1a237e":C.bg, color: sel?"#fff":C.text, cursor:"pointer", textAlign:"left" }}>
+                      <div style={{ fontSize:12, fontWeight:800 }}>{x[1]}</div>
+                      <div style={{ fontSize:9, opacity:0.75 }}>{x[2]}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Q3: Deposit */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>3. Deposit?</div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {[
+                  ['no', '❌ ไม่อยากจ่าย', 'Student Castle = £0'],
+                  ['ok', '✅ Deposit ได้',  'ยอมรับได้'],
+                ].map(function(x) {
+                  var sel = accomQuiz.deposit === x[0];
+                  return (
+                    <button key={x[0]} onClick={function(){ setAccomQuiz(function(q){ return {...q, deposit: x[0]}; }); }}
+                      style={{ flex:1, padding:"9px 8px", border:"2px solid "+(sel?"#1a237e":C.border), borderRadius:8,
+                        background: sel?"#1a237e":C.bg, color: sel?"#fff":C.text, cursor:"pointer", textAlign:"left" }}>
+                      <div style={{ fontSize:12, fontWeight:800 }}>{x[1]}</div>
+                      <div style={{ fontSize:9, opacity:0.75 }}>{x[2]}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Results */}
+            {accomQuiz.budget && accomQuiz.priority && accomQuiz.deposit && (function() {
+              var scored = accom.map(function(a) {
+                var pw = a.room ? a.room.pw : 999;
+                var score = 0;
+
+                // Budget score (0–40)
+                if (accomQuiz.budget === 'low')  score += Math.max(0, 40 - Math.max(0, pw - 270) * 2);
+                else if (accomQuiz.budget === 'mid')  score += Math.max(0, 40 - Math.abs(pw - 285) * 2);
+                else if (accomQuiz.budget === 'high') score += Math.max(0, 40 - Math.abs(pw - 330) * 1.5);
+                else score += 30;
+
+                // Priority score (0–40)
+                var distStr = String(a.dist || '');
+                var mins = parseInt((distStr.match(/(\d+)\s*min/) || [])[1] || '60');
+                var fac = ((a.facilities || []).concat(a.roomHas || [])).join(' ').toLowerCase();
+                if (accomQuiz.priority === 'distance')   score += Math.max(0, 40 - mins * 1.5);
+                else if (accomQuiz.priority === 'facilities') {
+                  if (fac.includes('gym'))   score += 15;
+                  if (fac.includes('cinema') || fac.includes('film')) score += 15;
+                  if (fac.includes('pool')   || fac.includes('lounge')) score += 10;
+                }
+                else if (accomQuiz.priority === 'price')  score += Math.max(0, 40 - (pw - 250) * 0.8);
+                else if (accomQuiz.priority === 'safety')  score += Math.min(40, (a.security || []).length * 12);
+
+                // Deposit score (0–20)
+                var dep = a.room ? (a.room.dep || 0) : 999;
+                if (accomQuiz.deposit === 'no' && dep === 0) score += 20;
+                else if (accomQuiz.deposit === 'ok') score += 10;
+                else score += Math.max(0, 10 - dep / 50);
+
+                return Object.assign({}, a, { _score: Math.round(score) });
+              }).sort(function(a, b) { return b._score - a._score; });
+
+              var maxScore = scored[0] ? scored[0]._score : 1;
+
+              return (
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🏆 ผลแนะนำ — เรียงตามความเหมาะสม</div>
+                  {scored.slice(0, 3).map(function(a, i) {
+                    var pct = Math.round((a._score / maxScore) * 100);
+                    return (
+                      <div key={i} style={{ background: i === 0 ? a.bg : C.bg, borderRadius: 10, padding: 10, marginBottom: 6,
+                        border: "2px solid " + (i === 0 ? a.color : C.border) }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                          <div style={{ flex: 1 }}>
+                            {i === 0 && <span style={{ fontSize: 9, background: a.color, color: "#fff", padding: "1px 7px", borderRadius: 8, marginBottom: 4, display: "inline-block" }}>🏆 แนะนำที่สุด</span>}
+                            <div style={{ fontSize: 13, fontWeight: 800, color: a.color, marginTop: i === 0 ? 3 : 0 }}>{a.name}</div>
+                            <div style={{ fontSize: 9, color: C.sub }}>£{a.room ? a.room.pw : '?'}/wk · {a.dist || '–'}</div>
+                          </div>
+                          <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 8 }}>
+                            <div style={{ fontSize: 20, fontWeight: 800, color: a.color }}>{pct}%</div>
+                            <div style={{ fontSize: 8, color: C.sub }}>match</div>
+                          </div>
+                        </div>
+                        <div style={{ background: C.border, borderRadius: 4, height: 6 }}>
+                          <div style={{ background: a.color, borderRadius: 4, height: 6, width: pct + "%", transition: "width 0.5s" }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <button onClick={function(){ setTab('accom'); setShowMore(false); }}
+                    style={{ width: "100%", padding: "9px", marginTop: 4, borderRadius: 8, border: "none", background: "#1a237e", color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    ดูรายละเอียดที่พักทั้งหมด →
+                  </button>
+                </div>
+              );
+            })()}
+
+            {(accomQuiz.budget || accomQuiz.priority || accomQuiz.deposit) && (
+              <button onClick={function(){ setAccomQuiz({ budget: null, priority: null, deposit: null }); }}
+                style={{ marginTop: 10, fontSize: 9, color: C.sub, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                เริ่มใหม่
+              </button>
+            )}
+          </div>
 
           {/* ── Financial Status ── */}
           {(function(){
