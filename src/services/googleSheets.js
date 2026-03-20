@@ -363,19 +363,37 @@ function parseTimeline(rows) {
   rows.forEach((r) => {
     const col0 = String(r[0] || "").trim();
     const col1 = String(r[1] || "").trim();
-    // Section header: col0 empty and col1 contains "📅"
-    if (!col0 && col1.includes("📅")) {
-      current = { month: col1.trim(), tasks: [] };
+
+    // Header: col0 contains "📅" (new structure) OR col0 empty + col1 contains "📅" (old)
+    if (col0.includes("📅") || (!col0 && col1.includes("📅"))) {
+      const monthLabel = col0.includes("📅") ? col0 : col1;
+      current = { month: monthLabel.trim(), tasks: [] };
       months.push(current);
-    } else if (col0 && !isNaN(parseFloat(col0)) && current) {
-      // Task row: col0 is a number
-      current.tasks.push({
-        item:   String(r[2] || "").trim(),
-        cat:    String(r[3] || "").trim(),
-        imp:    String(r[4] || "").trim(),
-        status: String(r[5] || "").trim(),
-        note:   String(r[6] || "").trim(),
-      });
+      return;
+    }
+
+    if (current) {
+      const col2 = String(r[2] || "").trim();
+      const isOldFormat = !isNaN(parseFloat(col0)) && col2;
+      const isNewFormat = col0 && col1 && !col0.includes("📅") && !col0.includes("เดือน");
+
+      if (isOldFormat) {
+        current.tasks.push({
+          item:   col2,
+          cat:    String(r[3] || "").trim(),
+          imp:    String(r[4] || "").trim(),
+          status: String(r[5] || "").trim(),
+          note:   String(r[6] || "").trim(),
+        });
+      } else if (isNewFormat) {
+        current.tasks.push({
+          item:   col1,
+          cat:    col2,
+          imp:    String(r[3] || "").trim(),
+          status: String(r[4] || "").trim(),
+          note:   String(r[5] || "").trim(),
+        });
+      }
     }
   });
   return months;
@@ -606,7 +624,14 @@ function parseCollegeAccom(rows) {
  */
 function parsePriceComparison(rows) {
   return rows
-    .filter((r) => r[0] || r[1])
+    .filter((r) => {
+      const col0 = String(r[0] || "").trim();
+      const col1 = String(r[1] || "").trim();
+      if (!col0 && !col1) return false;
+      if (col0.includes("เปรียบเทียบ")) return false; // title row
+      if (col0 === "ที่พัก" && col1 === "ชื่อห้อง") return false; // header row
+      return true;
+    })
     .map((r) => ({
       provider: String(r[0] || "").trim(),
       room:     String(r[1] || "").trim(),
@@ -630,14 +655,29 @@ function parsePriceComparison(rows) {
 function parseAccomRating(rows) {
   const filtered = rows.filter((r) => r[0]);
   if (!filtered.length) return { headers: [], rows: [] };
-  const [headerRow, ...dataRows] = filtered;
+
+  // Find first row where col1 has a value — that's the actual header row
+  let headerIdx = 0;
+  for (let i = 0; i < filtered.length; i++) {
+    if (String(filtered[i][1] || "").trim()) { headerIdx = i; break; }
+  }
+
+  const headerRow = filtered[headerIdx];
+  const dataRows = filtered.slice(headerIdx + 1);
+
+  // Filter out separator rows (e.g. "═══ ข้อมูลพื้นฐาน ═══")
+  const cleanData = dataRows.filter((r) => {
+    const label = String(r[0] || "").trim();
+    return label && !label.startsWith("═");
+  });
+
   return {
     headers: [
       String(headerRow[1] || "").trim(),
       String(headerRow[2] || "").trim(),
       String(headerRow[3] || "").trim(),
     ].filter(Boolean),
-    rows: dataRows.map((r) => ({
+    rows: cleanData.map((r) => ({
       label: String(r[0] || "").trim(),
       vals: [
         String(r[1] || "").trim(),
@@ -661,7 +701,12 @@ function parseAccomRating(rows) {
  */
 function parseExpenseTracker(rows) {
   return rows
-    .filter((r) => r[1])
+    .filter((r) => {
+      const col1 = String(r[1] || "").trim();
+      if (!col1) return false;
+      if (col1 === "รายการ") return false; // skip header row
+      return true;
+    })
     .map((r) => ({
       date:    normalizeDate(r[0]),
       item:    String(r[1] || "").trim(),

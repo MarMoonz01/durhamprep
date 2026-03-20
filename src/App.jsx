@@ -132,11 +132,11 @@ export default function App() {
     if (pref === 'social')
       accomRec = { name:'College Accommodation', sub:'Josephine Butler / Ustinov College', reason:'Community events, social life, ถูกกว่า private — เหมาะคนชอบเจอผู้คน', badge:'👥 SOCIAL PICK', color:'#1565C0', bg:'#E3F2FD', tab:'accom' };
     else if (pref === 'privacy' && budget >= 350)
-      accomRec = { name:'Student Castle — Bellamy Studio', sub:'£363/wk · 20 Claypath', reason:'Facilities ดีสุด 24/7 Gym + Cinema ใกล้กลางเมือง ห้องส่วนตัวสมบูรณ์แบบ', badge:'🎬 BEST FACILITIES', color:'#6A1B9A', bg:'#F3E5F5', tab:'accom' };
+      accomRec = { name:'Student Castle — Bellamy Studio', sub:'£360/wk via uhomes · 20 Claypath', reason:'Facilities ดีสุด 24/7 Gym + Cinema ใกล้กลางเมือง ห้องส่วนตัวสมบูรณ์แบบ No Deposit!', badge:'🎬 BEST FACILITIES', color:'#6A1B9A', bg:'#F3E5F5', tab:'accom' };
     else if (budget > 0 && budget < 270)
-      accomRec = { name:'St Giles Studios — Standard Studio', sub:'£265/wk · 110 Gilesgate', reason:'ราคาถูกที่สุด King-size bed ประหยัดได้ ~£1,700/ปีเมื่อเทียบ Duresme', badge:'💰 BEST VALUE', color:'#0D47A1', bg:'#E8EAF6', tab:'accom' };
+      accomRec = { name:'St Giles Studios — Standard Studio', sub:'£255/wk via uhomes · 110 Gilesgate', reason:'ราคาถูกที่สุด King-size bed ประหยัดได้ ~£1,734/ปีเมื่อเทียบ Duresme', badge:'💰 BEST VALUE', color:'#0D47A1', bg:'#E8EAF6', tab:'accom' };
     else
-      accomRec = { name:'Duresme Court — Classic Studio', sub:'£299/wk · Newcastle Road', reason:'ใกล้ Law School มากที่สุด ส่วนตัว คุ้มค่า รีวิว 4.8 — สมดุลที่สุด', badge:'🏆 BEST PICK', color:'#1B5E20', bg:'#E8F5E9', tab:'accom' };
+      accomRec = { name:'Duresme Court — Classic Studio', sub:'£289/wk via uhomes · Newcastle Road', reason:'ใกล้ Law School มากที่สุด ส่วนตัว คุ้มค่า รีวิว 4.8 — สมดุลที่สุด', badge:'🏆 BEST PICK', color:'#1B5E20', bg:'#E8F5E9', tab:'accom' };
 
     return { ielts, accomRec, overall, hasIELTS, minComp, weak, meetsDurham, L, R, W, S };
   }
@@ -1468,7 +1468,7 @@ export default function App() {
             <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>💰 งบประมาณรวมทั้งหมด (ประมาณ)</div>
             {[
               { c: "ค่าเรียน", items: [["Tuition LLM (หลังหัก Scholarship £5k)", "£25,500"], ["Pre-sessional 6wk", "£3,540"], ["Deposit (หักจาก Tuition แล้ว)", "-£2,000"]] },
-              { c: "ค่าที่พัก", items: [["Pre-sess 6wk (Josephine Butler)", "~£1,300"], ["Studio 51wk (Duresme Court Classic ⭐)", "£15,249"], ["หรือ Studio 51wk (Student Castle Bellamy)", "£18,513"]] },
+              { c: "ค่าที่พัก", items: [["Pre-sess 6wk (Josephine Butler)", "~£1,300"], ["Studio 51wk (Duresme Court Classic ⭐)", "£14,739"], ["หรือ Studio 51wk (Student Castle Bellamy)", "£18,360"]] },
               { c: "ค่าวีซ่า+เอกสาร", items: [["Student Visa", "£524"], ["Health Surcharge (IHS) 6 เดือน", "£388"], ["TB Test", "~£65 (฿3,800)"]] },
               { c: "วัคซีน", items: [["MenACWY + MenB + MMR", "~£120 (฿5,000-8,000)"]] },
               { c: "ตั๋วเครื่องบิน", items: [["BKK → NCL (เที่ยวเดียว)", "~£500"], ["กลับ NCL → BKK", "~£450"]] },
@@ -1489,9 +1489,9 @@ export default function App() {
               );
             })}
             <div style={{ borderTop: "2px solid #1a237e", paddingTop: 8, marginTop: 4 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span><span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£50,936</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span><span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(50936 * r).toLocaleString()}</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}><span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~14 เดือน)</span><span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(50936 * r / 14).toLocaleString()}/เดือน</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span><span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£45,676</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span><span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(45676 * r).toLocaleString()}</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}><span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~14 เดือน)</span><span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(45676 * r / 14).toLocaleString()}/เดือน</span></div>
             </div>
           </div>
 
@@ -1550,6 +1550,7 @@ export default function App() {
               <strong>ค่าแรงขั้นต่ำ UK:</strong> ~£12/ชม. (อายุ 21+) ≈ ฿528/ชม.<br /><br />
               <strong>🎓 หลังจบ LLM:</strong><br />
               <strong>Graduate Route Visa</strong> — อยู่ทำงานใน UK ได้ 2 ปี หลังจบ! ไม่ต้องมี sponsor<br />
+              <span style={{ color: "#C62828", fontWeight: 700 }}>⚠️ รัฐบาล UK อาจลดเหลือ 18 เดือน — ติดตามข่าวก่อนสมัคร</span><br />
               <strong>สมัครได้ตอน:</strong> ก่อน Student Visa หมดอายุ ค่าสมัคร ~£822 + IHS<br />
               <strong>ทำงานได้:</strong> ทุกประเภท ไม่จำกัดชั่วโมง ไม่ต้องมี employer sponsor
             </div>
@@ -2550,7 +2551,7 @@ export default function App() {
       )}
 
       <div style={{ textAlign: "center", marginTop: 12, fontSize: 9, color: C.sub }}>
-        ข้อมูล ณ 18 มี.ค. 2026 · อัตราแลกเปลี่ยนอาจเปลี่ยนแปลง
+        ข้อมูล ณ 20 มี.ค. 2026 · อัตราแลกเปลี่ยนอาจเปลี่ยนแปลง
         {sheetsStatus === "ok" && " · Live จาก Google Sheets"}
       </div>
 

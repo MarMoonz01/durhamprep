@@ -64,7 +64,7 @@ export const defaultCollegeAccom = [
 export const defaultAccom = [
   {name:"Duresme Court",badge:"🏆 BEST PICK",color:"#1B5E20",bg:"#E8F5E9",provider:"Prestige Student Living",addr:"Newcastle Road, DH1 4FA",dist:"~15 นาทีเดิน ผ่าน Potters Bank → Palatine Centre",rating:"4.8/5",
    stars:{location:4.5,clean:5,facilities:4,value:4.5,safety:4.5},
-   room:{name:"Classic Studio",size:"19m²",bed:"¾ bed",pw:299,wk:51,dep:250},
+   room:{name:"Classic Studio",size:"19m²",bed:"¾ bed",pw:289,wk:51,dep:250},
    roomHas:["เตียง ¾ พร้อมที่นอน","ห้องน้ำ en-suite (ฝักบัว+อ่างล้างหน้า+ชักโครก)","ครัวส่วนตัว: ตู้เย็น, ไมโครเวฟ, เตาไฟฟ้า, เคาน์เตอร์","โต๊ะเรียน+เก้าอี้","ตู้เสื้อผ้า+ที่เก็บของ","กระจก","พื้นที่ dining","WiFi 100Mbps","Bills รวมทุกอย่าง (น้ำ ไฟ แก๊ส WiFi ประกัน)"],
    facilities:["Gym","Cinema lounge","Cookhouse (ครัวส่วนกลางใหญ่)","Study room","Courtyard","Private dining room","Pool table + Foosball","Parking (เสียเพิ่ม) + EV charging","Laundry"],
    security:["CCTV ทั่วอาคาร","Secure door entry (Fob)","Onsite staff","ANUK Accredited"],
@@ -72,7 +72,7 @@ export const defaultAccom = [
    cons:["เตียง ¾ ไม่ใช่ Double (แคบกว่านิดหน่อย)","ห้อง 19m² ไม่ใหญ่มาก","ต้องเดินขึ้นเนิน (Durham เป็นเมืองเขา)","Deposit £250","ไม่มี short stay ช่วง Pre-sessional"]},
   {name:"St Giles Studios",badge:"💰 BEST VALUE",color:"#0D47A1",bg:"#E3F2FD",provider:"Prestige Student Living",addr:"110 Gilesgate, DH1 1JA",dist:"~25-30 นาทีเดิน / bus ~15 นาที",rating:"4.6/5",
    stars:{location:3,clean:4.5,facilities:3,value:5,safety:4.5},
-   room:{name:"Standard Studio",size:"-",bed:"King-size",pw:265,wk:51,dep:150},
+   room:{name:"Standard Studio",size:"-",bed:"King-size",pw:255,wk:51,dep:150},
    roomHas:["King-size bed (ใหญ่สุดในทุกหอ!)","ห้องน้ำ en-suite","ครัวส่วนตัว: ตู้เย็น, ไมโครเวฟ, เตาไฟฟ้า","โต๊ะเรียน+เก้าอี้","ตู้เสื้อผ้า+กระจก+ที่เก็บของ","WiFi","Bills รวมทุกอย่าง"],
    facilities:["Study room / Dining room (ใช้ร่วม)","Courtyard สวย","Laundry","Bike storage","Parking (เสียเพิ่ม)"],
    security:["CCTV","24/7 security","Gated community (ประตูรั้วปิด)","Secure fob entry"],
@@ -80,12 +80,12 @@ export const defaultAccom = [
    cons:["ไกล Law School ต้องนั่ง bus หรือเดิน 30 นาที","ไม่มี Gym / Cinema","Facilities ส่วนกลางน้อย","อยู่ Gilesgate ค่อนข้างไกลเมือง"]},
   {name:"Student Castle",badge:"🎬 BEST FACILITIES",color:"#6A1B9A",bg:"#F3E5F5",provider:"Student Castle",addr:"20 Claypath, DH1 1RH",dist:"~15 นาทีเดิน จาก Claypath → Palatine Centre",rating:"4.8/5",
    stars:{location:5,clean:4.5,facilities:5,value:3.5,safety:5},
-   room:{name:"Bellamy Studio",size:"19m²",bed:"Double",pw:363,wk:51,dep:300},
+   room:{name:"Bellamy Studio",size:"19m²",bed:"Double",pw:360,wk:51,dep:0},
    roomHas:["Double bed (เตียงใหญ่นอนสบาย)","ห้องน้ำ en-suite (ฝักบัว+อ่าง+ชักโครก)","ครัวส่วนตัว: ตู้เย็น, ไมโครเวฟ, เตาไฟฟ้า, เคาน์เตอร์","โต๊ะเรียน+เก้าอี้","ตู้เสื้อผ้า+ที่เก็บของ","TV จอแบน","WiFi 100Mbps","Bills รวมทุกอย่าง"],
    facilities:["Gym 24/7 (เปิดตลอด!)","Cinema 45 ที่นั่ง (ใหญ่สุด!)","Study room + Meeting room","Café area + ครัวส่วนกลาง","Game room (Pool table, PlayStation)","Outdoor courtyard","Free cycle hire (ยืมจักรยานฟรี!)","Laundry","Bike storage"],
    security:["CCTV ทั่วอาคาร","Security doors (Fob)","24/7 staff ตลอด 24 ชม.","National Code Accredited"],
-   pros:["Facilities ดีที่สุดใน Durham! Cinema 45 ที่นั่ง","Gym 24/7 + Free bike!","ห้อง 19m² ขนาดเท่า Duresme Classic","ทำเลกลางเมือง Claypath ใกล้ทุกอย่าง","ใกล้ Tesco + ร้านอาหาร + สถานีรถบัส","ใกล้ Law School ~15 นาทีเดิน","รีวิว 4.8 'best apartment in Durham'"],
-   cons:["แพงกว่า Duresme ~£64/wk (~£3,264/ปี)","Deposit £300","เหลือห้องน้อยมาก Only 1 left!","อาจมีเสียงดังจากกลางเมือง"]},
+   pros:["Facilities ดีที่สุดใน Durham! Cinema 45 ที่นั่ง","Gym 24/7 + Free bike!","ห้อง 19m² ขนาดเท่า Duresme Classic","ทำเลกลางเมือง Claypath ใกล้ทุกอย่าง","ใกล้ Tesco + ร้านอาหาร + สถานีรถบัส","ใกล้ Law School ~15 นาทีเดิน","รีวิว 4.8 'best apartment in Durham'","No Deposit via uhomes (direct = £300)","Turner Ensuite จาก £310/wk — ตัวเลือก budget ที่สุด"],
+   cons:["แพงกว่า Duresme ~£71/wk (~£3,621/ปี)","เหลือห้องน้อยมาก Only 1 left!","อาจมีเสียงดังจากกลางเมือง"]},
 ];
 
 export const defaultVaccines = [
@@ -98,7 +98,7 @@ export const defaultVaccines = [
 ];
 
 export const defaultPacking = [
-  {c:"📄 เอกสาร (ห้ามลืม!)",i:["Passport+สำเนา 3 ชุด","Visa/BRP Letter","CAS print 2 ชุด","Offer Letter print 2 ชุด","IELTS Certificate ตัวจริง","TB Certificate ตัวจริง","Bank Statement","ประกันเดินทาง","สูติบัตร+แปล EN","รูปถ่าย 2 นิ้ว 6 รูป","สมุดวัคซีน","Transcript+ปริญญาบัตร"]},
+  {c:"📄 เอกสาร (ห้ามลืม!)",i:["Passport+สำเนา 3 ชุด","Visa Decision Letter (e-Visa)","CAS print 2 ชุด","Offer Letter print 2 ชุด","IELTS Certificate ตัวจริง","TB Certificate ตัวจริง","Bank Statement","ประกันเดินทาง","สูติบัตร+แปล EN","รูปถ่าย 2 นิ้ว 6 รูป","สมุดวัคซีน","Transcript+ปริญญาบัตร"]},
   {c:"💻 อุปกรณ์การเรียน",i:["Laptop+Charger+Adapter UK","หูฟัง Noise-cancelling","USB/External HDD","เมาส์ไร้สาย","iPad+Pencil (จด lecture)","ปากกา+สมุดโน้ต+Highlighters","กระเป๋าเป้ใส่ laptop","Power Bank+สาย charge"]},
   {c:"🔌 ไฟฟ้า",i:["UK Adapter Type G (3+ อัน!)","ปลั๊กพ่วง universal","หม้อหุงข้าว mini (ซื้อ UK ก็ได้)"]},
   {c:"🧥 เสื้อผ้า (Durham หนาวมาก!)",i:["Parka/Down jacket กันน้ำ!","Hoodie/Fleece 3-4 ตัว","กางเกงขายาว 4-5 ตัว","เสื้อยืด/เชิ้ต 5-7 ตัว","ชุดสูท 1 ชุด (Formal/Moot court)","รองเท้ากันน้ำ/บูท (สำคัญมาก!)","ถุงเท้าหนา+ผ้าพันคอ+หมวก+ถุงมือ","ร่มพับได้"]},
@@ -148,7 +148,7 @@ export const defaultTimeline = [
     { item: "จ่าย IHS Online (£388)", cat: "📄 เอกสาร", status: "⏳", imp: "🟠", note: "Healthcare surcharge — ชำระออนไลน์ก่อนยื่น visa" },
   ]},
   { month: "📅 พ.ค. 2026", tasks: [
-    { item: "ตรวจ TB Test ที่ IOM Thailand (฿3,800)", cat: "🏥 สุขภาพ", status: "⏳", imp: "🔴", note: "IOM Bangkok: อาคาร Sindhorn ชั้น 20 — ผลออก ~1 สัปดาห์" },
+    { item: "ตรวจ TB Test ที่ IOM Thailand (฿3,800)", cat: "🏥 สุขภาพ", status: "⏳", imp: "🔴", note: "IOM Bangkok: อาคารเกษมกิจ ชั้น 8 สีลม — ผลออก ~1 สัปดาห์" },
     { item: "ฉีด MenB เข็ม 2", cat: "💉 วัคซีน", status: "⏳", imp: "🟠", note: "ห่างจากเข็มแรก 1 เดือน" },
     { item: "ฉีด MMR ถ้ายังไม่ครบ 2 เข็ม", cat: "💉 วัคซีน", status: "⏳", imp: "🟡", note: "เช็คสมุดวัคซีนก่อน" },
     { item: "แปลสูติบัตร เป็น EN", cat: "📄 เอกสาร", status: "⏳", imp: "🟠", note: "ใช้บริการ Notary / นักแปลรับรอง" },
@@ -168,14 +168,14 @@ export const defaultTimeline = [
   { month: "📅 ส.ค. 2026", tasks: [
     { item: "บิน BKK → NCL (ถึงก่อน 3 ส.ค.)", cat: "✈️ เดินทาง", status: "⏳", imp: "🔴", note: "NCL Airport → Durham ~45 min (Taxi ~£40 / Bus X12)" },
     { item: "เข้า Josephine Butler เริ่ม Pre-sess", cat: "🎓 มหาลัย", status: "⏳", imp: "🔴", note: "Pre-sessional 6wk: 3 ส.ค. – 11 ก.ย. 2026" },
-    { item: "ลงทะเบียน BRP ที่ Post Office", cat: "📄 เอกสาร", status: "⏳", imp: "🔴", note: "ต้องรับภายใน 10 วันแรกที่ถึง UK — Post Office Claypath" },
+    { item: "ยืนยัน e-Visa status ผ่าน UKVI online (ไม่ต้องไป Post Office แล้ว)", cat: "📄 เอกสาร", status: "⏳", imp: "🔴", note: "BRP ยกเลิกแล้ว! ใช้ e-Visa แทน — เช็ค status online ก่อนบิน" },
     { item: "เปิดบัญชี UK (Monzo/Starling)", cat: "💰 การเงิน", status: "⏳", imp: "🔴", note: "Monzo เปิดผ่านแอปได้เลย ไม่ต้องมี credit history" },
-    { item: "ลงทะเบียน GP (หมอ)", cat: "🏥 สุขภาพ", status: "⏳", imp: "🔴", note: "University Health Centre, Stockton Road — ลงทะเบียนสัปดาห์แรก!" },
+    { item: "ลงทะเบียน GP (หมอ)", cat: "🏥 สุขภาพ", status: "⏳", imp: "🔴", note: "University Health Centre, Stockton Road — durhamstudenthealth.com — ลงทะเบียนออนไลน์ก่อนไปได้!" },
     { item: "ซื้อ SIM UK (EE / O2)", cat: "📱 ชีวิต UK", status: "⏳", imp: "🟠", note: "EE สัญญาณดีที่สุดใน Durham ~£15-20/เดือน" },
   ]},
   { month: "📅 ก.ย. 2026", tasks: [
     { item: "จบ Pre-sess 11 ก.ย. → ย้ายเข้า Studio", cat: "🏠 ที่พัก", status: "⏳", imp: "🔴", note: "ย้ายเข้า Duresme Court หรือ St Giles Studio" },
-    { item: "Enrolment LLM 28 ก.ย.", cat: "🎓 มหาลัย", status: "⏳", imp: "🔴", note: "เตรียม: Passport, BRP, Offer Letter, IELTS Certificate" },
+    { item: "Enrolment LLM 28 ก.ย.", cat: "🎓 มหาลัย", status: "⏳", imp: "🔴", note: "เตรียม: Passport, e-Visa, Offer Letter, IELTS Certificate" },
     { item: "🎉 เริ่มเรียน LLM International Trade & Commercial Law!", cat: "🎓 มหาลัย", status: "⏳", imp: "🔴", note: "" },
   ]},
 ];
@@ -199,7 +199,7 @@ export const defaultPlaces = [
   { cat: "✈️ เดินทาง", name: "Durham Train Station", dist: "~20 นาทีเดิน", addr: "North Road, DH1 4RJ", why: "Durham → Newcastle Central 15 นาที → Newcastle Airport (NCL) 20 นาที", note: "Railcard นักศึกษา ลด 1/3 — ซื้อ 16-25 Railcard £30/ปี" },
   { cat: "✈️ เดินทาง", name: "Durham Bus Station", dist: "~20 นาทีเดิน", addr: "North Road, DH1 4BD", why: "Bus X12 → Newcastle 1 ชม. / Arriva local buses", note: "แอพ: Arriva Bus (ดูตารางเวลา)" },
   { cat: "✈️ เดินทาง", name: "Newcastle Airport (NCL)", dist: "~45-60 นาที", addr: "Woolsington, Newcastle NE13 8BZ", why: "บินกลับไทย / ท่องเที่ยว EU — taxi ~£40 หรือ Train+Metro", note: "Metro จาก Newcastle Central → Airport 20 นาที" },
-  { cat: "💰 ธนาคาร/ไปรษณีย์", name: "Post Office (Claypath)", dist: "~5 นาทีเดิน", addr: "3 Claypath, DH1 1RH", why: "รับ BRP (Biometric Residence Permit) — ต้องไปรับภายใน 10 วัน!", note: "เปิดจ-ศ 9-17:30 / ส 9-13:00" },
+  { cat: "💰 ธนาคาร/ไปรษณีย์", name: "Post Office (Claypath)", dist: "~5 นาทีเดิน", addr: "3 Claypath, DH1 1RH", why: "ส่งพัสดุ, ซื้อแสตมป์ (BRP ยกเลิกแล้ว — ใช้ e-Visa แทน)", note: "เปิดจ-ศ 9-17:30 / ส 9-13:00" },
   { cat: "💰 ธนาคาร/ไปรษณีย์", name: "Barclays Bank", dist: "~15 นาทีเดิน", addr: "18 Market Place, DH1 3ND", why: "เปิดบัญชี UK (ถ้าไม่อยากใช้ Monzo) — ต้องมี proof of address", note: "" },
   { cat: "🛍️ ช้อปปิ้ง", name: "Primark", dist: "~15 นาทีเดิน", addr: "Market Place, DH1 3ND", why: "เสื้อผ้าราคาถูกมาก — fleece £8-15, ผ้าห่ม £10, ผ้าปู £15", note: "ซื้อของใช้ห้องวันแรกที่ถึง Durham" },
   { cat: "🛍️ ช้อปปิ้ง", name: "Wilko / The Range", dist: "~15 นาทีเดิน", addr: "Saddler Street / Prince Bishops Shopping Centre", why: "หม้อ, กระทะ, ของใช้ในบ้าน — ราคาดี", note: "" },
@@ -246,7 +246,7 @@ export const defaultChecklist = [
   { item: "ซื้อ Adapter UK Type G + เตรียมของ", cat: "🛒 เตรียมของ", status: "⏳", deadline: "2026-07-31" },
   { item: "บิน BKK → NCL (ถึงก่อน 3 ส.ค.)", cat: "✈️ เดินทาง", status: "⏳", deadline: "2026-08-03" },
   { item: "เข้า Josephine Butler เริ่ม Pre-sess", cat: "🎓 มหาลัย", status: "⏳", deadline: "2026-08-03" },
-  { item: "ลงทะเบียน BRP ที่ Post Office", cat: "📄 เอกสาร", status: "⏳", deadline: "2026-08-13" },
+  { item: "ยืนยัน e-Visa status online (BRP ยกเลิกแล้ว)", cat: "📄 เอกสาร", status: "⏳", deadline: "2026-08-13" },
   { item: "เปิดบัญชี UK (Monzo/Starling)", cat: "💰 การเงิน", status: "⏳", deadline: "2026-08-31" },
   { item: "ลงทะเบียน GP (หมอ)", cat: "🏥 สุขภาพ", status: "⏳", deadline: "2026-08-31" },
   { item: "จบ Pre-sess 11 ก.ย. → ย้ายเข้า Studio", cat: "🏠 ที่พัก", status: "⏳", deadline: "2026-09-11" },
@@ -263,7 +263,7 @@ export const defaultChecklistGroups = [
   { preDone: false, phase: "🔴 มี.ค.-เม.ย.", color: "#C62828", items: ["จอง Private PBSA ผ่าน uhomes.com", "สมัคร College Preference (30 มี.ค.)", "เริ่มเตรียมเงิน £37,579 ในบัญชี 28 วัน", "เปิด Wise Card + ทยอยแลก GBP"] },
   { preDone: false, phase: "📋 พ.ค.-มิ.ย.",  color: "#E65100", items: ["ตรวจ TB Test (IOM ฿3,800)", "ฉีด MenACWY + MenB เข็ม 1 (พ.ค.) + เข็ม 2 (มิ.ย.)", "ฉีด MMR ถ้ายังไม่ครบ", "แปลสูติบัตร เป็น EN", "สมัครที่พัก Pre-sess Josephine Butler + จ่าย ~£1,300", "รอ CAS จาก Durham"] },
   { preDone: false, phase: "📋 มิ.ย.-ก.ค.",  color: "#1565C0", items: ["ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)", "จองตั๋ว BKK → NCL (Emirates/Qatar/Thai)", "ทำประกันเดินทาง", "ซื้อ Adapter UK Type G + เตรียมของ"] },
-  { preDone: false, phase: "✈️ ส.ค.",         color: "#4A148C", items: ["บิน BKK → NCL (ถึงก่อน 3 ส.ค.)", "เข้า Josephine Butler เริ่ม Pre-sess", "ลงทะเบียน BRP ที่ Post Office", "เปิดบัญชี UK (Monzo/Starling)", "ลงทะเบียน GP (หมอ)"] },
+  { preDone: false, phase: "✈️ ส.ค.",         color: "#4A148C", items: ["บิน BKK → NCL (ถึงก่อน 3 ส.ค.)", "เข้า Josephine Butler เริ่ม Pre-sess", "ยืนยัน e-Visa status online (BRP ยกเลิกแล้ว)", "เปิดบัญชี UK (Monzo/Starling)", "ลงทะเบียน GP (หมอ)"] },
   { preDone: false, phase: "🎓 ก.ย.",          color: "#1a237e", items: ["จบ Pre-sess 11 ก.ย. → ย้ายเข้า Studio", "Enrolment LLM 28 ก.ย.", "🎉 เริ่มเรียน LLM!"] },
 ];
 
@@ -342,6 +342,7 @@ export const defaultCareer = [
   { section: "schemes", c2: "ICC / UNCITRAL / WTO",  c3: "Internship ที่ Geneva/Paris — เหมาะสำหรับ International Trade Law career",                                       c4: "", c5: "ตลอดปี" },
   { section: "visa", c2: "ได้สิทธิ์ Graduate Route Visa อัตโนมัติหลังจบ LLM ที่ Durham (ไม่ต้องหา Sponsor!)", c3: "", c4: "", c5: "" },
   { section: "visa", c2: "อยู่ได้ 2 ปี (สำหรับ Master's) ทำงานอะไรก็ได้ ทุก Sector",                          c3: "", c4: "", c5: "" },
+  { section: "visa", c2: "⚠️ รัฐบาล UK กำลังพิจารณาลดเหลือ 18 เดือน (ติดตามข่าว!)",                          c3: "", c4: "", c5: "" },
   { section: "visa", c2: "ใช้หา Qualifying Work Experience (QWE) สำหรับ SQE Solicitor path ได้",              c3: "", c4: "", c5: "" },
   { section: "visa", c2: "ค่าวีซ่า Graduate Route: £822 (ปัจจุบัน)",                                          c3: "", c4: "", c5: "" },
   { section: "visa", c2: "สมัครก่อน Student Visa หมดอายุ — ต้องยังอยู่ใน UK ตอนยื่น",                        c3: "", c4: "", c5: "" },
@@ -365,7 +366,7 @@ export const defaultLifeUK = [
   { section: "apps", c2: "NHS App",         c3: "🏥 จอง GP+ดูผลแลป+สั่งยา", c4: "", c5: "" },
   { section: "apps", c2: "Deliveroo / Uber Eats", c3: "🍕 สั่งอาหาร", c4: "", c5: "" },
   { section: "apps", c2: "Amazon UK",       c3: "📦 สั่งของออนไลน์", c4: "", c5: "" },
-  { section: "firstweek", c2: "📮 เก็บ BRP (Biometric Residence Permit) ที่ Post Office ภายใน 10 วัน!", c3: "", c4: "", c5: "" },
+  { section: "firstweek", c2: "📮 เช็ค e-Visa status ผ่าน UKVI online (BRP ยกเลิกแล้ว ไม่ต้องไป Post Office)", c3: "", c4: "", c5: "" },
   { section: "firstweek", c2: "🏥 ลงทะเบียน GP (หมอ) — ไม่มี GP = ไม่ได้พบหมอ! NHS ไม่เหมือนไทย ต้องลงทะเบียนก่อน", c3: "", c4: "", c5: "" },
   { section: "firstweek", c2: "🏦 เปิดบัญชี UK — แนะนำ Monzo หรือ Starling (เปิดออนไลน์ได้เลย ไม่ต้องรอ)", c3: "", c4: "", c5: "" },
   { section: "firstweek", c2: "📱 ซื้อ SIM UK — แนะนำ giffgaff, Three, หรือ Voxi (สั่งออนไลน์ก่อนมาได้ ส่งที่หอ)", c3: "", c4: "", c5: "" },
