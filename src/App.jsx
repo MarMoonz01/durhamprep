@@ -1603,257 +1603,275 @@ export default function App() {
 
         return (
           <div>
-            {/* Header */}
+            {/* ── HEADER ── */}
             <div style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", borderRadius: 12, padding: 14, color: "#fff", marginBottom: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 800 }}>💰 Budget Planner 2026/27</div>
-              <div style={{ fontSize: 10, opacity: 0.85, marginTop: 3 }}>ประมาณงบ LLM Durham 14 เดือน — เลือก lifestyle เพื่อคำนวณทันที</div>
-              <div style={{ marginTop: 8, padding: "4px 10px", background: "rgba(255,255,255,0.15)", borderRadius: 8, display: "inline-block", fontSize: 10 }}>
-                TOTAL ≈ £{grandTotal.toLocaleString()} · ฿{Math.round(grandTotal * r).toLocaleString()}
+              <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>LLM Durham 14 เดือน — เลือกที่พัก + lifestyle เพื่อคำนวณ</div>
+              {/* Grand total pill */}
+              <div style={{ marginTop: 10, display: "flex", gap: 6 }}>
+                <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", textAlign: "center" }}>
+                  <div style={{ fontSize: 8, opacity: 0.8 }}>🔒 Fixed</div>
+                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{beforeGoTotal.toLocaleString()}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", fontSize: 14, opacity: 0.7 }}>+</div>
+                <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", textAlign: "center" }}>
+                  <div style={{ fontSize: 8, opacity: 0.8 }}>📈 Additional</div>
+                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{(accomTotal + totalLiving + emergency).toLocaleString()}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", fontSize: 14, opacity: 0.7 }}>=</div>
+                <div style={{ flex: 1, background: "rgba(255,255,255,0.25)", borderRadius: 8, padding: "6px 10px", textAlign: "center", border: "1px solid rgba(255,255,255,0.4)" }}>
+                  <div style={{ fontSize: 8, opacity: 0.8 }}>TOTAL</div>
+                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{grandTotal.toLocaleString()}</div>
+                </div>
+              </div>
+              <div style={{ marginTop: 6, fontSize: 9, opacity: 0.75, textAlign: "right" }}>
+                ≈ ฿{Math.round(grandTotal * r).toLocaleString()} · ฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน
               </div>
             </div>
 
-            {/* ① Lifestyle Selector */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 10 }}>① เลือก Lifestyle — ค่าครองชีพ/เดือน (ไม่รวมค่าหอ)</div>
-              <div style={{ display: "flex", gap: 6 }}>
-                {[
-                  { id: "minimal",     label: "🟢 ประหยัดสุด", sub: "ทำเองทุกมื้อ", color: "#2E7D32", bg: "#E8F5E9" },
-                  { id: "balanced",    label: "🟡 สมดุล",      sub: "Balance ดี",   color: "#E65100", bg: "#FFF3E0" },
-                  { id: "comfortable", label: "🔴 สะดวก",      sub: "ไม่ยั้งมือ",   color: "#C62828", bg: "#FFEBEE" },
-                ].map(function(ls) {
-                  var tot = budgetData.lifestyle[ls.id].total;
-                  var sel = budgetLifestyle === ls.id;
-                  return (
-                    <div
-                      key={ls.id}
-                      onClick={function() { setBudgetLifestyle(ls.id); setOpenBudgetCat(-1); }}
-                      style={{
-                        flex: 1, padding: "10px 6px", borderRadius: 10, textAlign: "center",
-                        border: "2px solid " + (sel ? ls.color : C.border),
-                        background: sel ? ls.bg : C.card,
-                        cursor: "pointer", transition: "all 0.2s",
-                      }}
-                    >
-                      <div style={{ fontSize: 10, fontWeight: 800, color: ls.color, marginBottom: 3 }}>{ls.label}</div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: ls.color }}>£{tot}</div>
-                      <div style={{ fontSize: 8, color: sel ? ls.color : C.sub }}>/เดือน</div>
-                      <div style={{ fontSize: 8, color: C.sub, marginTop: 2 }}>{ls.sub}</div>
-                    </div>
-                  );
-                })}
+            {/* ── SECTION A: FIXED COSTS ── */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: "4px solid #1a237e" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>🔒 Fixed Costs</div>
+                  <div style={{ fontSize: 9, color: C.sub, marginTop: 1 }}>ค่าใช้จ่ายคงที่ — ไม่เปลี่ยนตาม lifestyle</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e" }}>£{beforeGoTotal.toLocaleString()}</div>
+                  <div style={{ fontSize: 9, color: C.sub }}>฿{Math.round(beforeGoTotal * r).toLocaleString()}</div>
+                </div>
               </div>
+              {budgetData.fixedCosts.beforeGo.map(function(it, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: i < budgetData.fixedCosts.beforeGo.length - 1 ? "1px solid " + C.border : "none" }}>
+                    <span style={{ fontSize: 10, color: C.text }}>{it.name}</span>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>£{it.amount.toLocaleString()}</div>
+                      <div style={{ fontSize: 8, color: C.sub }}>฿{Math.round(it.amount * r).toLocaleString()}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* ② Accommodation Selector */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>② เลือกที่พัก — เปลี่ยนงบรวมทันที</div>
-              <div style={{ overflowX: "auto", display: "flex", gap: 6, paddingBottom: 4 }}>
-                {accom.map(function(a, i) {
-                  var sel = selectedAccomIdx === i;
-                  var pw = a.room ? a.room.pw : 0;
-                  return (
-                    <div
-                      key={i}
-                      onClick={function() { setSelectedAccomIdx(i); setSelectedBudgetUnitId(null); }}
-                      style={{
-                        flexShrink: 0, minWidth: 100, padding: "8px 8px", borderRadius: 10,
-                        border: "2px solid " + (sel ? a.color : C.border),
-                        background: sel ? a.bg : C.card,
-                        cursor: "pointer",
-                      }}
-                    >
-                      <div style={{ fontSize: 7, fontWeight: 800, color: a.color, marginBottom: 1 }}>{a.badge}</div>
-                      <div style={{ fontSize: 8, fontWeight: 700, color: sel ? a.color : C.text, lineHeight: 1.3 }}>{a.name}</div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: a.color, marginTop: 3 }}>£{pw}<span style={{ fontSize: 8, fontWeight: 400 }}>/wk</span></div>
-                      <div style={{ fontSize: 8, color: a.color, fontWeight: 700 }}>= £{pw ? (pw * (a.room ? (a.room.wk||51) : 51)).toLocaleString() : "--"}</div>
-                    </div>
-                  );
-                })}
+            {/* ── SECTION B: ADDITIONAL COSTS ── */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: "4px solid #E65100" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100" }}>📈 Additional Costs</div>
+                  <div style={{ fontSize: 9, color: C.sub, marginTop: 1 }}>ขึ้นอยู่กับการเลือก — ที่พัก + ค่าครองชีพ</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#E65100" }}>£{(accomTotal + totalLiving + emergency).toLocaleString()}</div>
+                  <div style={{ fontSize: 9, color: C.sub }}>฿{Math.round((accomTotal + totalLiving + emergency) * r).toLocaleString()}</div>
+                </div>
               </div>
-              {/* Unit picker — shown when there are multiple room types */}
-              {propRooms.length > 1 && (
+
+              {/* B1 — Accommodation */}
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: "#1B5E20", marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
+                  <span>🏠 ที่พัก (Accommodation)</span>
+                  <span>£{accomTotal.toLocaleString()}</span>
+                </div>
+
+                {/* Pre-sess line */}
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 6, borderBottom: "1px dashed " + C.border }}>
+                  <span style={{ fontSize: 9, color: C.sub }}>Pre-sess 6wk (Josephine Butler)</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{presessAccom.toLocaleString()}</span>
+                </div>
+
+                {/* Property selector */}
                 <div style={{ marginTop: 8 }}>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: C.sub, marginBottom: 5 }}>เลือกประเภทห้อง:</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {propRooms.map(function(rm, ri) {
-                      var isSel = selectedUnit && selectedUnit.id === rm.id;
+                  <div style={{ fontSize: 9, color: C.sub, marginBottom: 6 }}>เลือกที่พัก:</div>
+                  <div style={{ overflowX: "auto", display: "flex", gap: 6, paddingBottom: 4 }}>
+                    {accom.map(function(a, i) {
+                      var sel = selectedAccomIdx === i;
+                      var pw = a.room ? a.room.pw : 0;
                       return (
                         <div
-                          key={ri}
-                          onClick={function() { setSelectedBudgetUnitId(rm.id); }}
+                          key={i}
+                          onClick={function() { setSelectedAccomIdx(i); setSelectedBudgetUnitId(null); }}
                           style={{
-                            padding: "5px 9px", borderRadius: 8, cursor: "pointer",
-                            border: "2px solid " + (isSel ? selA.color : C.border),
-                            background: isSel ? selA.bg : C.card,
-                            fontSize: 9, fontWeight: isSel ? 700 : 400,
-                            color: isSel ? selA.color : C.sub,
+                            flexShrink: 0, minWidth: 95, padding: "7px 8px", borderRadius: 10,
+                            border: "2px solid " + (sel ? a.color : C.border),
+                            background: sel ? a.bg : C.card,
+                            cursor: "pointer",
                           }}
                         >
-                          {rm.room.name || rm.id}
-                          {rm.room.size ? " · " + rm.room.size : ""}
-                          {" · "}
-                          <strong>£{rm.room.pw}/wk</strong>
-                          {rm.room.dep != null && rm.room.dep > 0 ? " · dep £" + rm.room.dep : " · no dep"}
+                          <div style={{ fontSize: 7, fontWeight: 800, color: a.color, marginBottom: 1 }}>{a.badge}</div>
+                          <div style={{ fontSize: 8, fontWeight: 700, color: sel ? a.color : C.text, lineHeight: 1.3 }}>{a.name}</div>
+                          <div style={{ fontSize: 13, fontWeight: 800, color: a.color, marginTop: 2 }}>£{pw}<span style={{ fontSize: 8, fontWeight: 400 }}>/wk</span></div>
                         </div>
                       );
                     })}
                   </div>
-                </div>
-              )}
 
-              {/* Selected unit summary */}
-              {selectedUnit && selectedUnit.room && (
-                <div style={{ marginTop: 8, padding: "6px 10px", background: selA.bg || C.border, borderRadius: 8, borderLeft: "3px solid " + (selA.color || "#333"), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: selA.color }}>{selA.name} · {selectedUnit.room.name || selA.room && selA.room.name}</div>
-                    <div style={{ fontSize: 9, color: C.sub }}>
-                      {studioWK}wk @ £{studioPW}/wk
-                      {selectedUnit.room.size ? " · " + selectedUnit.room.size : ""}
-                      {selectedUnit.room.bed ? " · " + selectedUnit.room.bed : ""}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}/ปี</div>
-                </div>
-              )}
-            </div>
-
-            {/* ③ Monthly Budget Breakdown */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 2 }}>③ ค่าครองชีพ/เดือน — {lsData.label}</div>
-              <div style={{ fontSize: 9, color: C.sub, marginBottom: 10 }}>{lsData.desc}</div>
-              {lsData.categories.map(function(cat, ci) {
-                var pct = lsTotal > 0 ? Math.round(cat.amount / lsTotal * 100) : 0;
-                var isOpen = openBudgetCat === ci;
-                return (
-                  <div key={ci} style={{ marginBottom: 6 }}>
-                    <div onClick={function() { setOpenBudgetCat(isOpen ? -1 : ci); }} style={{ cursor: "pointer", padding: "5px 0" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                        <span style={{ fontSize: 11, color: C.text }}>{cat.emoji} {cat.name}</span>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <span style={{ fontSize: 11, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}</span>
-                          <span style={{ fontSize: 9, color: C.sub, minWidth: 28, textAlign: "right" }}>{pct}%</span>
-                          <span style={{ fontSize: 9, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
-                        </div>
-                      </div>
-                      <div style={{ background: C.border, borderRadius: 3, height: 7, overflow: "hidden" }}>
-                        <div style={{ background: lsCfg.barColor, height: 7, width: pct + "%", borderRadius: 3, transition: "width 0.4s" }} />
-                      </div>
-                    </div>
-                    {isOpen && (
-                      <div style={{ margin: "4px 0 6px", padding: "8px 10px", background: C.bg, borderRadius: 8 }}>
-                        {cat.items.map(function(it, ii) {
+                  {/* Unit chips */}
+                  {propRooms.length > 1 && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ fontSize: 9, color: C.sub, marginBottom: 5 }}>เลือกประเภทห้อง:</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {propRooms.map(function(rm, ri) {
+                          var isSel = selectedUnit && selectedUnit.id === rm.id;
                           return (
-                            <div key={ii} style={{ paddingBottom: ii < cat.items.length - 1 ? 6 : 0, marginBottom: ii < cat.items.length - 1 ? 6 : 0, borderBottom: ii < cat.items.length - 1 ? "1px solid " + C.border : "none" }}>
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ fontSize: 10, color: C.text }}>{it.name}</span>
-                                <span style={{ fontSize: 10, fontWeight: 700, color: lsCfg.color, flexShrink: 0, marginLeft: 8 }}>£{it.amount}</span>
-                              </div>
-                              {it.tip && <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>💡 {it.tip}</div>}
+                            <div
+                              key={ri}
+                              onClick={function() { setSelectedBudgetUnitId(rm.id); }}
+                              style={{
+                                padding: "5px 9px", borderRadius: 8, cursor: "pointer",
+                                border: "2px solid " + (isSel ? selA.color : C.border),
+                                background: isSel ? selA.bg : C.card,
+                                fontSize: 9, fontWeight: isSel ? 700 : 400,
+                                color: isSel ? selA.color : C.sub,
+                              }}
+                            >
+                              {rm.room.name}
+                              {rm.room.size ? " · " + rm.room.size : ""}
+                              {" · "}
+                              <strong style={{ color: isSel ? selA.color : C.text }}>£{rm.room.pw}/wk</strong>
+                              {rm.room.dep > 0 ? " · dep £" + rm.room.dep : " · no dep"}
                             </div>
                           );
                         })}
-                        <div style={{ marginTop: 6, paddingTop: 4, borderTop: "1px solid " + C.border, display: "flex", justifyContent: "space-between" }}>
-                          <span style={{ fontSize: 9, color: C.sub }}>รวม</span>
-                          <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}/เดือน ≈ ฿{Math.round(cat.amount * r).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected unit summary row */}
+                  {selectedUnit && selectedUnit.room && (
+                    <div style={{ marginTop: 8, padding: "6px 10px", background: selA.bg || C.border, borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div>
+                        <div style={{ fontSize: 9, fontWeight: 700, color: selA.color }}>{selA.name} · {selectedUnit.room.name}</div>
+                        <div style={{ fontSize: 8, color: C.sub }}>{studioWK}wk @ £{studioPW}/wk{studioDeposit > 0 ? " + dep £" + studioDeposit : " · no deposit"}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}</div>
+                        <div style={{ fontSize: 8, color: C.sub }}>+dep £{studioDeposit}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* B2 — Living Costs */}
+              <div style={{ borderTop: "1px solid " + C.border, paddingTop: 12, marginBottom: 12 }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color, marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
+                  <span>🍽️ ค่าครองชีพ (Living Costs)</span>
+                  <span>£{totalLiving.toLocaleString()}</span>
+                </div>
+
+                {/* Lifestyle selector */}
+                <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+                  {[
+                    { id: "minimal",     label: "🟢 ประหยัด", sub: "£" + budgetData.lifestyle.minimal.total + "/เดือน",     color: "#2E7D32", bg: "#E8F5E9" },
+                    { id: "balanced",    label: "🟡 สมดุล",   sub: "£" + budgetData.lifestyle.balanced.total + "/เดือน",    color: "#E65100", bg: "#FFF3E0" },
+                    { id: "comfortable", label: "🔴 สะดวก",   sub: "£" + budgetData.lifestyle.comfortable.total + "/เดือน", color: "#C62828", bg: "#FFEBEE" },
+                  ].map(function(ls) {
+                    var sel = budgetLifestyle === ls.id;
+                    return (
+                      <div
+                        key={ls.id}
+                        onClick={function() { setBudgetLifestyle(ls.id); setOpenBudgetCat(-1); }}
+                        style={{
+                          flex: 1, padding: "8px 4px", borderRadius: 10, textAlign: "center",
+                          border: "2px solid " + (sel ? ls.color : C.border),
+                          background: sel ? ls.bg : C.card,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ fontSize: 9, fontWeight: 800, color: ls.color }}>{ls.label}</div>
+                        <div style={{ fontSize: 8, color: sel ? ls.color : C.sub, marginTop: 2 }}>{ls.sub}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Category breakdown */}
+                {lsData.categories.map(function(cat, ci) {
+                  var pct = lsTotal > 0 ? Math.round(cat.amount / lsTotal * 100) : 0;
+                  var isOpen = openBudgetCat === ci;
+                  return (
+                    <div key={ci} style={{ marginBottom: 5 }}>
+                      <div onClick={function() { setOpenBudgetCat(isOpen ? -1 : ci); }} style={{ cursor: "pointer", padding: "4px 0" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                          <span style={{ fontSize: 10, color: C.text }}>{cat.emoji} {cat.name}</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}</span>
+                            <span style={{ fontSize: 8, color: C.sub, minWidth: 24, textAlign: "right" }}>{pct}%</span>
+                            <span style={{ fontSize: 9, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
+                          </div>
+                        </div>
+                        <div style={{ background: C.border, borderRadius: 3, height: 5, overflow: "hidden" }}>
+                          <div style={{ background: lsCfg.barColor, height: 5, width: pct + "%", borderRadius: 3, transition: "width 0.4s" }} />
                         </div>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-              <div style={{ borderTop: "2px solid " + C.border, paddingTop: 8, marginTop: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวม/เดือน</span>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#C62828" }}>£{lsTotal}/เดือน</div>
-                  <div style={{ fontSize: 9, color: C.sub }}>≈ ฿{Math.round(lsTotal * r).toLocaleString()}/เดือน</div>
-                </div>
-              </div>
-            </div>
-
-            {/* ④ Total Cost of Attendance */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 10 }}>④ Total Cost of Attendance — 14 เดือน</div>
-
-              {/* Before going */}
-              <div style={{ marginBottom: 10 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>📚 ก่อนไป (Tuition, Visa, วัคซีน, ตั๋ว)</div>
-                {budgetData.fixedCosts.beforeGo.map(function(it, i) {
-                  return (
-                    <div key={i} style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
-                      <span style={{ fontSize: 9, color: C.sub }}>{it.name}</span>
-                      <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{it.amount.toLocaleString()}</span>
+                      {isOpen && (
+                        <div style={{ margin: "4px 0 6px", padding: "8px 10px", background: C.bg, borderRadius: 8 }}>
+                          {cat.items.map(function(it, ii) {
+                            return (
+                              <div key={ii} style={{ paddingBottom: ii < cat.items.length - 1 ? 5 : 0, marginBottom: ii < cat.items.length - 1 ? 5 : 0, borderBottom: ii < cat.items.length - 1 ? "1px solid " + C.border : "none" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                  <span style={{ fontSize: 9, color: C.text }}>{it.name}</span>
+                                  <span style={{ fontSize: 9, fontWeight: 700, color: lsCfg.color, flexShrink: 0, marginLeft: 8 }}>£{it.amount}</span>
+                                </div>
+                                {it.tip && <div style={{ fontSize: 8, color: C.sub, marginTop: 1 }}>💡 {it.tip}</div>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>รวม</span>
-                  <span style={{ fontSize: 10, fontWeight: 800, color: "#1a237e" }}>£{beforeGoTotal.toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* Accommodation */}
-              <div style={{ marginBottom: 10 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#1B5E20", marginBottom: 4 }}>🏠 ที่พัก</div>
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
-                  <span style={{ fontSize: 9, color: C.sub }}>Pre-sess 6wk (Josephine Butler)</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{presessAccom.toLocaleString()}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
-                  <span style={{ fontSize: 9, color: selA.color || "#1B5E20", fontWeight: 700 }}>
-                    {selA.name || "Studio"} ({studioWK}wk @ £{studioPW}/wk)
-                  </span>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: selA.color || "#1B5E20" }}>£{studioCost.toLocaleString()}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
-                  <span style={{ fontSize: 9, color: C.sub }}>Deposit</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{studioDeposit.toLocaleString()}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: "#1B5E20" }}>รวม</span>
-                  <span style={{ fontSize: 10, fontWeight: 800, color: "#1B5E20" }}>£{accomTotal.toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* Living */}
-              <div style={{ marginBottom: 10 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: lsCfg.color, marginBottom: 4 }}>🍽️ ค่าครองชีพ ({lsData.label})</div>
-                {[
-                  { l: "Pre-sess 1.5 เดือน (× 1.5)", v: presessLiving },
-                  { l: "Term 9 เดือน (× 9)", v: termLiving },
-                  { l: "Dissertation 3 เดือน (× 0.8 × 3)", v: dissertLiving },
-                ].map(function(it, i) {
-                  return (
-                    <div key={i} style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
-                      <span style={{ fontSize: 9, color: C.sub }}>{it.l}</span>
-                      <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{it.v.toLocaleString()}</span>
-                    </div>
-                  );
-                })}
-                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: lsCfg.color }}>รวม</span>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 6, borderTop: "1px solid " + C.border, marginTop: 4 }}>
+                  <span style={{ fontSize: 9, color: C.sub }}>รวม 13.5 เดือน</span>
                   <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{totalLiving.toLocaleString()}</span>
                 </div>
               </div>
 
-              {/* Emergency */}
-              <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: 8 }}>
-                <span style={{ fontSize: 9, color: C.sub }}>🆘 Emergency Fund</span>
-                <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{emergency.toLocaleString()}</span>
+              {/* B3 — Emergency */}
+              <div style={{ borderTop: "1px solid " + C.border, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: 10, color: C.text }}>🆘 Emergency Fund</div>
+                  <div style={{ fontSize: 8, color: C.sub }}>เผื่อฉุกเฉิน</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>£{emergency.toLocaleString()}</div>
+                  <div style={{ fontSize: 8, color: C.sub }}>฿{Math.round(emergency * r).toLocaleString()}</div>
+                </div>
               </div>
+            </div>
 
-              {/* Grand Total */}
-              <div style={{ borderTop: "2px solid #1a237e", paddingTop: 10 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>TOTAL</span>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
+            {/* ── GRAND TOTAL SUMMARY ── */}
+            <div style={{ background: "#1a237e", borderRadius: 12, padding: 14, marginBottom: 8, color: "#fff" }}>
+              <div style={{ fontSize: 11, fontWeight: 800, marginBottom: 10 }}>📊 Grand Total — 14 เดือน</div>
+              {[
+                { label: "🔒 Fixed Costs",         val: beforeGoTotal,                       sub: "tuition, visa, flights, vaccines" },
+                { label: "🏠 Accommodation",        val: accomTotal,                          sub: selA.name ? selA.name + " + pre-sess + deposit" : "ที่พักทั้งหมด" },
+                { label: "🍽️ Living (" + lsData.label + ")", val: totalLiving,              sub: "13.5 เดือน × £" + lsTotal + "/เดือน" },
+                { label: "🆘 Emergency Fund",       val: emergency,                           sub: "เผื่อฉุกเฉิน" },
+              ].map(function(row, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.15)" : "none" }}>
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 700 }}>{row.label}</div>
+                      <div style={{ fontSize: 8, opacity: 0.7 }}>{row.sub}</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 11, fontWeight: 800 }}>£{row.val.toLocaleString()}</div>
+                      <div style={{ fontSize: 8, opacity: 0.7 }}>฿{Math.round(row.val * r).toLocaleString()}</div>
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ borderTop: "2px solid rgba(255,255,255,0.4)", marginTop: 8, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800 }}>TOTAL</div>
+                  <div style={{ fontSize: 8, opacity: 0.7 }}>เฉลี่ย ฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 10, color: C.sub }}>เงินไทย (฿{r.toFixed(2)}/£)</span>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: "#C62828" }}>฿{Math.round(grandTotal * r).toLocaleString()}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 9, color: C.sub }}>เฉลี่ย ~14 เดือน</span>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: "#E65100" }}>฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</span>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 18, fontWeight: 800 }}>£{grandTotal.toLocaleString()}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, opacity: 0.9 }}>฿{Math.round(grandTotal * r).toLocaleString()}</div>
                 </div>
               </div>
             </div>
