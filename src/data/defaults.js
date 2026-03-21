@@ -430,3 +430,141 @@ export const defaultIntrovert = [
     {t:"Asian supermarket & วัตถุดิบไทย",d:"Newcastle (train 12 นาที): Wing Yip, HiYou มีของไทยครบ หรือสั่ง Tuk Tuk Mart online ส่งถึงหอ"},
   ]},
 ];
+
+export const defaultBudgetData = {
+  lifestyle: {
+    minimal: {
+      total: 154,
+      label: "🟢 ประหยัดสุด",
+      desc: "ทำอาหารเองทุกมื้อ ไม่เที่ยว เน้นอ่านหนังสือ",
+      categories: [
+        { emoji: "🍽️", name: "อาหาร", amount: 60, items: [
+          { name: "Groceries Aldi/Lidl", amount: 60, tip: "~£15/wk ทำเองทุกมื้อ ประหยัดสุด" },
+        ]},
+        { emoji: "🚌", name: "เดินทาง", amount: 25, items: [
+          { name: "Bus pass Arriva", amount: 20, tip: "Monthly pass ถูกกว่า single tickets" },
+          { name: "Train (ฉุกเฉินเท่านั้น)", amount: 5, tip: "Advance tickets จองล่วงหน้าถูกสุด" },
+        ]},
+        { emoji: "📚", name: "การเรียน", amount: 10, items: [
+          { name: "Print/Stationery", amount: 10, tip: "Durham Library ยืมหนังสือฟรี ใช้ Westlaw/LexisNexis ฟรีผ่าน DU" },
+        ]},
+        { emoji: "🎉", name: "สังสรรค์", amount: 5, items: [
+          { name: "DSU free events", amount: 5, tip: "กิจกรรม DSU ส่วนใหญ่ฟรีหรือ £1-2" },
+        ]},
+        { emoji: "✈️", name: "ท่องเที่ยว", amount: 10, items: [
+          { name: "Local day trips", amount: 10, tip: "Durham Cathedral & Castle walks ฟรี — UNESCO!" },
+        ]},
+        { emoji: "🛒", name: "ของใช้", amount: 25, items: [
+          { name: "Toiletries/Cleaning", amount: 15, tip: "B&M/Home Bargains ถูกกว่า Boots มาก" },
+          { name: "Clothes (charity shops)", amount: 10, tip: "Charity shops Durham มีของดีราคาถูก" },
+        ]},
+        { emoji: "💊", name: "สุขภาพ", amount: 10, items: [
+          { name: "OTC medicines/Vitamins", amount: 10, tip: "ลง NHS GP ฟรี! Vitamin D สำคัญมากช่วง UK winter" },
+        ]},
+        { emoji: "📱", name: "โทรศัพท์", amount: 9, items: [
+          { name: "SIM giffgaff/Three", amount: 9, tip: "giffgaff Good Bag £6-10/เดือน data เยอะ" },
+        ]},
+      ],
+    },
+    balanced: {
+      total: 527,
+      label: "🟡 สมดุล",
+      desc: "ทำอาหารบ้าง กินข้างนอกบ้าง เที่ยว UK weekends",
+      categories: [
+        { emoji: "🍽️", name: "อาหาร", amount: 260, items: [
+          { name: "Groceries (Aldi/Tesco)", amount: 160, tip: "£40/wk ทำอาหารไทยได้ง่าย วัตถุดิบหาได้ที่ Newcastle" },
+          { name: "Eating out/Meal deal", amount: 100, tip: "Boots Meal Deal £3.5 หรือ Asian takeaway ~£10" },
+        ]},
+        { emoji: "🚌", name: "เดินทาง", amount: 65, items: [
+          { name: "Arriva bus pass", amount: 45, tip: "Monthly pass ถ้าใช้บ่อย คุ้มกว่าซื้อรายวัน" },
+          { name: "Train trips UK", amount: 20, tip: "16-25 Railcard (£30/ปี) ลด 1/3 ทุกครั้ง!" },
+        ]},
+        { emoji: "📚", name: "การเรียน", amount: 25, items: [
+          { name: "Books (second-hand)", amount: 15, tip: "Amazon Marketplace หรือ Facebook กลุ่ม Durham" },
+          { name: "Print/Stationery", amount: 10, tip: "Library print 5p/หน้า DU ให้ credit นักศึกษา" },
+        ]},
+        { emoji: "🎉", name: "สังสรรค์", amount: 49, items: [
+          { name: "Formal Dinners", amount: 15, tip: "~£10-15/ครั้ง — สำคัญมากสำหรับ LLM networking!" },
+          { name: "Pub/Social events", amount: 20, tip: "Student Union bar ถูกกว่า pub ทั่วไป ~£4/pint" },
+          { name: "Law Societies", amount: 14, tip: "DULS/Mooting Society ~£10-20/ปี คุ้มมากสำหรับ CV" },
+        ]},
+        { emoji: "✈️", name: "ท่องเที่ยว", amount: 55, items: [
+          { name: "Weekend trips UK", amount: 40, tip: "Edinburgh £30rt, York £15rt — advance tickets" },
+          { name: "Local activities", amount: 15, tip: "Beamish Museum £20, Hadrian's Wall walks ฟรี" },
+        ]},
+        { emoji: "🛒", name: "ของใช้", amount: 50, items: [
+          { name: "Toiletries/Cleaning", amount: 20, tip: "Boots own brand ถูกกว่า branded ~50%" },
+          { name: "Clothes/Room stuff", amount: 30, tip: "Primark Durham ราคาเป็นมิตร หรือ ASOS sale" },
+        ]},
+        { emoji: "💊", name: "สุขภาพ", amount: 10, items: [
+          { name: "Vitamins/OTC", amount: 10, tip: "Vitamin D สำคัญมากช่วง UK winter — ซื้อ Amazon UK ถูก" },
+        ]},
+        { emoji: "📱", name: "โทรศัพท์", amount: 13, items: [
+          { name: "SIM + data", amount: 13, tip: "Three £10-15/เดือน unlimited data — ดีใน UK" },
+        ]},
+      ],
+    },
+    comfortable: {
+      total: 1092,
+      label: "🔴 สะดวกสบาย",
+      desc: "ใช้ชีวิตเต็มที่ ร้านดี เที่ยว EU ช็อปปิ้ง",
+      categories: [
+        { emoji: "🍽️", name: "อาหาร", amount: 450, items: [
+          { name: "Premium groceries (M&S)", amount: 200, tip: "M&S Food สะดวก ready meals ดีมาก" },
+          { name: "Restaurants/Deliveroo", amount: 250, tip: "Deliveroo/Uber Eats ~£15-25/ครั้ง" },
+        ]},
+        { emoji: "🚌", name: "เดินทาง", amount: 130, items: [
+          { name: "Bus pass + Train", amount: 80, tip: "Train advance tickets ยังประหยัดได้มาก" },
+          { name: "Uber/Taxi", amount: 50, tip: "Uber Durham ~£5-10 ขึ้นอยู่กับระยะทาง" },
+        ]},
+        { emoji: "📚", name: "การเรียน", amount: 50, items: [
+          { name: "Textbooks (new)", amount: 30, tip: "Amazon UK ยังถูกกว่า DU Bookshop" },
+          { name: "Apps/Subscriptions", amount: 20, tip: "LinkedIn Learning ฟรีผ่าน Durham! ใช้ให้คุ้ม" },
+        ]},
+        { emoji: "🎉", name: "สังสรรค์", amount: 150, items: [
+          { name: "Bars/Clubs Newcastle", amount: 80, tip: "Newcastle 15 นาทีรถไฟ nightlife ดีมาก" },
+          { name: "Formal Dinners + Guests", amount: 40, tip: "Invite เพื่อนมา Formal Dinner ประทับใจ" },
+          { name: "Sports/Gym premium", amount: 30, tip: "Durham Athletics £40-60/term หรือ Nuffield" },
+        ]},
+        { emoji: "✈️", name: "ท่องเที่ยว", amount: 150, items: [
+          { name: "EU trips (Ryanair)", amount: 100, tip: "Paris/Amsterdam Ryanair £30-50 ถ้าจองล่วงหน้า!" },
+          { name: "UK weekend breaks", amount: 50, tip: "Lake District/Scottish Highlands สวยมาก" },
+        ]},
+        { emoji: "🛒", name: "ของใช้", amount: 100, items: [
+          { name: "Shopping/Clothes", amount: 70, tip: "MetroCentre Gateshead ~30 นาที retail therapy" },
+          { name: "Home/Personal care", amount: 30, tip: "Invest ของดี — อยู่ปีนึงคุ้มค่า" },
+        ]},
+        { emoji: "💊", name: "สุขภาพ", amount: 40, items: [
+          { name: "Premium gym", amount: 25, tip: "Nuffield/PureGym ~£25-40/เดือน หรือ DU Sports Centre" },
+          { name: "Supplements/Wellness", amount: 15, tip: "Holland & Barrett loyalty card ลด 20%" },
+        ]},
+        { emoji: "📱", name: "โทรศัพท์", amount: 22, items: [
+          { name: "Premium SIM + streaming", amount: 22, tip: "EE Unlimited + Netflix + Spotify ≈ £22/เดือน" },
+        ]},
+      ],
+    },
+  },
+  fixedCosts: {
+    beforeGo: [
+      { name: "Tuition LLM (หลัง Scholarship £5k)", amount: 23500, note: "£30,500 gross − £5,000 scholarship − £2,000 deposit" },
+      { name: "Pre-sessional 6wk (Josephine Butler)", amount: 1200, note: "£200/wk × 6 สัปดาห์" },
+      { name: "Student Visa (UK)", amount: 524, note: "UK Visas & Immigration fee" },
+      { name: "IHS Health Surcharge (14 เดือน)", amount: 910, note: "£780/ปี × 14/12 เดือน" },
+      { name: "TB Test (IOM Bangkok)", amount: 65, note: "~฿3,800 ที่ IOM / BNH ฿4,000" },
+      { name: "วัคซีน MenACWY + MenB + MMR", amount: 120, note: "ฉีด 3 วัคซีนก่อนไป UK" },
+      { name: "ตั๋วเครื่องบิน BKK↔NCL", amount: 950, note: "Qatar/Emirates เฉลี่ย (ไป-กลับ)" },
+      { name: "เตรียมของก่อนไป + เบ็ดเตล็ด", amount: 150, note: "เสื้อกันหนาว, adapter, ของใช้ส่วนตัว" },
+    ],
+    accommodation: [
+      { name: "Pre-sess 6wk (Josephine Butler)", amount: 1200, note: "£200/wk × 6 wk" },
+      { name: "Deposit ที่พัก", amount: 250, note: "คืนหลังออก ถ้าห้องไม่เสียหาย" },
+    ],
+    emergencyFund: 500,
+  },
+  peakMonths: [
+    { month: "ก.ย. 2026", color: "#C62828", amount: 9400, note: "Tuition Term 1 + Studio starts" },
+    { month: "ธ.ค. 2026", color: "#C62828", amount: 9700, note: "Tuition Term 2 + Christmas" },
+    { month: "มี.ค. 2027", color: "#E65100", amount: 9600, note: "Tuition Term 3 + Easter" },
+    { month: "ม.ค.-ก.พ. 2027", color: "#2E7D32", amount: 900, note: "เดือนเงียบ อยู่บ้านอ่านหนังสือ ✨" },
+  ],
+};

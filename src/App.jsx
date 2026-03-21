@@ -16,6 +16,7 @@ import {
   defaultAcademic,
   defaultCareer,
   defaultLifeUK,
+  defaultBudgetData,
 } from "./data/defaults";
 
 // ─── Shared Components ───────────────────────────────────────────────────────
@@ -239,6 +240,10 @@ export default function App() {
   const [priceComparison, setPriceComparison] = useState([]);
   const [accomRating, setAccomRating] = useState({ headers: [], rows: [] });
   const [sheetExpenses, setSheetExpenses] = useState([]);
+  // Budget Planner state
+  const [budgetLifestyle, setBudgetLifestyle] = useState("balanced");
+  const [budgetData, setBudgetData] = useState(defaultBudgetData);
+  const [openBudgetCat, setOpenBudgetCat] = useState(-1);
   const [sheetsStatus, setSheetsStatus] = useState(
     isSheetsConfigured() ? "loading" : "not-configured"
   );
@@ -278,6 +283,7 @@ export default function App() {
         if (data.accomRating && data.accomRating.headers && data.accomRating.headers.length) setAccomRating(data.accomRating);
         if (data.sheetExpenses && data.sheetExpenses.length) setSheetExpenses(data.sheetExpenses);
         if (data.checklistGroups && data.checklistGroups.length) setChecklistGroups(data.checklistGroups);
+        if (data.budget && data.budget.lifestyle && data.budget.lifestyle.balanced.categories.length) setBudgetData(data.budget);
         setSheetsStatus("ok");
       })
       .catch(function (err) {
@@ -330,7 +336,7 @@ export default function App() {
     { g: "📅 แผนการ",     ids: ["timeline", "visa", "vax", "fly"] },
     { g: "🛍️ จัดเตรียม",  ids: ["shop", "pack", "life"] },
     { g: "📍 Durham",      ids: ["places", "contacts"] },
-    { g: "💰 การเงิน",    ids: ["money", "cost", "expense"] },
+    { g: "💰 การเงิน",    ids: ["budget", "money", "cost", "expense"] },
     { g: "🎓 เรียน/งาน",  ids: ["academic", "career", "intro"] },
   ];
 
@@ -351,6 +357,7 @@ export default function App() {
     { id: "pack",      l: "🧳 เตรียมของ" },
     { id: "intro",     l: "🧠 Introvert Guide" },
     { id: "life",      l: "📱 ชีวิต UK" },
+    { id: "budget",    l: "💰 Budget Planner" },
     { id: "expense",   l: "💷 Expense Tracker" },
     { id: "academic",  l: "🎓 Academic Prep" },
     { id: "career",    l: "💼 Career" },
@@ -1537,6 +1544,368 @@ export default function App() {
                 </div>
               );
             })()}
+          </div>
+        );
+      })()}
+
+      {/* ── BUDGET PLANNER ── */}
+      {tab === "budget" && (function() {
+        var lsData = budgetData.lifestyle[budgetLifestyle] || budgetData.lifestyle.balanced;
+        var lsTotal = lsData.total || 527;
+
+        // Accommodation — dynamic from selected room
+        var selA = accom[selectedAccomIdx] || accom[0] || {};
+        var studioPW = selA.room ? selA.room.pw : 289;
+        var studioWK = selA.room ? (selA.room.wk || 51) : 51;
+        var studioCost = studioPW * studioWK;
+        var studioDeposit = selA.room ? (selA.room.dep || 250) : 250;
+
+        // Pre-sess accommodation (pull from fixedCosts or default)
+        var presessAccom = (budgetData.fixedCosts.accommodation.find(function(i) {
+          return i.name.includes("Pre-sess") || i.name.includes("Josephine");
+        }) || { amount: 1200 }).amount;
+
+        // Living cost periods
+        var presessLiving  = Math.round(lsTotal * 1.5);
+        var termLiving     = Math.round(lsTotal * 9);
+        var dissertLiving  = Math.round(lsTotal * 0.8 * 3);
+        var totalLiving    = presessLiving + termLiving + dissertLiving;
+
+        // Totals
+        var accomTotal    = presessAccom + studioCost + studioDeposit;
+        var beforeGoTotal = budgetData.fixedCosts.beforeGo.reduce(function(a, i) { return a + i.amount; }, 0);
+        var emergency     = budgetData.fixedCosts.emergencyFund || 500;
+        var grandTotal    = beforeGoTotal + accomTotal + totalLiving + emergency;
+
+        // Money runway
+        var fundsGBP = profile.fundsAmount ? Math.round(parseFloat(profile.fundsAmount) / r) : 0;
+        var surplus = fundsGBP - grandTotal;
+
+        // Lifestyle config
+        var lsConfig = {
+          minimal:     { color: "#2E7D32", bg: "#E8F5E9", barColor: "#2E7D32" },
+          balanced:    { color: "#E65100", bg: "#FFF3E0", barColor: "#E65100" },
+          comfortable: { color: "#C62828", bg: "#FFEBEE", barColor: "#C62828" },
+        };
+        var lsCfg = lsConfig[budgetLifestyle] || lsConfig.balanced;
+
+        return (
+          <div>
+            {/* Header */}
+            <div style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", borderRadius: 12, padding: 14, color: "#fff", marginBottom: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 800 }}>💰 Budget Planner 2026/27</div>
+              <div style={{ fontSize: 10, opacity: 0.85, marginTop: 3 }}>ประมาณงบ LLM Durham 14 เดือน — เลือก lifestyle เพื่อคำนวณทันที</div>
+              <div style={{ marginTop: 8, padding: "4px 10px", background: "rgba(255,255,255,0.15)", borderRadius: 8, display: "inline-block", fontSize: 10 }}>
+                TOTAL ≈ £{grandTotal.toLocaleString()} · ฿{Math.round(grandTotal * r).toLocaleString()}
+              </div>
+            </div>
+
+            {/* ① Lifestyle Selector */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 10 }}>① เลือก Lifestyle — ค่าครองชีพ/เดือน (ไม่รวมค่าหอ)</div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {[
+                  { id: "minimal",     label: "🟢 ประหยัดสุด", sub: "ทำเองทุกมื้อ", color: "#2E7D32", bg: "#E8F5E9" },
+                  { id: "balanced",    label: "🟡 สมดุล",      sub: "Balance ดี",   color: "#E65100", bg: "#FFF3E0" },
+                  { id: "comfortable", label: "🔴 สะดวก",      sub: "ไม่ยั้งมือ",   color: "#C62828", bg: "#FFEBEE" },
+                ].map(function(ls) {
+                  var tot = budgetData.lifestyle[ls.id].total;
+                  var sel = budgetLifestyle === ls.id;
+                  return (
+                    <div
+                      key={ls.id}
+                      onClick={function() { setBudgetLifestyle(ls.id); setOpenBudgetCat(-1); }}
+                      style={{
+                        flex: 1, padding: "10px 6px", borderRadius: 10, textAlign: "center",
+                        border: "2px solid " + (sel ? ls.color : C.border),
+                        background: sel ? ls.bg : C.card,
+                        cursor: "pointer", transition: "all 0.2s",
+                      }}
+                    >
+                      <div style={{ fontSize: 10, fontWeight: 800, color: ls.color, marginBottom: 3 }}>{ls.label}</div>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: ls.color }}>£{tot}</div>
+                      <div style={{ fontSize: 8, color: sel ? ls.color : C.sub }}>/เดือน</div>
+                      <div style={{ fontSize: 8, color: C.sub, marginTop: 2 }}>{ls.sub}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ② Accommodation Selector */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>② เลือกที่พัก — เปลี่ยนงบรวมทันที</div>
+              <div style={{ overflowX: "auto", display: "flex", gap: 6, paddingBottom: 4 }}>
+                {accom.map(function(a, i) {
+                  var sel = selectedAccomIdx === i;
+                  var pw = a.room ? a.room.pw : 0;
+                  return (
+                    <div
+                      key={i}
+                      onClick={function() { setSelectedAccomIdx(i); }}
+                      style={{
+                        flexShrink: 0, minWidth: 100, padding: "8px 8px", borderRadius: 10,
+                        border: "2px solid " + (sel ? a.color : C.border),
+                        background: sel ? a.bg : C.card,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div style={{ fontSize: 7, fontWeight: 800, color: a.color, marginBottom: 1 }}>{a.badge}</div>
+                      <div style={{ fontSize: 8, fontWeight: 700, color: sel ? a.color : C.text, lineHeight: 1.3 }}>{a.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: a.color, marginTop: 3 }}>£{pw}<span style={{ fontSize: 8, fontWeight: 400 }}>/wk</span></div>
+                      <div style={{ fontSize: 8, color: a.color, fontWeight: 700 }}>= £{pw ? (pw * (a.room ? (a.room.wk||51) : 51)).toLocaleString() : "--"}</div>
+                    </div>
+                  );
+                })}
+              </div>
+              {selA.room && (
+                <div style={{ marginTop: 8, padding: "6px 10px", background: selA.bg || C.border, borderRadius: 8, borderLeft: "3px solid " + (selA.color || "#333"), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: selA.color }}>{selA.name} · {selA.room.name}</div>
+                    <div style={{ fontSize: 9, color: C.sub }}>{selA.dist}</div>
+                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}/ปี</div>
+                </div>
+              )}
+            </div>
+
+            {/* ③ Monthly Budget Breakdown */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 2 }}>③ ค่าครองชีพ/เดือน — {lsData.label}</div>
+              <div style={{ fontSize: 9, color: C.sub, marginBottom: 10 }}>{lsData.desc}</div>
+              {lsData.categories.map(function(cat, ci) {
+                var pct = lsTotal > 0 ? Math.round(cat.amount / lsTotal * 100) : 0;
+                var isOpen = openBudgetCat === ci;
+                return (
+                  <div key={ci} style={{ marginBottom: 6 }}>
+                    <div onClick={function() { setOpenBudgetCat(isOpen ? -1 : ci); }} style={{ cursor: "pointer", padding: "5px 0" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                        <span style={{ fontSize: 11, color: C.text }}>{cat.emoji} {cat.name}</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span style={{ fontSize: 11, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}</span>
+                          <span style={{ fontSize: 9, color: C.sub, minWidth: 28, textAlign: "right" }}>{pct}%</span>
+                          <span style={{ fontSize: 9, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
+                        </div>
+                      </div>
+                      <div style={{ background: C.border, borderRadius: 3, height: 7, overflow: "hidden" }}>
+                        <div style={{ background: lsCfg.barColor, height: 7, width: pct + "%", borderRadius: 3, transition: "width 0.4s" }} />
+                      </div>
+                    </div>
+                    {isOpen && (
+                      <div style={{ margin: "4px 0 6px", padding: "8px 10px", background: C.bg, borderRadius: 8 }}>
+                        {cat.items.map(function(it, ii) {
+                          return (
+                            <div key={ii} style={{ paddingBottom: ii < cat.items.length - 1 ? 6 : 0, marginBottom: ii < cat.items.length - 1 ? 6 : 0, borderBottom: ii < cat.items.length - 1 ? "1px solid " + C.border : "none" }}>
+                              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <span style={{ fontSize: 10, color: C.text }}>{it.name}</span>
+                                <span style={{ fontSize: 10, fontWeight: 700, color: lsCfg.color, flexShrink: 0, marginLeft: 8 }}>£{it.amount}</span>
+                              </div>
+                              {it.tip && <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>💡 {it.tip}</div>}
+                            </div>
+                          );
+                        })}
+                        <div style={{ marginTop: 6, paddingTop: 4, borderTop: "1px solid " + C.border, display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: 9, color: C.sub }}>รวม</span>
+                          <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}/เดือน ≈ ฿{Math.round(cat.amount * r).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              <div style={{ borderTop: "2px solid " + C.border, paddingTop: 8, marginTop: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวม/เดือน</span>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#C62828" }}>£{lsTotal}/เดือน</div>
+                  <div style={{ fontSize: 9, color: C.sub }}>≈ ฿{Math.round(lsTotal * r).toLocaleString()}/เดือน</div>
+                </div>
+              </div>
+            </div>
+
+            {/* ④ Total Cost of Attendance */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 10 }}>④ Total Cost of Attendance — 14 เดือน</div>
+
+              {/* Before going */}
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>📚 ก่อนไป (Tuition, Visa, วัคซีน, ตั๋ว)</div>
+                {budgetData.fixedCosts.beforeGo.map(function(it, i) {
+                  return (
+                    <div key={i} style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
+                      <span style={{ fontSize: 9, color: C.sub }}>{it.name}</span>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{it.amount.toLocaleString()}</span>
+                    </div>
+                  );
+                })}
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>รวม</span>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: "#1a237e" }}>£{beforeGoTotal.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Accommodation */}
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#1B5E20", marginBottom: 4 }}>🏠 ที่พัก</div>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
+                  <span style={{ fontSize: 9, color: C.sub }}>Pre-sess 6wk (Josephine Butler)</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{presessAccom.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
+                  <span style={{ fontSize: 9, color: selA.color || "#1B5E20", fontWeight: 700 }}>
+                    {selA.name || "Studio"} ({studioWK}wk @ £{studioPW}/wk)
+                  </span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: selA.color || "#1B5E20" }}>£{studioCost.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
+                  <span style={{ fontSize: 9, color: C.sub }}>Deposit</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{studioDeposit.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: "#1B5E20" }}>รวม</span>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: "#1B5E20" }}>£{accomTotal.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Living */}
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: lsCfg.color, marginBottom: 4 }}>🍽️ ค่าครองชีพ ({lsData.label})</div>
+                {[
+                  { l: "Pre-sess 1.5 เดือน (× 1.5)", v: presessLiving },
+                  { l: "Term 9 เดือน (× 9)", v: termLiving },
+                  { l: "Dissertation 3 เดือน (× 0.8 × 3)", v: dissertLiving },
+                ].map(function(it, i) {
+                  return (
+                    <div key={i} style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 2 }}>
+                      <span style={{ fontSize: 9, color: C.sub }}>{it.l}</span>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{it.v.toLocaleString()}</span>
+                    </div>
+                  );
+                })}
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingTop: 2, borderTop: "1px solid " + C.border, marginTop: 2 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: lsCfg.color }}>รวม</span>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{totalLiving.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Emergency */}
+              <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: 8 }}>
+                <span style={{ fontSize: 9, color: C.sub }}>🆘 Emergency Fund</span>
+                <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{emergency.toLocaleString()}</span>
+              </div>
+
+              {/* Grand Total */}
+              <div style={{ borderTop: "2px solid #1a237e", paddingTop: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>TOTAL</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 10, color: C.sub }}>เงินไทย (฿{r.toFixed(2)}/£)</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#C62828" }}>฿{Math.round(grandTotal * r).toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 9, color: C.sub }}>เฉลี่ย ~14 เดือน</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#E65100" }}>฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ⑤ Money Runway */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑤ เงินพอไหม? Money Runway</div>
+              {profile.fundsAmount ? (
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>เงินที่มี (฿{parseFloat(profile.fundsAmount).toLocaleString()})</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>≈ £{fundsGBP.toLocaleString()}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>ต้องใช้ทั้งหมด</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
+                  </div>
+                  {surplus >= 0 ? (
+                    <div style={{ background: "#E8F5E9", borderRadius: 8, padding: 10, borderLeft: "4px solid #2E7D32" }}>
+                      <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>✅ เงินพอ!</div>
+                      <div style={{ fontSize: 10, color: "#2E7D32", marginTop: 4 }}>
+                        เหลือ <strong>£{surplus.toLocaleString()} (~฿{Math.round(surplus * r).toLocaleString()})</strong> หลังจบ LLM
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ background: "#FFEBEE", borderRadius: 8, padding: 10, borderLeft: "4px solid #C62828", marginBottom: 8 }}>
+                        <div style={{ fontSize: 11, fontWeight: 800, color: "#C62828" }}>⚠️ ขาดอีก £{Math.abs(surplus).toLocaleString()}</div>
+                        <div style={{ fontSize: 10, color: "#C62828", marginTop: 4 }}>≈ ฿{Math.round(Math.abs(surplus) * r).toLocaleString()} — ต้องหางาน part-time</div>
+                      </div>
+                      <div style={{ background: "#E3F2FD", borderRadius: 8, padding: 10, borderLeft: "4px solid #1565C0" }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: "#1565C0" }}>💼 ทำงาน part-time 10 ชม./wk ตลอดปี</div>
+                        <div style={{ fontSize: 10, color: "#1565C0", marginTop: 3 }}>£12/ชม. × 10 ชม. × 40 wk = <strong>£4,800/ปี</strong></div>
+                        <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>
+                          {Math.abs(surplus) <= 4800 ? "✅ ช่วยปิดส่วนต่างได้ครบ!" : "ช่วยปิดส่วนต่างได้บางส่วน"}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ padding: "8px 0", fontSize: 10, color: C.sub }}>
+                  กรอกเงินที่มีในหน้า{" "}
+                  <strong onClick={function() { setTab("decide"); setShowMore(false); }} style={{ color: "#1a237e", cursor: "pointer" }}>
+                    🎯 แนะนำ
+                  </strong>{" "}
+                  เพื่อดูว่าเงินพอไหม
+                </div>
+              )}
+            </div>
+
+            {/* ⑥ Peak Month Warning */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑥ เดือนที่จ่ายหนักสุด</div>
+              {budgetData.peakMonths.map(function(pm, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: i < budgetData.peakMonths.length - 1 ? "1px solid " + C.border : "none" }}>
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: pm.color }}>{pm.month}</div>
+                      <div style={{ fontSize: 9, color: C.sub }}>{pm.note}</div>
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: pm.color }}>~£{pm.amount.toLocaleString()}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ⑦ Exchange Rate Impact */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 4 }}>⑦ ผลกระทบจาก Exchange Rate</div>
+              <div style={{ fontSize: 9, color: C.sub, marginBottom: 8 }}>Total £{grandTotal.toLocaleString()} แลกที่ rate ต่างกัน</div>
+              {[41, 44, 46].map(function(testRate) {
+                var thb = Math.round(grandTotal * testRate);
+                var diff = thb - Math.round(grandTotal * 44);
+                var isCurrent = Math.abs(testRate - r) < 1.5;
+                return (
+                  <div key={testRate} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid " + C.border }}>
+                    <span style={{ fontSize: 10, fontWeight: isCurrent ? 800 : 400, color: isCurrent ? "#E65100" : C.text }}>
+                      ฿{testRate}/£{isCurrent ? " ← ปัจจุบัน" : ""}
+                    </span>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 10, fontWeight: 800, color: C.text }}>฿{thb.toLocaleString()}</div>
+                      {testRate !== 44 && (
+                        <div style={{ fontSize: 9, color: diff < 0 ? "#2E7D32" : "#C62828" }}>
+                          {diff < 0 ? "ประหยัด" : "เพิ่ม"} ฿{Math.abs(diff).toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 8, padding: "6px 10px", background: "#FFF3E0", borderRadius: 6 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#E65100" }}>
+                  ต่างกัน ฿{Math.round(grandTotal * (46 - 41)).toLocaleString()} ระหว่าง rate ดีสุด (฿41) vs แย่สุด (฿46)!
+                </div>
+                <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>
+                  💡 ทยอยแลกตอน rate ≤ ฿42 ผ่าน Wise หรือ SCB Travel Card
+                </div>
+              </div>
+            </div>
           </div>
         );
       })()}

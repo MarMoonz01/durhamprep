@@ -758,6 +758,88 @@ function parseExpenseTracker(rows) {
     }));
 }
 
+/**
+ * Budget Planner — 💰 Budget Planner
+ *
+ * Col 0  #  (row number — skip empties)
+ * Col 1  section  (lifestyle_minimal | lifestyle_balanced | lifestyle_comfortable | fixed | cashflow)
+ * Col 2  category / month / fixed-section
+ * Col 3  item name  (for lifestyle); accom £  (for cashflow)
+ * Col 4  amount_minimal  (lifestyle) | living £  (cashflow) | amount £  (fixed)
+ * Col 5  amount_balanced (lifestyle) | tuition £ (cashflow) | note      (fixed)
+ * Col 6  amount_comfortable (lifestyle) | other £ (cashflow)
+ * Col 7  tip/note  (lifestyle) | note (cashflow)
+ *
+ * Returns { lifestyle: { minimal, balanced, comfortable }, fixedCosts, cashflow }
+ */
+function parseBudgetPlanner(rows) {
+  const catMap = new Map(); // category → { emoji, name, items: [{name, min, bal, com, tip}] }
+  const fixedBeforeGo = [];
+  const fixedAccom = [];
+  let emergencyFund = 500;
+  const cashflow = [];
+
+  rows.filter((r) => r[0]).forEach((r) => {
+    const section = String(r[1] || "").trim().toLowerCase();
+    const category = String(r[2] || "").trim();
+    const item = String(r[3] || "").trim();
+
+    if (section.startsWith("lifestyle")) {
+      if (!item || !category) return;
+      const minAmt = parseFloat(r[4]) || 0;
+      const balAmt = parseFloat(r[5]) || 0;
+      const comAmt = parseFloat(r[6]) || 0;
+      const tip = String(r[7] || "").trim();
+
+      if (!catMap.has(category)) {
+        const emojiMatch = category.match(/^\p{Emoji}/u);
+        const emoji = emojiMatch ? emojiMatch[0] : "💡";
+        const name = category.replace(/^[\p{Emoji}\s]+/u, "").trim() || category;
+        catMap.set(category, { emoji, name, items: [] });
+      }
+      catMap.get(category).items.push({ name: item, min: minAmt, bal: balAmt, com: comAmt, tip });
+    } else if (section === "fixed") {
+      const amount = parseFloat(r[4]) || 0;
+      const note = String(r[5] || "").trim();
+      if (category.includes("ที่พัก") || category.toLowerCase().includes("accom")) {
+        fixedAccom.push({ name: item, amount, note });
+      } else if (category.toLowerCase().includes("emergency") || category.includes("ฉุกเฉิน")) {
+        emergencyFund = amount || 500;
+      } else {
+        fixedBeforeGo.push({ name: item, amount, note });
+      }
+    } else if (section === "cashflow") {
+      cashflow.push({
+        month: category,
+        accom:   parseFloat(r[3]) || 0,
+        living:  parseFloat(r[4]) || 0,
+        tuition: parseFloat(r[5]) || 0,
+        other:   parseFloat(r[6]) || 0,
+        note:    String(r[7] || "").trim(),
+      });
+    }
+  });
+
+  function buildLevel(key) {
+    const categories = [...catMap.entries()].map(([, data]) => {
+      const items = data.items.map((it) => ({ name: it.name, amount: it[key], tip: it.tip }));
+      const amount = items.reduce((a, it) => a + it.amount, 0);
+      return { emoji: data.emoji, name: data.name, amount, items };
+    });
+    return { total: categories.reduce((a, c) => a + c.amount, 0), categories };
+  }
+
+  return {
+    lifestyle: {
+      minimal:     buildLevel("min"),
+      balanced:    buildLevel("bal"),
+      comfortable: buildLevel("com"),
+    },
+    fixedCosts: { beforeGo: fixedBeforeGo, accommodation: fixedAccom, emergencyFund },
+    cashflow,
+  };
+}
+
 // ─── Safe fetcher (returns [] if tab missing / on error) ─────────────────────
 async function fetchGVizSafe(tabRef) {
   try { return await fetchGViz(tabRef); } catch { return []; }
@@ -798,6 +880,7 @@ export async function fetchAllData() {
   const priceCompRows   = await fetchGVizSafe("💰 เปรียบเทียบราคา");
   const accomRatingRows = await fetchGVizSafe("🏠 ที่พัก Rating");
   const expenseRows     = await fetchGVizSafe("💷 Expense Tracker");
+  const budgetRows      = await fetchGVizSafe("💰 Budget Planner");
 
   return {
     accom:           parseAccom(accomRows),
@@ -819,5 +902,6 @@ export async function fetchAllData() {
     priceComparison: parsePriceComparison(priceCompRows),
     accomRating:     parseAccomRating(accomRatingRows),
     sheetExpenses:   parseExpenseTracker(expenseRows),
+    budget:          parseBudgetPlanner(budgetRows),
   };
 }
