@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchAllData, isSheetsConfigured } from "./services/googleSheets";
 import {
   defaultAccom,
+  defaultAccomFull,
   defaultCollegeAccom,
   defaultVaccines,
   defaultPacking,
@@ -89,8 +90,10 @@ export default function App() {
 
   // Cost Calculator — selected accommodation (legacy single-select, unused in new UI)
   const [selectedAccomIdx, setSelectedAccomIdx] = useState(0);
+  // Budget planner — selected unit within chosen property
+  const [selectedBudgetUnitId, setSelectedBudgetUnitId] = useState(null);
   // Multi-select cost comparison
-  const [accomFull, setAccomFull] = useState([]);
+  const [accomFull, setAccomFull] = useState(defaultAccomFull);
   const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 
   // Navigation drawer
@@ -1553,12 +1556,21 @@ export default function App() {
         var lsData = budgetData.lifestyle[budgetLifestyle] || budgetData.lifestyle.balanced;
         var lsTotal = lsData.total || 527;
 
-        // Accommodation — dynamic from selected room
+        // Accommodation — dynamic from selected property + unit
         var selA = accom[selectedAccomIdx] || accom[0] || {};
-        var studioPW = selA.room ? selA.room.pw : 289;
-        var studioWK = selA.room ? (selA.room.wk || 51) : 51;
+
+        // Use rooms array directly from property (no cross-reference with accomFull)
+        var propRooms = selA.rooms && selA.rooms.length > 0
+          ? selA.rooms
+          : [{ id: selA.name + " · " + (selA.room ? selA.room.name : ""), room: selA.room || { pw: 289, wk: 51, dep: 250, name: "" } }];
+        var selectedUnit = (selectedBudgetUnitId && propRooms.find(function(r) { return r.id === selectedBudgetUnitId; }))
+          || propRooms[0]
+          || { room: selA.room || { pw: 289, wk: 51, dep: 250, name: "" } };
+
+        var studioPW = selectedUnit.room ? selectedUnit.room.pw : 289;
+        var studioWK = selectedUnit.room ? (selectedUnit.room.wk || 51) : 51;
         var studioCost = studioPW * studioWK;
-        var studioDeposit = selA.room ? (selA.room.dep || 250) : 250;
+        var studioDeposit = selectedUnit.room ? (selectedUnit.room.dep != null ? selectedUnit.room.dep : 250) : 250;
 
         // Pre-sess accommodation (pull from fixedCosts or default)
         var presessAccom = (budgetData.fixedCosts.accommodation.find(function(i) {
@@ -1642,7 +1654,7 @@ export default function App() {
                   return (
                     <div
                       key={i}
-                      onClick={function() { setSelectedAccomIdx(i); }}
+                      onClick={function() { setSelectedAccomIdx(i); setSelectedBudgetUnitId(null); }}
                       style={{
                         flexShrink: 0, minWidth: 100, padding: "8px 8px", borderRadius: 10,
                         border: "2px solid " + (sel ? a.color : C.border),
@@ -1658,11 +1670,47 @@ export default function App() {
                   );
                 })}
               </div>
-              {selA.room && (
+              {/* Unit picker — shown when there are multiple room types */}
+              {propRooms.length > 1 && (
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: C.sub, marginBottom: 5 }}>เลือกประเภทห้อง:</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                    {propRooms.map(function(rm, ri) {
+                      var isSel = selectedUnit && selectedUnit.id === rm.id;
+                      return (
+                        <div
+                          key={ri}
+                          onClick={function() { setSelectedBudgetUnitId(rm.id); }}
+                          style={{
+                            padding: "5px 9px", borderRadius: 8, cursor: "pointer",
+                            border: "2px solid " + (isSel ? selA.color : C.border),
+                            background: isSel ? selA.bg : C.card,
+                            fontSize: 9, fontWeight: isSel ? 700 : 400,
+                            color: isSel ? selA.color : C.sub,
+                          }}
+                        >
+                          {rm.room.name || rm.id}
+                          {rm.room.size ? " · " + rm.room.size : ""}
+                          {" · "}
+                          <strong>£{rm.room.pw}/wk</strong>
+                          {rm.room.dep != null && rm.room.dep > 0 ? " · dep £" + rm.room.dep : " · no dep"}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Selected unit summary */}
+              {selectedUnit && selectedUnit.room && (
                 <div style={{ marginTop: 8, padding: "6px 10px", background: selA.bg || C.border, borderRadius: 8, borderLeft: "3px solid " + (selA.color || "#333"), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: selA.color }}>{selA.name} · {selA.room.name}</div>
-                    <div style={{ fontSize: 9, color: C.sub }}>{selA.dist}</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: selA.color }}>{selA.name} · {selectedUnit.room.name || selA.room && selA.room.name}</div>
+                    <div style={{ fontSize: 9, color: C.sub }}>
+                      {studioWK}wk @ £{studioPW}/wk
+                      {selectedUnit.room.size ? " · " + selectedUnit.room.size : ""}
+                      {selectedUnit.room.bed ? " · " + selectedUnit.room.bed : ""}
+                    </div>
                   </div>
                   <div style={{ fontSize: 10, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}/ปี</div>
                 </div>

@@ -150,45 +150,55 @@ function parseAccom(rows) {
     const pw = parseFloat(r[4]) || 0;
     if (!pw) return; // skip rows with no price (sold out etc.)
 
-    if (propMap.has(propName)) return; // keep first room per property
-
     const meta =
       Object.entries(ACCOM_META).find(([k]) => propName.includes(k))?.[1] ||
       { badge: "", color: "#333", bg: "#f8f8f8", addr: "" };
 
-    const dist = String(r[11] || "").replace(/\n/g, " ").trim();
-    const security = String(r[12] || "")
-      .split(/[,\n]/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const roomHas = String(r[13] || "")
-      .split(/[,\n]/)
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const roomName = String(r[1] || "").trim();
+    const roomObj = {
+      name: roomName,
+      size: r[2] ? `${r[2]}m²` : "",
+      bed: String(r[3] || "").replace(/\n/g, " ").trim(),
+      pw,
+      wk: parseInt(r[5]) || 51,
+      dep: parseInt(r[10]) || 0,
+    };
 
-    propMap.set(propName, {
-      name: propName,
-      badge: meta.badge,
-      color: meta.color,
-      bg: meta.bg,
-      provider: provider || propName,
-      addr: meta.addr,
-      dist,
-      rating: "",
-      stars: { location: 0, clean: 0, facilities: 0, value: 0, safety: 0 },
-      room: {
-        name: String(r[1] || ""),
-        size: r[2] ? `${r[2]}m²` : "",
-        bed: String(r[3] || ""),
-        pw,
-        wk: parseInt(r[5]) || 51,
-        dep: parseInt(r[10]) || 0,
-      },
-      roomHas,
-      facilities: [],
-      security,
-      pros: [],
-      cons: [],
+    if (!propMap.has(propName)) {
+      const dist = String(r[11] || "").replace(/\n/g, " ").trim();
+      const security = String(r[12] || "")
+        .split(/[,\n]/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const roomHas = String(r[13] || "")
+        .split(/[,\n]/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      propMap.set(propName, {
+        name: propName,
+        badge: meta.badge,
+        color: meta.color,
+        bg: meta.bg,
+        provider: provider || propName,
+        addr: meta.addr,
+        dist,
+        rating: "",
+        stars: { location: 0, clean: 0, facilities: 0, value: 0, safety: 0 },
+        room: roomObj,  // first room = representative
+        rooms: [],      // all rooms — populated below
+        roomHas,
+        facilities: [],
+        security,
+        pros: [],
+        cons: [],
+      });
+    }
+
+    // Add every room (including the first) to the rooms array
+    propMap.get(propName).rooms.push({
+      id: propName + " · " + roomName,
+      room: roomObj,
     });
   });
 
