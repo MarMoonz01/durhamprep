@@ -257,7 +257,7 @@ export const defaultTimeline = [
     { item: "สะสมเงินให้ครบ £37,579 ใน 1 บัญชี (ต้องมี 28 วันติดต่อกัน)", cat: "💰 การเงิน", status: "⏳", imp: "🔴", note: "Savings Statement ต้องแสดง 28 วันก่อนวันยื่นวีซ่า" },
     { item: "ฉีด MenACWY เข็มแรก", cat: "💉 วัคซีน", status: "⏳", imp: "🟠", note: "สถานเสาวภา / รพ.เอกชน ~฿1,500-2,500" },
     { item: "ฉีด MenB เข็มแรก", cat: "💉 วัคซีน", status: "⏳", imp: "🟠", note: "~฿3,000-5,000/เข็ม — ห่างเข็ม 2 อย่างน้อย 1 เดือน" },
-    { item: "จ่าย IHS Online (£388)", cat: "📄 เอกสาร", status: "⏳", imp: "🟠", note: "Healthcare surcharge — ชำระออนไลน์ก่อนยื่น visa" },
+    { item: "จ่าย IHS Online (£1,164)", cat: "📄 เอกสาร", status: "⏳", imp: "🟠", note: "Healthcare surcharge 18 เดือน — ชำระออนไลน์ก่อนยื่น visa" },
   ]},
   { month: "📅 พ.ค. 2026", tasks: [
     { item: "ตรวจ TB Test ที่ IOM Thailand (฿3,800)", cat: "🏥 สุขภาพ", status: "⏳", imp: "🔴", note: "IOM Bangkok: อาคารเกษมกิจ ชั้น 8 สีลม — ผลออก ~1 สัปดาห์" },
@@ -268,7 +268,7 @@ export const defaultTimeline = [
     { item: "รอ CAS จาก Durham", cat: "🎓 มหาลัย", status: "⏳ รอ", imp: "🟡", note: "Durham ส่ง CAS ให้หลังจาก Unconditional Offer + Enrolment Deposit" },
   ]},
   { month: "📅 มิ.ย. 2026", tasks: [
-    { item: "ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)", cat: "📋 วีซ่า", status: "⏳", imp: "🔴", note: "VFS Bangkok — ใช้เวลา ~3-4 สัปดาห์ อย่าลืม TB Certificate + CAS" },
+    { item: "ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £1,164)", cat: "📋 วีซ่า", status: "⏳", imp: "🔴", note: "VFS Bangkok — ใช้เวลา ~3-4 สัปดาห์ อย่าลืม TB Certificate + CAS" },
     { item: "ยืนยัน Pre-sess Accommodation และวันเข้าพัก", cat: "🏠 ที่พัก", status: "⏳", imp: "🟠", note: "" },
   ]},
   { month: "📅 ก.ค. 2026", tasks: [
@@ -352,7 +352,7 @@ export const defaultChecklist = [
   { item: "แปลสูติบัตร เป็น EN", cat: "📄 เอกสาร", status: "⏳", deadline: "2026-06-15" },
   { item: "สมัครที่พัก Pre-sess Josephine Butler + จ่าย ~£1,300", cat: "🏠 ที่พัก", status: "⏳", deadline: "2026-05-31" },
   { item: "รอ CAS จาก Durham", cat: "🎓 มหาลัย", status: "⏳", deadline: "2026-06-30" },
-  { item: "ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)", cat: "📋 วีซ่า", status: "⏳", deadline: "2026-07-01" },
+  { item: "ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £1,164)", cat: "📋 วีซ่า", status: "⏳", deadline: "2026-07-01" },
   { item: "จองตั๋ว BKK → NCL (Emirates/Qatar/Thai)", cat: "✈️ เดินทาง", status: "⏳", deadline: "2026-07-15" },
   { item: "ทำประกันเดินทาง", cat: "📄 เอกสาร", status: "⏳", deadline: "2026-07-20" },
   { item: "ซื้อ Adapter UK Type G + เตรียมของ", cat: "🛒 เตรียมของ", status: "⏳", deadline: "2026-07-31" },
@@ -374,7 +374,7 @@ export const defaultChecklistGroups = [
   { preDone: true,  phase: "✅ เสร็จแล้ว",  color: "#2E7D32", items: ["Conditional Offer LLM International Trade & Commercial Law", "IELTS 7.0 ส่งผลแล้ว", "Pre-sessional 6wk Confirmed เริ่ม 3 ส.ค.", "Deposit £2,000 จ่ายแล้ว", "Scholarship £5,000 ได้แล้ว"] },
   { preDone: false, phase: "🔴 มี.ค.-เม.ย.", color: "#C62828", items: ["จอง Private PBSA ผ่าน uhomes.com", "สมัคร College Preference (30 มี.ค.)", "เริ่มเตรียมเงิน £37,579 ในบัญชี 28 วัน", "เปิด Wise Card + ทยอยแลก GBP"] },
   { preDone: false, phase: "📋 พ.ค.-มิ.ย.",  color: "#E65100", items: ["ตรวจ TB Test (IOM ฿3,800)", "ฉีด MenACWY + MenB เข็ม 1 (พ.ค.) + เข็ม 2 (มิ.ย.)", "ฉีด MMR ถ้ายังไม่ครบ", "แปลสูติบัตร เป็น EN", "สมัครที่พัก Pre-sess Josephine Butler + จ่าย ~£1,300", "รอ CAS จาก Durham"] },
-  { preDone: false, phase: "📋 มิ.ย.-ก.ค.",  color: "#1565C0", items: ["ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)", "จองตั๋ว BKK → NCL (Emirates/Qatar/Thai)", "ทำประกันเดินทาง", "ซื้อ Adapter UK Type G + เตรียมของ"] },
+  { preDone: false, phase: "📋 มิ.ย.-ก.ค.",  color: "#1565C0", items: ["ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £1,164)", "จองตั๋ว BKK → NCL (Emirates/Qatar/Thai)", "ทำประกันเดินทาง", "ซื้อ Adapter UK Type G + เตรียมของ"] },
   { preDone: false, phase: "✈️ ส.ค.",         color: "#4A148C", items: ["บิน BKK → NCL (ถึงก่อน 3 ส.ค.)", "เข้า Josephine Butler เริ่ม Pre-sess", "ยืนยัน e-Visa status online (BRP ยกเลิกแล้ว)", "เปิดบัญชี UK (Monzo/Starling)", "ลงทะเบียน GP (หมอ)"] },
   { preDone: false, phase: "🎓 ก.ย.",          color: "#1a237e", items: ["จบ Pre-sess 11 ก.ย. → ย้ายเข้า Studio", "Enrolment LLM 28 ก.ย.", "🎉 เริ่มเรียน LLM!"] },
 ];
@@ -661,7 +661,7 @@ export const defaultBudgetData = {
       { name: "Tuition LLM (หลัง Scholarship £5k)", amount: 23500, note: "£30,500 gross − £5,000 scholarship − £2,000 deposit" },
       { name: "Pre-sessional 6wk (Josephine Butler)", amount: 1200, note: "£200/wk × 6 สัปดาห์" },
       { name: "Student Visa (UK)", amount: 524, note: "UK Visas & Immigration fee" },
-      { name: "IHS Health Surcharge (14 เดือน)", amount: 910, note: "£780/ปี × 14/12 เดือน" },
+      { name: "IHS Health Surcharge (18 เดือน)", amount: 1164, note: "£776/ปี × 18 เดือน ≈ £1,164" },
       { name: "TB Test (IOM Bangkok)", amount: 65, note: "~฿3,800 ที่ IOM / BNH ฿4,000" },
       { name: "วัคซีน MenACWY + MenB + MMR", amount: 120, note: "ฉีด 3 วัคซีนก่อนไป UK" },
       { name: "ตั๋วเครื่องบิน BKK↔NCL", amount: 950, note: "Qatar/Emirates เฉลี่ย (ไป-กลับ)" },

@@ -188,12 +188,12 @@ export default function App() {
       funds:   { task:'💰 ฝากเงิน £37,579 เข้าบัญชี', sub:'ต้องอยู่ครบ 28 วันติดต่อกันก่อนยื่นวีซ่า', tab:'decide' },
       vaccine: { task:'💉 ฉีดวัคซีน MenACWY + MenB', sub:'ต้องฉีด 2 เข็มห่าง 1 เดือน ทำก่อนได้เลย', tab:'vax' },
       cas:     { task:'📋 ติดตาม CAS จาก Durham', sub:'ต้องได้ CAS ก่อนยื่นวีซ่า — email Durham ถ้าช้า', tab:'visa' },
-      visa:    { task:'📋 ยื่น Student Visa ที่ VFS', sub:'ค่าวีซ่า £524 + IHS £388 — เตรียมเอกสารให้ครบ', tab:'visa' },
+      visa:    { task:'📋 ยื่น Student Visa ที่ VFS', sub:'ค่าวีซ่า £524 + IHS £1,164 (18 เดือน) — เตรียมเอกสารให้ครบ', tab:'visa' },
     };
     var doneMap = {
       funds: checkKey('เริ่มเตรียมเงิน £37,579 ในบัญชี 28 วัน'),
       cas:   checkKey('รอ CAS จาก Durham'),
-      visa:  checkKey('ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £388)'),
+      visa:  checkKey('ยื่น Visa ที่ VFS (ค่าวีซ่า £524 / IHS £1,164)'),
     };
 
     tl.forEach(function(t) {
@@ -1993,7 +1993,7 @@ export default function App() {
             {[
               { c: "ค่าเรียน", items: [["Tuition LLM (หลังหัก Scholarship £5k)", "£25,500"], ["Pre-sessional 6wk", "£3,540"], ["Deposit (หักจาก Tuition แล้ว)", "-£2,000"]] },
               { c: "ค่าที่พัก", items: [["Pre-sess 6wk (Josephine Butler)", "~£1,300"], ["Studio 51wk (Duresme Court Classic ⭐)", "£14,739"], ["หรือ Studio 51wk (Student Castle Bellamy)", "£18,360"]] },
-              { c: "ค่าวีซ่า+เอกสาร", items: [["Student Visa", "£524"], ["Health Surcharge (IHS) 6 เดือน", "£388"], ["TB Test", "~£65 (฿3,800)"]] },
+              { c: "ค่าวีซ่า+เอกสาร", items: [["Student Visa", "£524"], ["Health Surcharge (IHS) 18 เดือน", "£1,164"], ["TB Test", "~£65 (฿3,800)"]] },
               { c: "วัคซีน", items: [["MenACWY + MenB + MMR", "~£120 (฿5,000-8,000)"]] },
               { c: "ตั๋วเครื่องบิน", items: [["BKK → NCL (เที่ยวเดียว)", "~£500"], ["กลับ NCL → BKK", "~£450"]] },
               { c: "ค่าครองชีพ ~12 เดือน", items: [["อาหาร (ทำเอง)", "~£3,000"], ["ค่าเดินทางในเมือง", "~£300"], ["หนังสือ+อุปกรณ์", "~£300"], ["สังสรรค์+ท่องเที่ยว", "~£1,200"], ["เสื้อผ้า+ของใช้", "~£500"]] },
@@ -2013,9 +2013,9 @@ export default function App() {
               );
             })}
             <div style={{ borderTop: "2px solid #1a237e", paddingTop: 8, marginTop: 4 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span><span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£45,676</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span><span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(45676 * r).toLocaleString()}</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}><span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~14 เดือน)</span><span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(45676 * r / 14).toLocaleString()}/เดือน</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span><span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£46,452</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span><span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(46452 * r).toLocaleString()}</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}><span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~14 เดือน)</span><span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(46452 * r / 14).toLocaleString()}/เดือน</span></div>
             </div>
           </div>
 
@@ -2048,7 +2048,7 @@ export default function App() {
             <div style={{ fontSize: 12, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>📋 เอกสารยื่น Student Visa (ครบทุกอย่าง)</div>
             <div style={{ fontSize: 10, color: C.sub, marginBottom: 6 }}>ยื่นผ่าน VFS Global · เวลา 08:30-14:00 · ผล 10-15 วันทำการ · Priority 5 วัน (+£500) · Super Priority 1-2 วัน (+£1,000)</div>
             {[
-              { c: "📄 เอกสารหลัก", i: ["ใบสมัคร Online กรอกเสร็จ (ผ่าน GOV.UK) + ชำระค่าวีซ่า £524", "ใบนัดหมาย VFS Online", "IHS Reference Number (จ่าย Health Surcharge £388 สำหรับ 6 เดือน)", "Passport ตัวจริง + สำเนาหน้าแรก 2 ชุด + สำเนาทุกหน้าที่มีตราเข้า-ออก", "Passport เล่มเก่า (ถ้ามี)", "สำเนาบัตร ปชช. 1 ชุด", "CAS Statement จาก Durham", "เอกสารการเรียนตาม CAS: Transcript + ปริญญาบัตร + IELTS certificate", "TB Certificate (ผลตรวจวัณโรค จาก IOM/BNH)"] },
+              { c: "📄 เอกสารหลัก", i: ["ใบสมัคร Online กรอกเสร็จ (ผ่าน GOV.UK) + ชำระค่าวีซ่า £524", "ใบนัดหมาย VFS Online", "IHS Reference Number (จ่าย Health Surcharge £1,164 สำหรับ 18 เดือน)", "Passport ตัวจริง + สำเนาหน้าแรก 2 ชุด + สำเนาทุกหน้าที่มีตราเข้า-ออก", "Passport เล่มเก่า (ถ้ามี)", "สำเนาบัตร ปชช. 1 ชุด", "CAS Statement จาก Durham", "เอกสารการเรียนตาม CAS: Transcript + ปริญญาบัตร + IELTS certificate", "TB Certificate (ผลตรวจวัณโรค จาก IOM/BNH)"] },
               { c: "💰 หลักฐานการเงิน", i: ["Bank Statement จากธนาคาร (อายุไม่เกิน 1 เดือน)", "ยอดเงินขั้นต่ำ: £37,579 (~฿1.65M) อยู่ในบัญชี 28 วัน+", "ถ้าเป็นบัญชีผู้ปกครอง ต้องมี:", "  — สูติบัตร ภาษาไทย + แปลอังกฤษ", "  — จดหมาย Sponsorship Letter จากผู้ปกครอง + ลายเซ็น", "  — สำเนาบัตร ปชช. ผู้ปกครอง + ลายเซ็น", "  — ใบเปลี่ยนชื่อ/นามสกุล + แปลอังกฤษ (ถ้ามี)"] },
             ].map(function (sec, si) {
               return (
@@ -2090,7 +2090,7 @@ export default function App() {
                 { t: "นัดตรวจ TB Test", d: "20260501", de: "20260502", c: "ตรวจ TB ที่ IOM (฿3,800) หรือ BNH (฿4,000)" },
                 { t: "ฉีดวัคซีน MenACWY + MenB เข็ม 1", d: "20260505", de: "20260506", c: "ฉีดที่ รพ.เอกชน หรือสถานเสาวภา MenB ต้อง 2 เข็มห่าง 1 เดือน" },
                 { t: "ฉีดวัคซีน MenB เข็ม 2", d: "20260605", de: "20260606", c: "MenB เข็มที่ 2 ห่างจากเข็มแรก 1 เดือน" },
-                { t: "ยื่น Student Visa ที่ VFS", d: "20260615", de: "20260616", c: "เตรียมเอกสารทั้งหมด + ค่าวีซ่า £524 + IHS £388" },
+                { t: "ยื่น Student Visa ที่ VFS", d: "20260615", de: "20260616", c: "เตรียมเอกสารทั้งหมด + ค่าวีซ่า £524 + IHS £1,164 (18 เดือน)" },
                 { t: "Deadline สมัคร Pre-sessional", d: "20260706", de: "20260707", c: "Deadline! สมัคร Pre-sessional 6wk ใน Applicant Portal" },
                 { t: "จองตั๋วเครื่องบิน BKK→NCL", d: "20260710", de: "20260711", c: "จอง Qatar/Emirates/Thai ถึงก่อน 3 ส.ค.!" },
                 { t: "✈️ บินไป Durham!", d: "20260801", de: "20260802", c: "บิน BKK→NCL ถึงก่อน 3 ส.ค.!" },
@@ -3075,7 +3075,7 @@ export default function App() {
       )}
 
       <div style={{ textAlign: "center", marginTop: 12, fontSize: 9, color: C.sub }}>
-        ข้อมูล ณ 20 มี.ค. 2026 · อัตราแลกเปลี่ยนอาจเปลี่ยนแปลง
+        ข้อมูล ณ 22 มี.ค. 2026 · อัตราแลกเปลี่ยนอาจเปลี่ยนแปลง
         {sheetsStatus === "ok" && " · Live จาก Google Sheets"}
       </div>
 
