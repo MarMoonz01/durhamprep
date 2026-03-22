@@ -322,6 +322,11 @@ export default function App() {
   // Memo persistence
   useEffect(function() { localStorage.setItem('durham_memo', memo); }, [memo]);
 
+  // UKVI visa funds requirement (set by UK immigration rules)
+  // = Remaining tuition (LLM £25,500 + Pre-sess £3,540 − deposit £2,000)
+  //   + UKVI maintenance requirement (£10,539 = £1,171/month × 9 months, outside London)
+  var VISA_FUNDS_GBP = 37579;
+
   // Google Sheets link
   var SHEETS_URL = import.meta.env.VITE_GOOGLE_SHEETS_ID
     ? "https://docs.google.com/spreadsheets/d/" + import.meta.env.VITE_GOOGLE_SHEETS_ID + "/edit"
@@ -533,8 +538,8 @@ export default function App() {
             },
             {
               l: "เงินค้ำวีซ่า",
-              v: "฿" + Math.round(37579 * r).toLocaleString(),
-              s: "£37,579 อยู่ 28 วัน",
+              v: "฿" + Math.round(VISA_FUNDS_GBP * r).toLocaleString(),
+              s: "£" + VISA_FUNDS_GBP.toLocaleString() + " อยู่ 28 วัน",
             },
             {
               l: "Pre-sess เริ่ม",
@@ -1304,16 +1309,10 @@ export default function App() {
           });
         }
 
-        // Fixed costs common to all options (GBP)
-        var FIXED_ROWS = [
-          { l: "📚 ค่าเรียน LLM + Pre-sess (หลัง scholarship & deposit)", v: 22040 },
-          { l: "🏡 Pre-sess Accom 6wk (Josephine Butler)", v: 1300 },
-          { l: "🛂 Student Visa + IHS + TB Test", v: 977 },
-          { l: "💉 วัคซีน (MenACWY + MenB + MMR)", v: 120 },
-          { l: "✈️ ตั๋วเครื่องบิน ไป+กลับ", v: 950 },
-          { l: "🛒 ของเตรียมก่อนไป", v: 120 },
-          { l: "🍽️ ค่าครองชีพ ~12 เดือน", v: 5420 },
-        ];
+        // Fixed costs — read from budgetData (comes from Sheets or defaults.js fallback)
+        var FIXED_ROWS = budgetData.fixedCosts.beforeGo.map(function(item) {
+          return { l: item.name, v: item.amount };
+        });
         var FIXED_TOTAL = FIXED_ROWS.reduce(function(a, x) { return a + x.v; }, 0);
 
         // Group allRooms by property for the selector UI
@@ -1990,33 +1989,82 @@ export default function App() {
 
           <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
             <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>💰 งบประมาณรวมทั้งหมด (ประมาณ)</div>
-            {[
-              { c: "ค่าเรียน", items: [["Tuition LLM (หลังหัก Scholarship £5k)", "£25,500"], ["Pre-sessional 6wk", "£3,540"], ["Deposit (หักจาก Tuition แล้ว)", "-£2,000"]] },
-              { c: "ค่าที่พัก", items: [["Pre-sess 6wk (Josephine Butler)", "~£1,300"], ["Studio 51wk (Duresme Court Classic ⭐)", "£14,739"], ["หรือ Studio 51wk (Student Castle Bellamy)", "£18,360"]] },
-              { c: "ค่าวีซ่า+เอกสาร", items: [["Student Visa", "£524"], ["Health Surcharge (IHS) 18 เดือน", "£1,164"], ["TB Test", "~£65 (฿3,800)"]] },
-              { c: "วัคซีน", items: [["MenACWY + MenB + MMR", "~£120 (฿5,000-8,000)"]] },
-              { c: "ตั๋วเครื่องบิน", items: [["BKK → NCL (เที่ยวเดียว)", "~£500"], ["กลับ NCL → BKK", "~£450"]] },
-              { c: "ค่าครองชีพ ~12 เดือน", items: [["อาหาร (ทำเอง)", "~£3,000"], ["ค่าเดินทางในเมือง", "~£300"], ["หนังสือ+อุปกรณ์", "~£300"], ["สังสรรค์+ท่องเที่ยว", "~£1,200"], ["เสื้อผ้า+ของใช้", "~£500"]] },
-            ].map(function (cat, ci) {
+
+            {/* ── ค่าใช้จ่ายคงที่ก่อนเดินทาง (from budgetData) ── */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าใช้จ่ายก่อนเดินทาง</div>
+              {budgetData.fixedCosts.beforeGo.map(function(item, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>{item.name}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}{item.note ? " (" + item.note + ")" : ""}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── ค่าที่พัก ── */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าที่พัก</div>
+              {budgetData.fixedCosts.accommodation.map(function(item, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>{item.name}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}</span>
+                  </div>
+                );
+              })}
+              {accom.slice(0, 2).map(function(a, i) {
+                var wk = a.room ? (a.room.wk || 51) : 51;
+                var total = a.room ? a.room.pw * wk : 0;
+                return total ? (
+                  <div key={"a"+i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>Studio {wk}wk — {a.name} {a.room ? a.room.name : ""}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: i===0 ? "#1B5E20" : C.text }}>£{total.toLocaleString()}{i===0 ? " ⭐" : ""}</span>
+                  </div>
+                ) : null;
+              })}
+            </div>
+
+            {/* ── ค่าครองชีพ (balanced lifestyle × 12 months) ── */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าครองชีพ ~12 เดือน ({budgetData.lifestyle.balanced.label || "🟡 สมดุล"})</div>
+              {budgetData.lifestyle.balanced.categories.map(function(cat, i) {
+                return (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>{cat.emoji} {cat.name}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>~£{Math.round(cat.amount * 12).toLocaleString()}/ปี</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── Grand total ── */}
+            {(function() {
+              var fixedTotal = budgetData.fixedCosts.beforeGo.reduce(function(a, i) { return a + i.amount; }, 0);
+              var accomPreSess = (budgetData.fixedCosts.accommodation.find(function(i) { return i.name.toLowerCase().includes("pre") || i.name.includes("Josephine"); }) || { amount: 1200 }).amount;
+              var accomStudio = accom[0] && accom[0].room ? accom[0].room.pw * (accom[0].room.wk || 51) : 14739;
+              var accomDeposit = accom[0] && accom[0].room ? (accom[0].room.dep || 0) : 250;
+              var livingTotal = budgetData.lifestyle.balanced.total * 12;
+              var grandTotal = fixedTotal + accomPreSess + accomStudio + accomDeposit + livingTotal;
+              var months = 14;
               return (
-                <div key={ci} style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>{cat.c}</div>
-                  {cat.items.map(function (it, ii) {
-                    return (
-                      <div key={ii} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
-                        <span style={{ fontSize: 10, color: C.sub }}>{it[0]}</span>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>{it[1]}</span>
-                      </div>
-                    );
-                  })}
+                <div style={{ borderTop: "2px solid #1a237e", paddingTop: 8, marginTop: 4 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£{grandTotal.toLocaleString()}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(grandTotal * r).toLocaleString()}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+                    <span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~{months} เดือน)</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(grandTotal * r / months).toLocaleString()}/เดือน</span>
+                  </div>
                 </div>
               );
-            })}
-            <div style={{ borderTop: "2px solid #1a237e", paddingTop: 8, marginTop: 4 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span><span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£46,452</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span><span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(46452 * r).toLocaleString()}</span></div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}><span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~14 เดือน)</span><span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(46452 * r / 14).toLocaleString()}/เดือน</span></div>
-            </div>
+            })()}
           </div>
 
           <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
@@ -2992,7 +3040,7 @@ export default function App() {
 
           {/* ── Financial Status ── */}
           {(function(){
-            var required = Math.round(37579 * r);
+            var required = Math.round(VISA_FUNDS_GBP * r);
             var have = parseFloat(profile.fundsAmount)||0;
             var pct = have ? Math.min(100, have/required*100) : 0;
             var ok = have >= required;
@@ -3005,7 +3053,7 @@ export default function App() {
                   <div>
                     <div style={{ fontSize:9, color:C.sub }}>ต้องมีในบัญชี</div>
                     <div style={{ fontSize:18, fontWeight:800, color:C.text }}>฿{required.toLocaleString()}</div>
-                    <div style={{ fontSize:9, color:C.sub }}>= £37,579</div>
+                    <div style={{ fontSize:9, color:C.sub }}>= £{VISA_FUNDS_GBP.toLocaleString()}</div>
                   </div>
                   {have > 0 && (
                     <div style={{ textAlign:"right" }}>

@@ -850,6 +850,48 @@ function parseBudgetPlanner(rows) {
   };
 }
 
+/**
+ * Cash Flow — 📅 Cash Flow
+ *
+ * Col 0  #, Col 1  เดือน, Col 2  ค่าห้อง, Col 3  ค่าครองชีพ,
+ * Col 4  ค่าเรียน, Col 5  อื่นๆ, Col 6  รวม, Col 7  หมายเหตุ
+ */
+function parseCashFlow(rows) {
+  return rows
+    .filter(function(r) { return r[0] && !String(r[1] || "").includes("รวม"); })
+    .map(function(r) {
+      return {
+        month:   String(r[1] || "").trim(),
+        accom:   parseFloat(r[2]) || 0,
+        living:  parseFloat(r[3]) || 0,
+        tuition: parseFloat(r[4]) || 0,
+        other:   parseFloat(r[5]) || 0,
+        total:   parseFloat(r[6]) || 0,
+        note:    String(r[7] || "").trim(),
+      };
+    });
+}
+
+/**
+ * Part-time — 💼 Part-time
+ *
+ * Col 0  #, Col 1  ชั่วโมง/สัปดาห์ / label, Col 2  £/สัปดาห์,
+ * Col 3  £/เดือน, Col 4  £/ปี, Col 5  หมายเหตุ
+ */
+function parsePartTime(rows) {
+  return rows
+    .filter(function(r) { return r[0] && !String(r[1] || "").includes("งาน"); })
+    .map(function(r) {
+      return {
+        label:    String(r[1] || "").trim(),
+        perWeek:  parseFloat(r[2]) || 0,
+        perMonth: parseFloat(r[3]) || 0,
+        perYear:  parseFloat(r[4]) || 0,
+        note:     String(r[5] || "").trim(),
+      };
+    });
+}
+
 // ─── Safe fetcher (returns [] if tab missing / on error) ─────────────────────
 async function fetchGVizSafe(tabRef) {
   try { return await fetchGViz(tabRef); } catch { return []; }
@@ -891,6 +933,11 @@ export async function fetchAllData() {
   const accomRatingRows = await fetchGVizSafe("🏠 ที่พัก Rating");
   const expenseRows     = await fetchGVizSafe("💷 Expense Tracker");
   const budgetRows      = await fetchGVizSafe("💰 Budget Planner");
+  const emergencyRows   = await fetchGVizSafe("🆘 Emergency");
+  const visaDocsRows    = await fetchGVizSafe("📋 Visa+เอกสาร");
+  const travelRows      = await fetchGVizSafe("✈️ เดินทาง");
+  const cashFlowRows    = await fetchGVizSafe("📅 Cash Flow");
+  const partTimeRows    = await fetchGVizSafe("💼 Part-time");
 
   return {
     accom:           parseAccom(accomRows),
@@ -913,5 +960,10 @@ export async function fetchAllData() {
     accomRating:     parseAccomRating(accomRatingRows),
     sheetExpenses:   parseExpenseTracker(expenseRows),
     budget:          parseBudgetPlanner(budgetRows),
+    emergency:       parseFlat(emergencyRows),
+    visaDocs:        parseFlat(visaDocsRows),
+    travel:          parseFlat(travelRows),
+    cashFlow:        parseCashFlow(cashFlowRows),
+    partTime:        parsePartTime(partTimeRows),
   };
 }
