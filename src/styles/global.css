@@ -1,0 +1,217 @@
+/* ── Design tokens ───────────────────────────── */
+:root {
+  --primary: #0F1B3D;
+  --primary-mid: #1A3A8A;
+  --primary-light: #2A4494;
+  --primary-surface: #E8EDF5;
+  --success: #1B7A3D;
+  --success-surface: #E8F5ED;
+  --warning: #C65D00;
+  --warning-surface: #FFF3E0;
+  --danger: #B71C1C;
+  --danger-surface: #FFEBEE;
+  --info: #0D47A1;
+  --info-surface: #E3F2FD;
+  --bg: #F4F6FB;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --text-sub: #6B7280;
+  --border: #E5E7EB;
+  --shadow: 0 2px 8px rgba(15,27,61,0.08);
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 20px;
+}
+.dark {
+  --bg: #0D0D1A;
+  --card: #1A1F35;
+  --text: #E5E5E5;
+  --text-sub: #8A8AA0;
+  --border: #2A2F45;
+  --shadow: none;
+  --primary-surface: #1A2040;
+  --success-surface: #0D2A18;
+  --warning-surface: #2A1A00;
+  --danger-surface: #2A0A0A;
+  --info-surface: #0A1A2A;
+}
+/* ── Reset ────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'IBM Plex Sans Thai', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+button { font-family: inherit; }
+textarea, input, select { font-family: inherit; }
+
+/* ── Typography ───────────────────────────────── */
+.t-hero  { font-size: 28px; font-weight: 800; line-height: 1.2; }
+.t-h1    { font-size: 22px; font-weight: 800; }
+.t-h2    { font-size: 18px; font-weight: 700; }
+.t-h3    { font-size: 16px; font-weight: 700; }
+.t-body  { font-size: 15px; line-height: 1.6; }
+.t-sm    { font-size: 14px; }
+.t-cap   { font-size: 13px; color: var(--text-sub); font-weight: 500; }
+.t-tiny  { font-size: 12px; }
+
+/* ── Layout ───────────────────────────────────── */
+.app-shell {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 0 80px;
+  min-height: 100vh;
+}
+.page-content { padding: 0 16px; }
+.card-gap { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── Card ─────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card-sm { padding: 14px 16px; }
+.card-accent-primary   { border-left: 4px solid var(--primary); }
+.card-accent-success   { border-left: 4px solid var(--success); }
+.card-accent-warning   { border-left: 4px solid var(--warning); }
+.card-accent-danger    { border-left: 4px solid var(--danger); }
+
+/* ── Bottom nav ───────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  z-index: 100;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 10px 4px 8px;
+  border: none; background: none; cursor: pointer;
+  color: var(--text-sub); transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-item.active { color: var(--primary); }
+.nav-item .nav-icon { font-size: 22px; line-height: 1; }
+.nav-item .nav-label { font-size: 11px; font-weight: 600; margin-top: 3px; }
+
+/* ── Header ───────────────────────────────────── */
+.app-header {
+  background: linear-gradient(135deg, #0F1B3D 0%, #1A3A8A 60%, #2A4494 100%);
+  color: #fff;
+  padding: 16px 16px 20px;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 4px 24px rgba(15,27,61,0.35);
+  margin-bottom: 0;
+}
+
+/* ── SubTabs ──────────────────────────────────── */
+.subtabs {
+  display: flex; gap: 4px; padding: 4px;
+  background: var(--bg); border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.subtab-btn {
+  flex: 1; padding: 10px 8px; border-radius: 8px;
+  border: none; cursor: pointer;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--text-sub);
+  -webkit-tap-highlight-color: transparent;
+}
+.subtab-btn.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Progress bar ─────────────────────────────── */
+.progress-track {
+  background: var(--border); border-radius: 99px;
+  height: 8px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 99px;
+  background: var(--primary);
+  transition: width 0.4s ease;
+}
+.progress-fill.done { background: var(--success); }
+
+/* ── More drawer ──────────────────────────────── */
+.more-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+.more-drawer {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  z-index: 201;
+  max-width: 680px; margin: 0 auto;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Checkbox ─────────────────────────────────── */
+.cb-box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; background: var(--card); transition: all 0.15s;
+}
+.cb-box.checked { background: var(--success-surface); border-color: var(--success); }
+
+/* ── Pill badge ───────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+}
+.pill-danger  { background: var(--danger-surface); color: var(--danger); }
+.pill-warning { background: var(--warning-surface); color: var(--warning); }
+.pill-success { background: var(--success-surface); color: var(--success); }
+.pill-info    { background: var(--info-surface); color: var(--info); }
+.pill-primary { background: var(--primary-surface); color: var(--primary); }
+
+/* ── Responsive ───────────────────────────────── */
+@media (min-width: 768px) {
+  .app-shell { padding-bottom: 80px; }
+  .page-content { padding: 0 24px; }
+  .card { padding: 24px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero-stats { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .app-shell { max-width: 760px; }
+}
+
+/* ── Utilities ────────────────────────────────── */
+.row { display: flex; align-items: center; gap: 8px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.col { display: flex; flex-direction: column; gap: 4px; }
+.mt-4 { margin-top: 4px; } .mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; }
+.mb-4 { margin-bottom: 4px; } .mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+.fw-800 { font-weight: 800; }
+.color-primary { color: var(--primary); }
+.color-sub { color: var(--text-sub); }
+.color-danger { color: var(--danger); }
+.color-success { color: var(--success); }
+.color-warning { color: var(--warning); }

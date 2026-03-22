@@ -70,6 +70,10 @@ export default function App() {
     pill:   dark ? "#252a42" : "#eff0f8",
   };
 
+  useEffect(function() {
+    document.body.className = dark ? 'dark' : '';
+  }, [dark]);
+
   function toggleDark() {
     setDark(function(d) {
       localStorage.setItem('durham_dark', !d ? '1' : '0');
@@ -413,7 +417,7 @@ export default function App() {
   return (
     <div
       style={{
-        fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",
+        fontFamily: "'IBM Plex Sans Thai','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",
         maxWidth: 700,
         margin: "0 auto",
         padding: "0 12px 96px",
@@ -434,7 +438,7 @@ export default function App() {
       >
         {/* Top action row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <div style={{ fontSize: 9, opacity: 0.5, letterSpacing: 2, fontWeight: 700 }}>DURHAM UNIVERSITY 2026/27</div>
+          <div style={{ fontSize: 12, opacity: 0.5, letterSpacing: 2, fontWeight: 700 }}>DURHAM UNIVERSITY 2026/27</div>
           <div style={{ display: "flex", gap: 6 }}>
             {SHEETS_URL && (
               <a
@@ -447,7 +451,7 @@ export default function App() {
                   borderRadius: 20,
                   padding: "5px 12px",
                   color: "#fff",
-                  fontSize: 11,
+                  fontSize: 14,
                   fontWeight: 700,
                   textDecoration: "none",
                   display: "flex",
@@ -456,7 +460,7 @@ export default function App() {
                   backdropFilter: "blur(4px)",
                 }}
               >
-                <span style={{ fontSize: 13 }}>📊</span> Sheets ↗
+                <span style={{ fontSize: 16 }}>📊</span> Sheets ↗
               </a>
             )}
             <button
@@ -481,7 +485,7 @@ export default function App() {
         <h1 style={{ margin: "0 0 2px", fontSize: 18, fontWeight: 800, letterSpacing: -0.5 }}>
           🎓 Durham Go
         </h1>
-        <div style={{ fontSize: 11, opacity: 0.75 }}>
+        <div style={{ fontSize: 14, opacity: 0.75 }}>
           LLM International Trade &amp; Commercial Law · Pannathorn
         </div>
 
@@ -495,7 +499,7 @@ export default function App() {
               marginTop: 6,
               padding: "3px 10px",
               borderRadius: 20,
-              fontSize: 9,
+              fontSize: 12,
               fontWeight: 700,
               background:
                 sheetsStatus === "ok"
@@ -563,9 +567,9 @@ export default function App() {
                   textAlign: "center",
                 }}
               >
-                <div style={{ fontSize: 8, opacity: 0.5 }}>{x.l}</div>
-                <div style={{ fontSize: 13, fontWeight: 800 }}>{x.v}</div>
-                <div style={{ fontSize: 8, opacity: 0.6 }}>{x.s}</div>
+                <div style={{ fontSize: 11, opacity: 0.5 }}>{x.l}</div>
+                <div style={{ fontSize: 16, fontWeight: 800 }}>{x.v}</div>
+                <div style={{ fontSize: 11, opacity: 0.6 }}>{x.s}</div>
               </div>
             );
           })}
@@ -580,9 +584,9 @@ export default function App() {
           display: "flex", alignItems: "center", gap: 10, color: "#fff",
         }}>
           <span style={{ fontSize: 20 }}>📲</span>
-          <div style={{ flex: 1, fontSize: 12, fontWeight: 700 }}>
+          <div style={{ flex: 1, fontSize: 15, fontWeight: 700 }}>
             ติดตั้งเป็น App บนมือถือ<br/>
-            <span style={{ fontSize: 10, fontWeight: 400, opacity: 0.8 }}>เปิดได้แบบออฟไลน์ ไม่ต้องเปิดเบราว์เซอร์</span>
+            <span style={{ fontSize: 13, fontWeight: 400, opacity: 0.8 }}>เปิดได้แบบออฟไลน์ ไม่ต้องเปิดเบราว์เซอร์</span>
           </div>
           <button
             onClick={function() {
@@ -590,7 +594,7 @@ export default function App() {
               setShowInstall(false);
               localStorage.setItem('durham_install_dismissed', '1');
             }}
-            style={{ background: "#fff", color: "#1a237e", border: "none", borderRadius: 20, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", flexShrink: 0 }}
+            style={{ background: "#fff", color: "#1a237e", border: "none", borderRadius: 20, padding: "6px 14px", fontSize: 14, fontWeight: 800, cursor: "pointer", flexShrink: 0 }}
           >ติดตั้ง</button>
           <button
             onClick={function() { setShowInstall(false); localStorage.setItem('durham_install_dismissed', '1'); }}
@@ -601,7 +605,7 @@ export default function App() {
 
       {/* Current tab label pill */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 0 4px" }}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: C.text }}>
+        <div style={{ fontSize: 16, fontWeight: 800, color: C.text }}>
           {tabs.find(function(t) { return t.id === tab; }) ? tabs.find(function(t) { return t.id === tab; }).l : ""}
         </div>
       </div>
@@ -612,7 +616,7 @@ export default function App() {
           {/* ── Next Actions Hero ── */}
           {nextActions.length > 0 && (
             <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, color: C.sub, letterSpacing: 1, padding: "0 2px 4px", textTransform: "uppercase" }}>🎯 ทำสิ่งนี้ก่อน</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: C.sub, letterSpacing: 1, padding: "0 2px 4px", textTransform: "uppercase" }}>🎯 ทำสิ่งนี้ก่อน</div>
               {nextActions.map(function(a, i) {
                 var rc = a.risk==='high' ? "#C62828" : a.risk==='medium' ? "#E65100" : "#2E7D32";
                 var rb = a.risk==='high' ? "#FFEBEE" : a.risk==='medium' ? "#FFF3E0" : "#E8F5E9";
@@ -642,7 +646,7 @@ export default function App() {
           )}
           {/* Progress bars */}
           <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📊 ความคืบหน้า</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📊 ความคืบหน้า</div>
             {[
               {
                 label: "✅ Checklist",
@@ -665,8 +669,8 @@ export default function App() {
               return (
                 <div key={pi} style={{ marginBottom: 8 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                    <span style={{ fontSize: 10, color: C.text }}>{p.label}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>{p.done}/{p.total}</span>
+                    <span style={{ fontSize: 13, color: C.text }}>{p.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>{p.done}/{p.total}</span>
                   </div>
                   <div style={{ background: C.border, borderRadius: 4, height: 8 }}>
                     <div style={{ background: p.done === p.total && p.total > 0 ? "#2E7D32" : "#1a237e", borderRadius: 4, height: 8, width: (p.total ? (p.done / p.total * 100) : 0) + "%", transition: "width 0.3s" }} />
@@ -678,13 +682,13 @@ export default function App() {
 
           {/* Status list — from Sheets tab "📊 Status", section="status" */}
           {homeStatus.filter(function(s) { return s.section === 'status'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📋 สถานะ</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📋 สถานะ</div>
               {homeStatus.filter(function(s) { return s.section === 'status'; }).map(function(s, i, arr) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
-                    <span style={{ fontSize: 11, color: C.text }}>{s.c2}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: s.c4 || "#333" }}>{s.c3}</span>
+                    <span style={{ fontSize: 14, color: C.text }}>{s.c2}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: s.c4 || "#333" }}>{s.c3}</span>
                   </div>
                 );
               })}
@@ -694,24 +698,24 @@ export default function App() {
           {/* Urgent actions — from Sheets tab "📊 Status", section="urgent" */}
           {homeStatus.filter(function(s) { return s.section === 'urgent'; }).length > 0 && (
             <div style={{ background: "#C62828", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 4 }}>🔥 ทำตอนนี้!</div>
+              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 4 }}>🔥 ทำตอนนี้!</div>
               {homeStatus.filter(function(s) { return s.section === 'urgent'; }).map(function(a, i) {
-                return <div key={i} style={{ fontSize: 11, marginBottom: 2 }}>→ {a.c2}</div>;
+                return <div key={i} style={{ fontSize: 14, marginBottom: 2 }}>→ {a.c2}</div>;
               })}
             </div>
           )}
 
           {/* Mini-timeline — from Sheets tab "📊 Status", section="timeline" */}
           {homeStatus.filter(function(s) { return s.section === 'timeline'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 Timeline</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 Timeline</div>
               {homeStatus.filter(function(s) { return s.section === 'timeline'; }).map(function(e, i) {
                 var hi = e.c5 === '1';
                 return (
                   <div key={i} style={{ display: "flex", gap: 8, marginBottom: 5 }}>
-                    <div style={{ width: 65, fontSize: 9, fontWeight: 700, color: hi ? "#C62828" : C.sub, textAlign: "right", flexShrink: 0 }}>{e.c3}</div>
+                    <div style={{ width: 65, fontSize: 12, fontWeight: 700, color: hi ? "#C62828" : C.sub, textAlign: "right", flexShrink: 0 }}>{e.c3}</div>
                     <div style={{ width: 6, height: 6, borderRadius: "50%", background: hi ? "#C62828" : "#ccc", flexShrink: 0, marginTop: 4 }} />
-                    <div style={{ fontSize: 11, color: hi ? C.text : C.sub, fontWeight: hi ? 700 : 400 }}>{e.c2}</div>
+                    <div style={{ fontSize: 14, color: hi ? C.text : C.sub, fontWeight: hi ? 700 : 400 }}>{e.c2}</div>
                   </div>
                 );
               })}
@@ -719,8 +723,8 @@ export default function App() {
           )}
 
           {/* Quick Memo */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📝 บันทึกของฉัน</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📝 บันทึกของฉัน</div>
             <textarea
               value={memo}
               onChange={function(e) { setMemo(e.target.value); }}
@@ -728,7 +732,7 @@ export default function App() {
               style={{
                 width: "100%", boxSizing: "border-box",
                 minHeight: 90, border: "1px solid " + C.border,
-                borderRadius: 8, padding: "8px 10px", fontSize: 12,
+                borderRadius: 8, padding: "8px 10px", fontSize: 15,
                 background: C.bg, color: C.text, resize: "vertical",
                 fontFamily: "inherit", lineHeight: 1.5,
               }}
@@ -743,8 +747,8 @@ export default function App() {
           {/* Progress bar */}
           <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>📊 ความคืบหน้า Checklist</span>
-              <span style={{ fontSize: 11, fontWeight: 800, color: "#1a237e" }}>{checkDone}/{checkTotal}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#1a237e" }}>📊 ความคืบหน้า Checklist</span>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "#1a237e" }}>{checkDone}/{checkTotal}</span>
             </div>
             <div style={{ background: C.border, borderRadius: 4, height: 10 }}>
               <div style={{ background: checkDone === checkTotal ? "#2E7D32" : "#1a237e", borderRadius: 4, height: 10, width: (checkTotal ? (checkDone / checkTotal * 100) : 0) + "%", transition: "width 0.3s" }} />
@@ -758,7 +762,7 @@ export default function App() {
                 key={ci}
                 style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 6 }}
               >
-                <div style={{ fontSize: 12, fontWeight: 800, color: cat[2], marginBottom: 6 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: cat[2], marginBottom: 6 }}>
                   {cat[1]}
                 </div>
                 {(cat[3] || []).map(function (it, ii) {
@@ -781,7 +785,7 @@ export default function App() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 9,
+                          fontSize: 12,
                           flexShrink: 0,
                         }}
                       >
@@ -790,7 +794,7 @@ export default function App() {
                       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
                         <div
                           style={{
-                            fontSize: 11,
+                            fontSize: 14,
                             color: isCh ? C.sub : C.text,
                             textDecoration: isCh ? "line-through" : "none",
                           }}
@@ -799,7 +803,7 @@ export default function App() {
                         </div>
                         {days !== null && !isCh && (
                           <span style={{
-                            fontSize: 9, fontWeight: 700, flexShrink: 0,
+                            fontSize: 12, fontWeight: 700, flexShrink: 0,
                             padding: "2px 7px", borderRadius: 8, textAlign: "center", lineHeight: 1.4,
                             background: days < 0 ? "#F3E5F5" : days <= 7 ? "#FFEBEE" : days <= 30 ? "#FFF3E0" : "#E8F5E9",
                             color: days < 0 ? "#6A1B9A" : days <= 7 ? "#C62828" : days <= 30 ? "#E65100" : "#2E7D32",
@@ -828,15 +832,15 @@ export default function App() {
       {tab === "timeline" && (
         <div>
           <div style={{ background: "linear-gradient(135deg,#1a237e,#283593)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>📅 Timeline — เดือนไหนทำอะไร</div>
-            <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>มี.ค. 2026 → ก.ย. 2026</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>📅 Timeline — เดือนไหนทำอะไร</div>
+            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2 }}>มี.ค. 2026 → ก.ย. 2026</div>
           </div>
           {timeline.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 40, color: C.sub, fontSize: 12 }}>⏳ กำลังโหลด Timeline จาก Google Sheets...</div>
+            <div style={{ textAlign: "center", padding: 40, color: C.sub, fontSize: 15 }}>⏳ กำลังโหลด Timeline จาก Google Sheets...</div>
           ) : timeline.map(function(month, mi) {
             return (
               <div key={mi} style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", padding: "6px 8px", borderBottom: "2px solid #1a237e", marginBottom: 6, background: C.card, borderRadius: "8px 8px 0 0" }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", padding: "6px 8px", borderBottom: "2px solid #1a237e", marginBottom: 6, background: C.card, borderRadius: "8px 8px 0 0" }}>
                   {month.month}
                 </div>
                 {month.tasks.map(function(task, ti) {
@@ -846,12 +850,12 @@ export default function App() {
                     <div key={ti} style={{ background: C.card, padding: "8px 12px", marginBottom: 3, borderLeft: "4px solid " + bc, opacity: done ? 0.6 : 1 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 11, fontWeight: done ? 400 : 600, color: C.text, textDecoration: done ? "line-through" : "none" }}>{task.item}</div>
-                          {task.cat && <div style={{ fontSize: 9, color: C.sub }}>{task.cat}</div>}
+                          <div style={{ fontSize: 14, fontWeight: done ? 400 : 600, color: C.text, textDecoration: done ? "line-through" : "none" }}>{task.item}</div>
+                          {task.cat && <div style={{ fontSize: 12, color: C.sub }}>{task.cat}</div>}
                         </div>
-                        <span style={{ fontSize: 8, padding: "2px 6px", borderRadius: 8, background: done ? "#E8F5E9" : task.status && task.status.includes("🔴") ? "#FFEBEE" : "#FFF3E0", color: done ? "#2E7D32" : task.status && task.status.includes("🔴") ? "#C62828" : "#E65100", fontWeight: 700, whiteSpace: "nowrap", alignSelf: "flex-start" }}>{task.status || "⏳"}</span>
+                        <span style={{ fontSize: 11, padding: "2px 6px", borderRadius: 8, background: done ? "#E8F5E9" : task.status && task.status.includes("🔴") ? "#FFEBEE" : "#FFF3E0", color: done ? "#2E7D32" : task.status && task.status.includes("🔴") ? "#C62828" : "#E65100", fontWeight: 700, whiteSpace: "nowrap", alignSelf: "flex-start" }}>{task.status || "⏳"}</span>
                       </div>
-                      {task.note && <div style={{ fontSize: 9, color: C.sub, marginTop: 3, fontStyle: "italic" }}>💡 {task.note}</div>}
+                      {task.note && <div style={{ fontSize: 12, color: C.sub, marginTop: 3, fontStyle: "italic" }}>💡 {task.note}</div>}
                     </div>
                   );
                 })}
@@ -958,8 +962,8 @@ export default function App() {
           {accomView === "prices" && (
             <div>
               <div style={{ background: "linear-gradient(135deg,#1565C0,#1976D2)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 800 }}>💰 เปรียบเทียบราคา Direct vs uhomes vs Casita</div>
-                <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>ราคาจากหลาย platform — เลือกถูกที่สุดก่อนจอง</div>
+                <div style={{ fontSize: 16, fontWeight: 800 }}>💰 เปรียบเทียบราคา Direct vs uhomes vs Casita</div>
+                <div style={{ fontSize: 13, opacity: 0.85, marginTop: 2 }}>ราคาจากหลาย platform — เลือกถูกที่สุดก่อนจอง</div>
               </div>
 
               {/* Quick links */}
@@ -971,7 +975,7 @@ export default function App() {
                 ].map(function(p, pi) {
                   return (
                     <a key={pi} href={p.url} target="_blank" rel="noopener noreferrer"
-                      style={{ flex: 1, padding: "8px 4px", background: p.bg, borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 700, textAlign: "center", textDecoration: "none" }}>
+                      style={{ flex: 1, padding: "8px 4px", background: p.bg, borderRadius: 8, color: "#fff", fontSize: 13, fontWeight: 700, textAlign: "center", textDecoration: "none" }}>
                       {p.label} →
                     </a>
                   );
@@ -987,13 +991,13 @@ export default function App() {
                     var rooms = priceComparison.filter(function(r) { return r.provider === prov; });
                     return (
                       <div key={pi} style={{ background: C.card, borderRadius: 12, marginBottom: 8, overflow: "hidden" }}>
-                        <div style={{ padding: "10px 14px", background: C.border, fontWeight: 800, fontSize: 12, color: "#1a237e" }}>{prov}</div>
+                        <div style={{ padding: "10px 14px", background: C.border, fontWeight: 800, fontSize: 15, color: "#1a237e" }}>{prov}</div>
                         {rooms.map(function(rm, ri) {
                           var cheapestIsUhomes = rm.cheapest && rm.cheapest.toLowerCase().includes("uhomes");
                           var cheapestIsCasita = rm.cheapest && rm.cheapest.toLowerCase().includes("casita");
                           return (
                             <div key={ri} style={{ padding: "10px 14px", borderBottom: ri < rooms.length - 1 ? "1px solid " + C.border : "none" }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 6 }}>{rm.room}</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 }}>{rm.room}</div>
                               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginBottom: 4 }}>
                                 {[
                                   { l: "Direct", v: rm.direct ? "£" + rm.direct : "–", hi: !cheapestIsUhomes && !cheapestIsCasita },
@@ -1002,15 +1006,15 @@ export default function App() {
                                 ].map(function(p, pli) {
                                   return (
                                     <div key={pli} style={{ background: p.hi ? "#E8F5E9" : C.border, borderRadius: 6, padding: "5px 6px", textAlign: "center", border: p.hi ? "1px solid #4CAF50" : "none" }}>
-                                      <div style={{ fontSize: 8, color: p.hi ? "#2E7D32" : C.sub }}>{p.l}{p.hi ? " ✓" : ""}</div>
-                                      <div style={{ fontSize: 11, fontWeight: 800, color: p.hi ? "#1B5E20" : C.text }}>{p.v}</div>
+                                      <div style={{ fontSize: 11, color: p.hi ? "#2E7D32" : C.sub }}>{p.l}{p.hi ? " ✓" : ""}</div>
+                                      <div style={{ fontSize: 14, fontWeight: 800, color: p.hi ? "#1B5E20" : C.text }}>{p.v}</div>
                                     </div>
                                   );
                                 })}
                               </div>
-                              {rm.diff && <div style={{ fontSize: 9, color: "#2E7D32", fontWeight: 700 }}>💰 ประหยัด: {rm.diff}</div>}
-                              {rm.cashback && <div style={{ fontSize: 9, color: "#E65100", fontWeight: 700 }}>🎁 {rm.cashback}</div>}
-                              {rm.note && <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>💡 {rm.note}</div>}
+                              {rm.diff && <div style={{ fontSize: 12, color: "#2E7D32", fontWeight: 700 }}>💰 ประหยัด: {rm.diff}</div>}
+                              {rm.cashback && <div style={{ fontSize: 12, color: "#E65100", fontWeight: 700 }}>🎁 {rm.cashback}</div>}
+                              {rm.note && <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>💡 {rm.note}</div>}
                             </div>
                           );
                         })}
@@ -1028,54 +1032,54 @@ export default function App() {
 
           {/* ── Quick Links: Booking Platforms ── */}
           <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🔗 จองที่พักได้ที่ — Quick Links</div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🔗 จองที่พักได้ที่ — Quick Links</div>
             <div style={{ display: "flex", gap: 8 }}>
               <a href="https://casita.com/search/durham-city" target="_blank" rel="noopener noreferrer"
                 style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
                   background: "linear-gradient(135deg,#6A1B9A,#8E24AA)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
                 <span style={{ fontSize: 18 }}>🏠</span>
-                <span style={{ fontSize: 11, fontWeight: 800 }}>Casita</span>
-                <span style={{ fontSize: 9, opacity: 0.85 }}>casita.com</span>
+                <span style={{ fontSize: 14, fontWeight: 800 }}>Casita</span>
+                <span style={{ fontSize: 12, opacity: 0.85 }}>casita.com</span>
               </a>
               <a href="https://www.durhomes.co.uk" target="_blank" rel="noopener noreferrer"
                 style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
                   background: "linear-gradient(135deg,#1565C0,#1976D2)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
                 <span style={{ fontSize: 18 }}>🏡</span>
-                <span style={{ fontSize: 11, fontWeight: 800 }}>Durhomes</span>
-                <span style={{ fontSize: 9, opacity: 0.85 }}>durhomes.co.uk</span>
+                <span style={{ fontSize: 14, fontWeight: 800 }}>Durhomes</span>
+                <span style={{ fontSize: 12, opacity: 0.85 }}>durhomes.co.uk</span>
               </a>
               <a href="https://www.uhomes.com/uk/durham" target="_blank" rel="noopener noreferrer"
                 style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "10px 8px",
                   background: "linear-gradient(135deg,#00695C,#00897B)", borderRadius: 10, textDecoration: "none", color: "#fff" }}>
                 <span style={{ fontSize: 18 }}>🌐</span>
-                <span style={{ fontSize: 11, fontWeight: 800 }}>Uhomes</span>
-                <span style={{ fontSize: 9, opacity: 0.85 }}>uhomes.com</span>
+                <span style={{ fontSize: 14, fontWeight: 800 }}>Uhomes</span>
+                <span style={{ fontSize: 12, opacity: 0.85 }}>uhomes.com</span>
               </a>
             </div>
-            <div style={{ fontSize: 9, color: C.sub, marginTop: 6, textAlign: "center" }}>กดเพื่อเปิดเว็บไซต์ · เปรียบเทียบราคาก่อนจอง</div>
+            <div style={{ fontSize: 12, color: C.sub, marginTop: 6, textAlign: "center" }}>กดเพื่อเปิดเว็บไซต์ · เปรียบเทียบราคาก่อนจอง</div>
           </div>
 
           {(function() {
             var jb = colAccom.find(function(c) { return c.name && c.name.includes("Josephine"); }) || {};
             var jbRoom = (jb.rooms || []).find(function(rm) { return rm.wk <= 6; }) || (jb.rooms || [])[0] || {};
             return (
-              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>🏨 Pre-sessional 6wk (3 ส.ค.-11 ก.ย.)</div>
-                <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 11 }}>
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>🏨 Pre-sessional 6wk (3 ส.ค.-11 ก.ย.)</div>
+                <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 14 }}>
                   <strong>{jb.name || "Josephine Butler College"}</strong>
                   {jbRoom.type ? " · " + jbRoom.type : ""}
                   {jbRoom.pw && jbRoom.wk ? " · £" + jbRoom.pw + "/wk × " + jbRoom.wk + "wk = £" + (jbRoom.pw * jbRoom.wk).toLocaleString() : ""}
-                  {jb.why && <div style={{ fontSize: 10, color: "#2E7D32", fontWeight: 700, marginTop: 3 }}>✅ {jb.why}</div>}
+                  {jb.why && <div style={{ fontSize: 13, color: "#2E7D32", fontWeight: 700, marginTop: 3 }}>✅ {jb.why}</div>}
                 </div>
               </div>
             );
           })()}
 
           {accomRating.rows.length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#333", marginBottom: 8 }}>⚔️ เปรียบเทียบที่พัก</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#333", marginBottom: 8 }}>⚔️ เปรียบเทียบที่พัก</div>
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse" }}>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ background: C.border }}>
                       <td style={{ padding: "6px 8px", fontWeight: 700, color: C.sub }}></td>
@@ -1094,7 +1098,7 @@ export default function App() {
                             var isStar = !isNaN(n) && n >= 0 && n <= 5 && /^\d+\.?\d*$/.test(v.trim());
                             return (
                               <td key={vi} style={{ padding: "5px 8px", textAlign: "center" }}>
-                                {isStar ? <Stars val={n} /> : <span style={{ fontSize: 10, color: C.text }}>{v}</span>}
+                                {isStar ? <Stars val={n} /> : <span style={{ fontSize: 13, color: C.text }}>{v}</span>}
                               </td>
                             );
                           })}
@@ -1107,7 +1111,7 @@ export default function App() {
             </div>
           )}
 
-          <div style={{ fontSize: 12, fontWeight: 800, color: C.text, padding: "4px 4px 2px" }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: C.text, padding: "4px 4px 2px" }}>
             🏠 Studio 51wk แนะนำ 3 อันดับ (แตะดูรายละเอียด)
           </div>
           {accom.map(function (a, i) {
@@ -1131,9 +1135,9 @@ export default function App() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <div>
-                      <span style={{ background: a.color, color: "#fff", padding: "2px 8px", borderRadius: 10, fontSize: 9, fontWeight: 700 }}>{a.badge}</span>
+                      <span style={{ background: a.color, color: "#fff", padding: "2px 8px", borderRadius: 10, fontSize: 12, fontWeight: 700 }}>{a.badge}</span>
                       <div style={{ fontSize: 14, fontWeight: 800, color: a.color, marginTop: 3 }}>{a.name}</div>
-                      <div style={{ fontSize: 10, color: C.sub }}>
+                      <div style={{ fontSize: 13, color: C.sub }}>
                         {a.provider}
                         {a.dist ? (
                           <span> · <a
@@ -1147,8 +1151,8 @@ export default function App() {
                       </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: a.color }}>£{rm.pw}<span style={{ fontSize: 10, fontWeight: 400 }}>/wk</span></div>
-                      <div style={{ fontSize: 9, color: C.sub }}>{isOpen ? "▲ ซ่อน" : "▼ ดูรายละเอียด"}</div>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: a.color }}>£{rm.pw}<span style={{ fontSize: 13, fontWeight: 400 }}>/wk</span></div>
+                      <div style={{ fontSize: 12, color: C.sub }}>{isOpen ? "▲ ซ่อน" : "▼ ดูรายละเอียด"}</div>
                     </div>
                   </div>
                 </div>
@@ -1163,20 +1167,20 @@ export default function App() {
                       ].map(function (x, j) {
                         return (
                           <div key={j} style={{ background: a.bg, borderRadius: 6, padding: "4px 6px", textAlign: "center" }}>
-                            <div style={{ fontSize: 8, color: "#888" }}>{x.l}</div>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: a.color }}>{x.v}</div>
+                            <div style={{ fontSize: 11, color: "#888" }}>{x.l}</div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: a.color }}>{x.v}</div>
                           </div>
                         );
                       })}
                     </div>
                     {a.stars && (
                       <div style={{ marginBottom: 10 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: a.color, marginBottom: 4 }}>⭐ Rating แยกด้าน:</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: a.color, marginBottom: 4 }}>⭐ Rating แยกด้าน:</div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
                           {[["📍 ทำเล", a.stars.location], ["🧹 สะอาด", a.stars.clean], ["🏢 Facilities", a.stars.facilities], ["💰 คุ้มค่า", a.stars.value], ["🔒 ปลอดภัย", a.stars.safety]].map(function (s, si) {
                             return (
                               <div key={si} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 8px", background: a.bg, borderRadius: 6 }}>
-                                <span style={{ fontSize: 9, color: "#555" }}>{s[0]}</span>
+                                <span style={{ fontSize: 12, color: "#555" }}>{s[0]}</span>
                                 <Stars val={s[1]} size={10} />
                               </div>
                             );
@@ -1184,26 +1188,26 @@ export default function App() {
                         </div>
                       </div>
                     )}
-                    <div style={{ fontSize: 11, fontWeight: 700, color: a.color, marginBottom: 3 }}>🛏️ ในห้องมีอะไร:</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: a.color, marginBottom: 3 }}>🛏️ ในห้องมีอะไร:</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, marginBottom: 8 }}>
-                      {a.roomHas.map(function (x, j) { return <div key={j} style={{ fontSize: 10, color: C.text, padding: "2px 6px", background: C.border, borderRadius: 3 }}>• {x}</div>; })}
+                      {a.roomHas.map(function (x, j) { return <div key={j} style={{ fontSize: 13, color: C.text, padding: "2px 6px", background: C.border, borderRadius: 3 }}>• {x}</div>; })}
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: a.color, marginBottom: 3 }}>🏢 Facilities ส่วนกลาง:</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: a.color, marginBottom: 3 }}>🏢 Facilities ส่วนกลาง:</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 8 }}>
-                      {a.facilities.map(function (x, j) { return <span key={j} style={{ fontSize: 9, padding: "2px 8px", background: a.bg, borderRadius: 10, color: a.color }}>{x}</span>; })}
+                      {a.facilities.map(function (x, j) { return <span key={j} style={{ fontSize: 12, padding: "2px 8px", background: a.bg, borderRadius: 10, color: a.color }}>{x}</span>; })}
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: a.color, marginBottom: 3 }}>🔒 ความปลอดภัย:</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: a.color, marginBottom: 3 }}>🔒 ความปลอดภัย:</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 8 }}>
-                      {a.security.map(function (x, j) { return <span key={j} style={{ fontSize: 9, padding: "2px 8px", background: C.border, borderRadius: 10, color: C.sub }}>{x}</span>; })}
+                      {a.security.map(function (x, j) { return <span key={j} style={{ fontSize: 12, padding: "2px 8px", background: C.border, borderRadius: 10, color: C.sub }}>{x}</span>; })}
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       <div>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#2E7D32", marginBottom: 3 }}>✅ ข้อดี</div>
-                        {a.pros.map(function (x, j) { return <div key={j} style={{ fontSize: 10, color: C.text, marginBottom: 2, paddingLeft: 6, borderLeft: "2px solid #C8E6C9" }}>{x}</div>; })}
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#2E7D32", marginBottom: 3 }}>✅ ข้อดี</div>
+                        {a.pros.map(function (x, j) { return <div key={j} style={{ fontSize: 13, color: C.text, marginBottom: 2, paddingLeft: 6, borderLeft: "2px solid #C8E6C9" }}>{x}</div>; })}
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#C62828", marginBottom: 3 }}>⚠️ ข้อเสีย</div>
-                        {a.cons.map(function (x, j) { return <div key={j} style={{ fontSize: 10, color: C.sub, marginBottom: 2, paddingLeft: 6, borderLeft: "2px solid #FFCDD2" }}>{x}</div>; })}
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#C62828", marginBottom: 3 }}>⚠️ ข้อเสีย</div>
+                        {a.cons.map(function (x, j) { return <div key={j} style={{ fontSize: 13, color: C.sub, marginBottom: 2, paddingLeft: 6, borderLeft: "2px solid #FFCDD2" }}>{x}</div>; })}
                       </div>
                     </div>
                   </div>
@@ -1221,8 +1225,8 @@ export default function App() {
       {tab === "places" && (
         <div>
           <div style={{ background: "linear-gradient(135deg,#004D40,#00796B)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>🗺️ สถานที่สำคัญใน Durham</div>
-            <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>{places.length} สถานที่ — ที่อยู่ + ระยะทาง</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>🗺️ สถานที่สำคัญใน Durham</div>
+            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2 }}>{places.length} สถานที่ — ที่อยู่ + ระยะทาง</div>
           </div>
           {places.length === 0 ? (
             <div style={{ textAlign: "center", padding: 40, color: C.sub }}>⏳ กำลังโหลด...</div>
@@ -1230,17 +1234,17 @@ export default function App() {
             [...new Set(places.map(function(p) { return p.cat; }))].map(function(cat, ci) {
               return (
                 <div key={ci} style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: "#00695C", padding: "4px 4px 6px", borderBottom: "1px solid #B2DFDB", marginBottom: 6 }}>{cat}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#00695C", padding: "4px 4px 6px", borderBottom: "1px solid #B2DFDB", marginBottom: 6 }}>{cat}</div>
                   {places.filter(function(p) { return p.cat === cat; }).map(function(p, pi) {
                     return (
                       <div key={pi} style={{ background: C.card, borderRadius: 8, padding: 10, marginBottom: 4 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: C.text, flex: 1 }}>{p.name}</div>
-                          {p.dist && <span style={{ fontSize: 9, color: "#00695C", fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{p.dist}</span>}
+                          <div style={{ fontSize: 14, fontWeight: 700, color: C.text, flex: 1 }}>{p.name}</div>
+                          {p.dist && <span style={{ fontSize: 12, color: "#00695C", fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{p.dist}</span>}
                         </div>
-                        {p.addr && <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>📍 {p.addr}</div>}
-                        {p.why && <div style={{ fontSize: 10, color: C.text, marginTop: 4, lineHeight: 1.5 }}>{p.why}</div>}
-                        {p.note && <div style={{ fontSize: 9, color: C.sub, marginTop: 3, fontStyle: "italic" }}>💡 {p.note}</div>}
+                        {p.addr && <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📍 {p.addr}</div>}
+                        {p.why && <div style={{ fontSize: 13, color: C.text, marginTop: 4, lineHeight: 1.5 }}>{p.why}</div>}
+                        {p.note && <div style={{ fontSize: 12, color: C.sub, marginTop: 3, fontStyle: "italic" }}>💡 {p.note}</div>}
                       </div>
                     );
                   })}
@@ -1255,8 +1259,8 @@ export default function App() {
       {tab === "contacts" && (
         <div>
           <div style={{ background: "linear-gradient(135deg,#B71C1C,#C62828)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>📞 Contact Directory</div>
-            <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>{contacts.length} รายชื่อ — กดเบอร์โทรได้เลย</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>📞 Contact Directory</div>
+            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2 }}>{contacts.length} รายชื่อ — กดเบอร์โทรได้เลย</div>
           </div>
           {contacts.length === 0 ? (
             <div style={{ textAlign: "center", padding: 40, color: C.sub }}>⏳ กำลังโหลด...</div>
@@ -1264,17 +1268,17 @@ export default function App() {
             [...new Set(contacts.map(function(c) { return c.cat; }))].map(function(cat, ci) {
               return (
                 <div key={ci} style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: (cat.includes("ฉุกเฉิน") || cat.includes("Emergency")) ? "#C62828" : C.text, padding: "4px 4px 6px", borderBottom: "1px solid " + C.border, marginBottom: 4 }}>{cat}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: (cat.includes("ฉุกเฉิน") || cat.includes("Emergency")) ? "#C62828" : C.text, padding: "4px 4px 6px", borderBottom: "1px solid " + C.border, marginBottom: 4 }}>{cat}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
                     {contacts.filter(function(c) { return c.cat === cat; }).map(function(c, ci2) {
                       var isEmg = cat.includes("ฉุกเฉิน") || cat.includes("Emergency") || c.contact === "999" || c.contact === "111";
                       return (
                         <div key={ci2} style={{ background: isEmg ? "#FFEBEE" : C.card, borderRadius: 8, padding: "8px 10px", borderLeft: isEmg ? "3px solid #C62828" : "none" }}>
-                          <div style={{ fontSize: 10, fontWeight: 700, color: isEmg ? "#C62828" : C.text }}>{c.name}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: isEmg ? "#C62828" : C.text }}>{c.name}</div>
                           {c.contact && (
-                            <a href={"tel:" + c.contact.replace(/[^0-9+]/g, "")} style={{ fontSize: 12, fontWeight: 800, color: isEmg ? "#C62828" : "#1a237e", textDecoration: "none", display: "block", marginTop: 2 }}>{c.contact}</a>
+                            <a href={"tel:" + c.contact.replace(/[^0-9+]/g, "")} style={{ fontSize: 15, fontWeight: 800, color: isEmg ? "#C62828" : "#1a237e", textDecoration: "none", display: "block", marginTop: 2 }}>{c.contact}</a>
                           )}
-                          {c.hours && <div style={{ fontSize: 8, color: C.sub, marginTop: 2 }}>{c.hours}</div>}
+                          {c.hours && <div style={{ fontSize: 11, color: C.sub, marginTop: 2 }}>{c.hours}</div>}
                         </div>
                       );
                     })}
@@ -1334,13 +1338,13 @@ export default function App() {
         return (
           <div>
             {/* Room selector */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 เลือกห้องที่ต้องการเปรียบเทียบ</div>
-              <div style={{ fontSize: 10, color: C.sub, marginBottom: 10 }}>กดเลือกได้หลายห้อง — ตารางด้านล่างจะแสดงต้นทุนรวมทุกอย่าง</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 เลือกห้องที่ต้องการเปรียบเทียบ</div>
+              <div style={{ fontSize: 13, color: C.sub, marginBottom: 10 }}>กดเลือกได้หลายห้อง — ตารางด้านล่างจะแสดงต้นทุนรวมทุกอย่าง</div>
               {propGroups.map(function(grp, gi) {
                 return (
                   <div key={gi} style={{ marginBottom: 8 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: grp.color, marginBottom: 4 }}>{grp.propName}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: grp.color, marginBottom: 4 }}>{grp.propName}</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                       {grp.rooms.map(function(rm, ri) {
                         var sel = selectedRoomIds.includes(rm.id);
@@ -1352,7 +1356,7 @@ export default function App() {
                               padding: "5px 10px", borderRadius: 8, cursor: "pointer",
                               border: "2px solid " + (sel ? grp.color : C.border),
                               background: sel ? grp.bg : C.card,
-                              fontSize: 10, fontWeight: sel ? 700 : 400,
+                              fontSize: 13, fontWeight: sel ? 700 : 400,
                               color: sel ? grp.color : C.sub,
                             }}
                           >
@@ -1368,7 +1372,7 @@ export default function App() {
                 <div style={{ marginTop: 8, display: "flex", justifyContent: "flex-end" }}>
                   <div
                     onClick={function() { setSelectedRoomIds([]); }}
-                    style={{ fontSize: 9, color: C.sub, cursor: "pointer", padding: "3px 8px", border: "1px solid " + C.border, borderRadius: 6 }}
+                    style={{ fontSize: 12, color: C.sub, cursor: "pointer", padding: "3px 8px", border: "1px solid " + C.border, borderRadius: 6 }}
                   >
                     ✕ ล้างทั้งหมด
                   </div>
@@ -1378,27 +1382,27 @@ export default function App() {
 
             {/* Prompt when nothing selected */}
             {selectedRooms.length === 0 && (
-              <div style={{ textAlign: "center", padding: "30px 20px", color: C.sub, fontSize: 11, background: C.card, borderRadius: 12, marginBottom: 8 }}>
+              <div style={{ textAlign: "center", padding: "30px 20px", color: C.sub, fontSize: 14, background: C.card, borderRadius: 12, marginBottom: 8 }}>
                 ☝️ กดเลือกห้องด้านบนเพื่อดูเปรียบเทียบค่าใช้จ่ายทั้งหมด
               </div>
             )}
 
             {/* Comparison table */}
             {selectedRooms.length > 0 && (
-              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>📊 เปรียบเทียบต้นทุนรวมทั้งหมด</div>
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>📊 เปรียบเทียบต้นทุนรวมทั้งหมด</div>
                 <div style={{ overflowX: "auto" }}>
-                  <table style={{ borderCollapse: "collapse", fontSize: 10, width: "100%" }}>
+                  <table style={{ borderCollapse: "collapse", fontSize: 13, width: "100%" }}>
                     <thead>
                       <tr>
-                        <th style={{ padding: "6px 8px", textAlign: "left", background: C.border, fontWeight: 700, fontSize: 9, minWidth: 130 }}>รายการ</th>
+                        <th style={{ padding: "6px 8px", textAlign: "left", background: C.border, fontWeight: 700, fontSize: 12, minWidth: 130 }}>รายการ</th>
                         {selectedRooms.map(function(rm, ci) {
                           return (
-                            <th key={ci} style={{ padding: "6px 8px", textAlign: "center", background: rm.bg, color: rm.color, fontWeight: 800, fontSize: 9, minWidth: 120, whiteSpace: "nowrap" }}>
-                              <div style={{ fontSize: 9 }}>{rm.propName}</div>
-                              <div style={{ fontSize: 8, opacity: 0.75 }}>{rm.room.name}</div>
-                              <div style={{ fontSize: 12, fontWeight: 800 }}>£{rm.room.pw}/wk</div>
-                              <div style={{ fontSize: 8, opacity: 0.75 }}>× {rm.room.wk}wk</div>
+                            <th key={ci} style={{ padding: "6px 8px", textAlign: "center", background: rm.bg, color: rm.color, fontWeight: 800, fontSize: 12, minWidth: 120, whiteSpace: "nowrap" }}>
+                              <div style={{ fontSize: 12 }}>{rm.propName}</div>
+                              <div style={{ fontSize: 11, opacity: 0.75 }}>{rm.room.name}</div>
+                              <div style={{ fontSize: 15, fontWeight: 800 }}>£{rm.room.pw}/wk</div>
+                              <div style={{ fontSize: 11, opacity: 0.75 }}>× {rm.room.wk}wk</div>
                             </th>
                           );
                         })}
@@ -1407,11 +1411,11 @@ export default function App() {
                     <tbody>
                       {/* Room cost */}
                       <tr style={{ background: "#E8F5E9" }}>
-                        <td style={{ padding: "5px 8px", fontWeight: 700, fontSize: 9, color: "#1B5E20" }}>🏠 ค่าห้องรวม</td>
+                        <td style={{ padding: "5px 8px", fontWeight: 700, fontSize: 12, color: "#1B5E20" }}>🏠 ค่าห้องรวม</td>
                         {selectedRooms.map(function(rm, ci) {
                           var roomTotal = rm.room.pw * rm.room.wk;
                           return (
-                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#1B5E20", fontSize: 11 }}>
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, color: "#1B5E20", fontSize: 14 }}>
                               £{roomTotal.toLocaleString()}
                             </td>
                           );
@@ -1419,10 +1423,10 @@ export default function App() {
                       </tr>
                       {/* Deposit */}
                       <tr>
-                        <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>Deposit</td>
+                        <td style={{ padding: "5px 8px", fontSize: 12, color: C.sub }}>Deposit</td>
                         {selectedRooms.map(function(rm, ci) {
                           return (
-                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: rm.room.dep === 0 ? "#2E7D32" : C.text }}>
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 12, color: rm.room.dep === 0 ? "#2E7D32" : C.text }}>
                               {rm.room.dep === 0 ? "ไม่มี 🎉" : "£" + rm.room.dep}
                             </td>
                           );
@@ -1432,10 +1436,10 @@ export default function App() {
                       {FIXED_ROWS.map(function(fixRow, fi) {
                         return (
                           <tr key={fi} style={{ background: fi % 2 === 0 ? C.card : C.border + "44" }}>
-                            <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>{fixRow.l}</td>
+                            <td style={{ padding: "5px 8px", fontSize: 12, color: C.sub }}>{fixRow.l}</td>
                             {selectedRooms.map(function(rm, ci) {
                               return (
-                                <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: C.text }}>
+                                <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 12, color: C.text }}>
                                   £{fixRow.v.toLocaleString()}
                                 </td>
                               );
@@ -1445,11 +1449,11 @@ export default function App() {
                       })}
                       {/* Grand Total GBP */}
                       <tr style={{ borderTop: "2px solid #1a237e" }}>
-                        <td style={{ padding: "8px 8px", fontWeight: 800, fontSize: 10, color: "#1a237e" }}>💰 รวมทั้งหมด £</td>
+                        <td style={{ padding: "8px 8px", fontWeight: 800, fontSize: 13, color: "#1a237e" }}>💰 รวมทั้งหมด £</td>
                         {selectedRooms.map(function(rm, ci) {
                           var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
                           return (
-                            <td key={ci} style={{ padding: "8px 8px", textAlign: "center", fontWeight: 800, fontSize: 13, color: "#C62828" }}>
+                            <td key={ci} style={{ padding: "8px 8px", textAlign: "center", fontWeight: 800, fontSize: 16, color: "#C62828" }}>
                               £{grand.toLocaleString()}
                             </td>
                           );
@@ -1457,11 +1461,11 @@ export default function App() {
                       </tr>
                       {/* Grand Total THB */}
                       <tr style={{ background: "#FFF3E0" }}>
-                        <td style={{ padding: "5px 8px", fontWeight: 800, fontSize: 10, color: "#E65100" }}>฿ เงินไทย</td>
+                        <td style={{ padding: "5px 8px", fontWeight: 800, fontSize: 13, color: "#E65100" }}>฿ เงินไทย</td>
                         {selectedRooms.map(function(rm, ci) {
                           var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
                           return (
-                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, fontSize: 11, color: "#E65100" }}>
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontWeight: 800, fontSize: 14, color: "#E65100" }}>
                               ฿{Math.round(grand * r).toLocaleString()}
                             </td>
                           );
@@ -1469,11 +1473,11 @@ export default function App() {
                       </tr>
                       {/* Per month */}
                       <tr>
-                        <td style={{ padding: "5px 8px", fontSize: 9, color: C.sub }}>เฉลี่ย/เดือน ~14 เดือน</td>
+                        <td style={{ padding: "5px 8px", fontSize: 12, color: C.sub }}>เฉลี่ย/เดือน ~14 เดือน</td>
                         {selectedRooms.map(function(rm, ci) {
                           var grand = FIXED_TOTAL + (rm.room.pw * rm.room.wk) + rm.room.dep;
                           return (
-                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 9, color: C.sub }}>
+                            <td key={ci} style={{ padding: "5px 8px", textAlign: "center", fontSize: 12, color: C.sub }}>
                               ฿{Math.round(grand * r / 14).toLocaleString()}/เดือน
                             </td>
                           );
@@ -1494,8 +1498,8 @@ export default function App() {
                   var saving = (FIXED_TOTAL + mostExp.room.pw * mostExp.room.wk + mostExp.room.dep) - (FIXED_TOTAL + cheapest.room.pw * cheapest.room.wk + cheapest.room.dep);
                   return (
                     <div style={{ marginTop: 10, padding: "8px 12px", background: "#E8F5E9", borderRadius: 8, borderLeft: "3px solid #2E7D32" }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>✅ ถูกสุด: {cheapest.propName} — {cheapest.room.name || cheapest.propName}</div>
-                      <div style={{ fontSize: 10, color: "#2E7D32", marginTop: 2 }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#1B5E20" }}>✅ ถูกสุด: {cheapest.propName} — {cheapest.room.name || cheapest.propName}</div>
+                      <div style={{ fontSize: 13, color: "#2E7D32", marginTop: 2 }}>
                         ประหยัดกว่าแพงสุดถึง <strong>£{saving.toLocaleString()} (~฿{Math.round(saving * r).toLocaleString()})</strong>
                       </div>
                     </div>
@@ -1510,8 +1514,8 @@ export default function App() {
               var studioPW = selA.room.pw;
               var studioWK = selA.room.wk || 51;
               return (
-                <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 งบต่อเดือน — {selA.propName}</div>
+                <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 งบต่อเดือน — {selA.propName}</div>
                   {[
                     { l: "อาหาร", v: 250, note: "ทำเองที่ครัวหอ" },
                     { l: "Studio rent", v: Math.round(studioPW * studioWK / 12), note: selA.propName },
@@ -1526,8 +1530,8 @@ export default function App() {
                     return (
                       <div key={i} style={{ marginBottom: 8 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                          <span style={{ fontSize: 10, color: C.text }}>{it.l} <span style={{ fontSize: 9, color: C.sub }}>— {it.note}</span></span>
-                          <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>£{it.v}/เดือน</span>
+                          <span style={{ fontSize: 13, color: C.text }}>{it.l} <span style={{ fontSize: 12, color: C.sub }}>— {it.note}</span></span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>£{it.v}/เดือน</span>
                         </div>
                         <div style={{ background: C.border, borderRadius: 3, height: 6 }}>
                           <div style={{ background: "#1a237e", borderRadius: 3, height: 6, width: pct + "%" }} />
@@ -1536,8 +1540,8 @@ export default function App() {
                     );
                   })}
                   <div style={{ borderTop: "1px solid " + C.border, paddingTop: 8, marginTop: 4, display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวมต่อเดือน</span>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: "#C62828" }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: C.text }}>รวมต่อเดือน</span>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: "#C62828" }}>
                       £{(250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10).toLocaleString()}
                       {" ≈ ฿"}
                       {Math.round((250 + Math.round(studioPW * studioWK / 12) + 25 + 25 + 100 + 42 + 10) * r).toLocaleString()}
@@ -1603,50 +1607,50 @@ export default function App() {
         return (
           <div>
             {/* ── HEADER ── */}
-            <div style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", borderRadius: 12, padding: 14, color: "#fff", marginBottom: 8 }}>
+            <div style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", borderRadius: 12, padding: 20, color: "#fff", marginBottom: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 800 }}>💰 Budget Planner 2026/27</div>
-              <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>LLM Durham 14 เดือน — เลือกที่พัก + lifestyle เพื่อคำนวณ</div>
+              <div style={{ fontSize: 13, opacity: 0.85, marginTop: 2 }}>LLM Durham 14 เดือน — เลือกที่พัก + lifestyle เพื่อคำนวณ</div>
               {/* Grand total pill */}
               <div style={{ marginTop: 10, display: "flex", gap: 6 }}>
                 <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", textAlign: "center" }}>
-                  <div style={{ fontSize: 8, opacity: 0.8 }}>🔒 Fixed</div>
-                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{beforeGoTotal.toLocaleString()}</div>
+                  <div style={{ fontSize: 11, opacity: 0.8 }}>🔒 Fixed</div>
+                  <div style={{ fontSize: 16, fontWeight: 800 }}>£{beforeGoTotal.toLocaleString()}</div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", fontSize: 14, opacity: 0.7 }}>+</div>
                 <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", textAlign: "center" }}>
-                  <div style={{ fontSize: 8, opacity: 0.8 }}>📈 Additional</div>
-                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{(accomTotal + totalLiving + emergency).toLocaleString()}</div>
+                  <div style={{ fontSize: 11, opacity: 0.8 }}>📈 Additional</div>
+                  <div style={{ fontSize: 16, fontWeight: 800 }}>£{(accomTotal + totalLiving + emergency).toLocaleString()}</div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", fontSize: 14, opacity: 0.7 }}>=</div>
                 <div style={{ flex: 1, background: "rgba(255,255,255,0.25)", borderRadius: 8, padding: "6px 10px", textAlign: "center", border: "1px solid rgba(255,255,255,0.4)" }}>
-                  <div style={{ fontSize: 8, opacity: 0.8 }}>TOTAL</div>
-                  <div style={{ fontSize: 13, fontWeight: 800 }}>£{grandTotal.toLocaleString()}</div>
+                  <div style={{ fontSize: 11, opacity: 0.8 }}>TOTAL</div>
+                  <div style={{ fontSize: 16, fontWeight: 800 }}>£{grandTotal.toLocaleString()}</div>
                 </div>
               </div>
-              <div style={{ marginTop: 6, fontSize: 9, opacity: 0.75, textAlign: "right" }}>
+              <div style={{ marginTop: 6, fontSize: 12, opacity: 0.75, textAlign: "right" }}>
                 ≈ ฿{Math.round(grandTotal * r).toLocaleString()} · ฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน
               </div>
             </div>
 
             {/* ── SECTION A: FIXED COSTS ── */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: "4px solid #1a237e" }}>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8, borderLeft: "4px solid #1a237e" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>🔒 Fixed Costs</div>
-                  <div style={{ fontSize: 9, color: C.sub, marginTop: 1 }}>ค่าใช้จ่ายคงที่ — ไม่เปลี่ยนตาม lifestyle</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e" }}>🔒 Fixed Costs</div>
+                  <div style={{ fontSize: 12, color: C.sub, marginTop: 1 }}>ค่าใช้จ่ายคงที่ — ไม่เปลี่ยนตาม lifestyle</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e" }}>£{beforeGoTotal.toLocaleString()}</div>
-                  <div style={{ fontSize: 9, color: C.sub }}>฿{Math.round(beforeGoTotal * r).toLocaleString()}</div>
+                  <div style={{ fontSize: 12, color: C.sub }}>฿{Math.round(beforeGoTotal * r).toLocaleString()}</div>
                 </div>
               </div>
               {budgetData.fixedCosts.beforeGo.map(function(it, i) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: i < budgetData.fixedCosts.beforeGo.length - 1 ? "1px solid " + C.border : "none" }}>
-                    <span style={{ fontSize: 10, color: C.text }}>{it.name}</span>
+                    <span style={{ fontSize: 13, color: C.text }}>{it.name}</span>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>£{it.amount.toLocaleString()}</div>
-                      <div style={{ fontSize: 8, color: C.sub }}>฿{Math.round(it.amount * r).toLocaleString()}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>£{it.amount.toLocaleString()}</div>
+                      <div style={{ fontSize: 11, color: C.sub }}>฿{Math.round(it.amount * r).toLocaleString()}</div>
                     </div>
                   </div>
                 );
@@ -1654,34 +1658,34 @@ export default function App() {
             </div>
 
             {/* ── SECTION B: ADDITIONAL COSTS ── */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: "4px solid #E65100" }}>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8, borderLeft: "4px solid #E65100" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100" }}>📈 Additional Costs</div>
-                  <div style={{ fontSize: 9, color: C.sub, marginTop: 1 }}>ขึ้นอยู่กับการเลือก — ที่พัก + ค่าครองชีพ</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#E65100" }}>📈 Additional Costs</div>
+                  <div style={{ fontSize: 12, color: C.sub, marginTop: 1 }}>ขึ้นอยู่กับการเลือก — ที่พัก + ค่าครองชีพ</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 16, fontWeight: 800, color: "#E65100" }}>£{(accomTotal + totalLiving + emergency).toLocaleString()}</div>
-                  <div style={{ fontSize: 9, color: C.sub }}>฿{Math.round((accomTotal + totalLiving + emergency) * r).toLocaleString()}</div>
+                  <div style={{ fontSize: 12, color: C.sub }}>฿{Math.round((accomTotal + totalLiving + emergency) * r).toLocaleString()}</div>
                 </div>
               </div>
 
               {/* B1 — Accommodation */}
               <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: "#1B5E20", marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#1B5E20", marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
                   <span>🏠 ที่พัก (Accommodation)</span>
                   <span>£{accomTotal.toLocaleString()}</span>
                 </div>
 
                 {/* Pre-sess line */}
                 <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8, paddingBottom: 6, borderBottom: "1px dashed " + C.border }}>
-                  <span style={{ fontSize: 9, color: C.sub }}>Pre-sess 6wk (Josephine Butler)</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: C.text }}>£{presessAccom.toLocaleString()}</span>
+                  <span style={{ fontSize: 12, color: C.sub }}>Pre-sess 6wk (Josephine Butler)</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: C.text }}>£{presessAccom.toLocaleString()}</span>
                 </div>
 
                 {/* Property selector */}
                 <div style={{ marginTop: 8 }}>
-                  <div style={{ fontSize: 9, color: C.sub, marginBottom: 6 }}>เลือกที่พัก:</div>
+                  <div style={{ fontSize: 12, color: C.sub, marginBottom: 6 }}>เลือกที่พัก:</div>
                   <div style={{ overflowX: "auto", display: "flex", gap: 6, paddingBottom: 4 }}>
                     {accom.map(function(a, i) {
                       var sel = selectedAccomIdx === i;
@@ -1697,9 +1701,9 @@ export default function App() {
                             cursor: "pointer",
                           }}
                         >
-                          <div style={{ fontSize: 7, fontWeight: 800, color: a.color, marginBottom: 1 }}>{a.badge}</div>
-                          <div style={{ fontSize: 8, fontWeight: 700, color: sel ? a.color : C.text, lineHeight: 1.3 }}>{a.name}</div>
-                          <div style={{ fontSize: 13, fontWeight: 800, color: a.color, marginTop: 2 }}>£{pw}<span style={{ fontSize: 8, fontWeight: 400 }}>/wk</span></div>
+                          <div style={{ fontSize: 10, fontWeight: 800, color: a.color, marginBottom: 1 }}>{a.badge}</div>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: sel ? a.color : C.text, lineHeight: 1.3 }}>{a.name}</div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: a.color, marginTop: 2 }}>£{pw}<span style={{ fontSize: 11, fontWeight: 400 }}>/wk</span></div>
                         </div>
                       );
                     })}
@@ -1708,7 +1712,7 @@ export default function App() {
                   {/* Unit chips */}
                   {propRooms.length > 1 && (
                     <div style={{ marginTop: 8 }}>
-                      <div style={{ fontSize: 9, color: C.sub, marginBottom: 5 }}>เลือกประเภทห้อง:</div>
+                      <div style={{ fontSize: 12, color: C.sub, marginBottom: 5 }}>เลือกประเภทห้อง:</div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                         {propRooms.map(function(rm, ri) {
                           var isSel = selectedUnit && selectedUnit.id === rm.id;
@@ -1720,7 +1724,7 @@ export default function App() {
                                 padding: "5px 9px", borderRadius: 8, cursor: "pointer",
                                 border: "2px solid " + (isSel ? selA.color : C.border),
                                 background: isSel ? selA.bg : C.card,
-                                fontSize: 9, fontWeight: isSel ? 700 : 400,
+                                fontSize: 12, fontWeight: isSel ? 700 : 400,
                                 color: isSel ? selA.color : C.sub,
                               }}
                             >
@@ -1740,12 +1744,12 @@ export default function App() {
                   {selectedUnit && selectedUnit.room && (
                     <div style={{ marginTop: 8, padding: "6px 10px", background: selA.bg || C.border, borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
-                        <div style={{ fontSize: 9, fontWeight: 700, color: selA.color }}>{selA.name} · {selectedUnit.room.name}</div>
-                        <div style={{ fontSize: 8, color: C.sub }}>{studioWK}wk @ £{studioPW}/wk{studioDeposit > 0 ? " + dep £" + studioDeposit : " · no deposit"}</div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: selA.color }}>{selA.name} · {selectedUnit.room.name}</div>
+                        <div style={{ fontSize: 11, color: C.sub }}>{studioWK}wk @ £{studioPW}/wk{studioDeposit > 0 ? " + dep £" + studioDeposit : " · no deposit"}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 10, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}</div>
-                        <div style={{ fontSize: 8, color: C.sub }}>+dep £{studioDeposit}</div>
+                        <div style={{ fontSize: 13, fontWeight: 800, color: selA.color }}>£{studioCost.toLocaleString()}</div>
+                        <div style={{ fontSize: 11, color: C.sub }}>+dep £{studioDeposit}</div>
                       </div>
                     </div>
                   )}
@@ -1754,7 +1758,7 @@ export default function App() {
 
               {/* B2 — Living Costs */}
               <div style={{ borderTop: "1px solid " + C.border, paddingTop: 12, marginBottom: 12 }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color, marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: lsCfg.color, marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
                   <span>🍽️ ค่าครองชีพ (Living Costs)</span>
                   <span>£{totalLiving.toLocaleString()}</span>
                 </div>
@@ -1778,8 +1782,8 @@ export default function App() {
                           cursor: "pointer",
                         }}
                       >
-                        <div style={{ fontSize: 9, fontWeight: 800, color: ls.color }}>{ls.label}</div>
-                        <div style={{ fontSize: 8, color: sel ? ls.color : C.sub, marginTop: 2 }}>{ls.sub}</div>
+                        <div style={{ fontSize: 12, fontWeight: 800, color: ls.color }}>{ls.label}</div>
+                        <div style={{ fontSize: 11, color: sel ? ls.color : C.sub, marginTop: 2 }}>{ls.sub}</div>
                       </div>
                     );
                   })}
@@ -1793,11 +1797,11 @@ export default function App() {
                     <div key={ci} style={{ marginBottom: 5 }}>
                       <div onClick={function() { setOpenBudgetCat(isOpen ? -1 : ci); }} style={{ cursor: "pointer", padding: "4px 0" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                          <span style={{ fontSize: 10, color: C.text }}>{cat.emoji} {cat.name}</span>
+                          <span style={{ fontSize: 13, color: C.text }}>{cat.emoji} {cat.name}</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}</span>
-                            <span style={{ fontSize: 8, color: C.sub, minWidth: 24, textAlign: "right" }}>{pct}%</span>
-                            <span style={{ fontSize: 9, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
+                            <span style={{ fontSize: 13, fontWeight: 800, color: lsCfg.color }}>£{cat.amount}</span>
+                            <span style={{ fontSize: 11, color: C.sub, minWidth: 24, textAlign: "right" }}>{pct}%</span>
+                            <span style={{ fontSize: 12, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
                           </div>
                         </div>
                         <div style={{ background: C.border, borderRadius: 3, height: 5, overflow: "hidden" }}>
@@ -1810,10 +1814,10 @@ export default function App() {
                             return (
                               <div key={ii} style={{ paddingBottom: ii < cat.items.length - 1 ? 5 : 0, marginBottom: ii < cat.items.length - 1 ? 5 : 0, borderBottom: ii < cat.items.length - 1 ? "1px solid " + C.border : "none" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                  <span style={{ fontSize: 9, color: C.text }}>{it.name}</span>
-                                  <span style={{ fontSize: 9, fontWeight: 700, color: lsCfg.color, flexShrink: 0, marginLeft: 8 }}>£{it.amount}</span>
+                                  <span style={{ fontSize: 12, color: C.text }}>{it.name}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 700, color: lsCfg.color, flexShrink: 0, marginLeft: 8 }}>£{it.amount}</span>
                                 </div>
-                                {it.tip && <div style={{ fontSize: 8, color: C.sub, marginTop: 1 }}>💡 {it.tip}</div>}
+                                {it.tip && <div style={{ fontSize: 11, color: C.sub, marginTop: 1 }}>💡 {it.tip}</div>}
                               </div>
                             );
                           })}
@@ -1823,27 +1827,27 @@ export default function App() {
                   );
                 })}
                 <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 6, borderTop: "1px solid " + C.border, marginTop: 4 }}>
-                  <span style={{ fontSize: 9, color: C.sub }}>รวม 13.5 เดือน</span>
-                  <span style={{ fontSize: 10, fontWeight: 800, color: lsCfg.color }}>£{totalLiving.toLocaleString()}</span>
+                  <span style={{ fontSize: 12, color: C.sub }}>รวม 13.5 เดือน</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: lsCfg.color }}>£{totalLiving.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* B3 — Emergency */}
               <div style={{ borderTop: "1px solid " + C.border, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <div style={{ fontSize: 10, color: C.text }}>🆘 Emergency Fund</div>
-                  <div style={{ fontSize: 8, color: C.sub }}>เผื่อฉุกเฉิน</div>
+                  <div style={{ fontSize: 13, color: C.text }}>🆘 Emergency Fund</div>
+                  <div style={{ fontSize: 11, color: C.sub }}>เผื่อฉุกเฉิน</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>£{emergency.toLocaleString()}</div>
-                  <div style={{ fontSize: 8, color: C.sub }}>฿{Math.round(emergency * r).toLocaleString()}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>£{emergency.toLocaleString()}</div>
+                  <div style={{ fontSize: 11, color: C.sub }}>฿{Math.round(emergency * r).toLocaleString()}</div>
                 </div>
               </div>
             </div>
 
             {/* ── GRAND TOTAL SUMMARY ── */}
-            <div style={{ background: "#1a237e", borderRadius: 12, padding: 14, marginBottom: 8, color: "#fff" }}>
-              <div style={{ fontSize: 11, fontWeight: 800, marginBottom: 10 }}>📊 Grand Total — 14 เดือน</div>
+            <div style={{ background: "#1a237e", borderRadius: 12, padding: 20, marginBottom: 8, color: "#fff" }}>
+              <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 10 }}>📊 Grand Total — 14 เดือน</div>
               {[
                 { label: "🔒 Fixed Costs",         val: beforeGoTotal,                       sub: "tuition, visa, flights, vaccines" },
                 { label: "🏠 Accommodation",        val: accomTotal,                          sub: selA.name ? selA.name + " + pre-sess + deposit" : "ที่พักทั้งหมด" },
@@ -1853,12 +1857,12 @@ export default function App() {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.15)" : "none" }}>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 700 }}>{row.label}</div>
-                      <div style={{ fontSize: 8, opacity: 0.7 }}>{row.sub}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700 }}>{row.label}</div>
+                      <div style={{ fontSize: 11, opacity: 0.7 }}>{row.sub}</div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 11, fontWeight: 800 }}>£{row.val.toLocaleString()}</div>
-                      <div style={{ fontSize: 8, opacity: 0.7 }}>฿{Math.round(row.val * r).toLocaleString()}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800 }}>£{row.val.toLocaleString()}</div>
+                      <div style={{ fontSize: 11, opacity: 0.7 }}>฿{Math.round(row.val * r).toLocaleString()}</div>
                     </div>
                   </div>
                 );
@@ -1866,45 +1870,45 @@ export default function App() {
               <div style={{ borderTop: "2px solid rgba(255,255,255,0.4)", marginTop: 8, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 800 }}>TOTAL</div>
-                  <div style={{ fontSize: 8, opacity: 0.7 }}>เฉลี่ย ฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</div>
+                  <div style={{ fontSize: 11, opacity: 0.7 }}>เฉลี่ย ฿{Math.round(grandTotal * r / 14).toLocaleString()}/เดือน</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 18, fontWeight: 800 }}>£{grandTotal.toLocaleString()}</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, opacity: 0.9 }}>฿{Math.round(grandTotal * r).toLocaleString()}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, opacity: 0.9 }}>฿{Math.round(grandTotal * r).toLocaleString()}</div>
                 </div>
               </div>
             </div>
 
             {/* ⑤ Money Runway */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑤ เงินพอไหม? Money Runway</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑤ เงินพอไหม? Money Runway</div>
               {profile.fundsAmount ? (
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>เงินที่มี (฿{parseFloat(profile.fundsAmount).toLocaleString()})</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#1a237e" }}>≈ £{fundsGBP.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>เงินที่มี (฿{parseFloat(profile.fundsAmount).toLocaleString()})</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>≈ £{fundsGBP.toLocaleString()}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>ต้องใช้ทั้งหมด</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>ต้องใช้ทั้งหมด</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#C62828" }}>£{grandTotal.toLocaleString()}</span>
                   </div>
                   {surplus >= 0 ? (
                     <div style={{ background: "#E8F5E9", borderRadius: 8, padding: 10, borderLeft: "4px solid #2E7D32" }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>✅ เงินพอ!</div>
-                      <div style={{ fontSize: 10, color: "#2E7D32", marginTop: 4 }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#1B5E20" }}>✅ เงินพอ!</div>
+                      <div style={{ fontSize: 13, color: "#2E7D32", marginTop: 4 }}>
                         เหลือ <strong>£{surplus.toLocaleString()} (~฿{Math.round(surplus * r).toLocaleString()})</strong> หลังจบ LLM
                       </div>
                     </div>
                   ) : (
                     <div>
                       <div style={{ background: "#FFEBEE", borderRadius: 8, padding: 10, borderLeft: "4px solid #C62828", marginBottom: 8 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: "#C62828" }}>⚠️ ขาดอีก £{Math.abs(surplus).toLocaleString()}</div>
-                        <div style={{ fontSize: 10, color: "#C62828", marginTop: 4 }}>≈ ฿{Math.round(Math.abs(surplus) * r).toLocaleString()} — ต้องหางาน part-time</div>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>⚠️ ขาดอีก £{Math.abs(surplus).toLocaleString()}</div>
+                        <div style={{ fontSize: 13, color: "#C62828", marginTop: 4 }}>≈ ฿{Math.round(Math.abs(surplus) * r).toLocaleString()} — ต้องหางาน part-time</div>
                       </div>
                       <div style={{ background: "#E3F2FD", borderRadius: 8, padding: 10, borderLeft: "4px solid #1565C0" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#1565C0" }}>💼 ทำงาน part-time 10 ชม./wk ตลอดปี</div>
-                        <div style={{ fontSize: 10, color: "#1565C0", marginTop: 3 }}>£12/ชม. × 10 ชม. × 40 wk = <strong>£4,800/ปี</strong></div>
-                        <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1565C0" }}>💼 ทำงาน part-time 10 ชม./wk ตลอดปี</div>
+                        <div style={{ fontSize: 13, color: "#1565C0", marginTop: 3 }}>£12/ชม. × 10 ชม. × 40 wk = <strong>£4,800/ปี</strong></div>
+                        <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>
                           {Math.abs(surplus) <= 4800 ? "✅ ช่วยปิดส่วนต่างได้ครบ!" : "ช่วยปิดส่วนต่างได้บางส่วน"}
                         </div>
                       </div>
@@ -1912,7 +1916,7 @@ export default function App() {
                   )}
                 </div>
               ) : (
-                <div style={{ padding: "8px 0", fontSize: 10, color: C.sub }}>
+                <div style={{ padding: "8px 0", fontSize: 13, color: C.sub }}>
                   กรอกเงินที่มีในหน้า{" "}
                   <strong onClick={function() { setTab("decide"); setShowMore(false); }} style={{ color: "#1a237e", cursor: "pointer" }}>
                     🎯 แนะนำ
@@ -1923,38 +1927,38 @@ export default function App() {
             </div>
 
             {/* ⑥ Peak Month Warning */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑥ เดือนที่จ่ายหนักสุด</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: C.text, marginBottom: 8 }}>⑥ เดือนที่จ่ายหนักสุด</div>
               {budgetData.peakMonths.map(function(pm, i) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: i < budgetData.peakMonths.length - 1 ? "1px solid " + C.border : "none" }}>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: pm.color }}>{pm.month}</div>
-                      <div style={{ fontSize: 9, color: C.sub }}>{pm.note}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: pm.color }}>{pm.month}</div>
+                      <div style={{ fontSize: 12, color: C.sub }}>{pm.note}</div>
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: pm.color }}>~£{pm.amount.toLocaleString()}</div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: pm.color }}>~£{pm.amount.toLocaleString()}</div>
                   </div>
                 );
               })}
             </div>
 
             {/* ⑦ Exchange Rate Impact */}
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 4 }}>⑦ ผลกระทบจาก Exchange Rate</div>
-              <div style={{ fontSize: 9, color: C.sub, marginBottom: 8 }}>Total £{grandTotal.toLocaleString()} แลกที่ rate ต่างกัน</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: C.text, marginBottom: 4 }}>⑦ ผลกระทบจาก Exchange Rate</div>
+              <div style={{ fontSize: 12, color: C.sub, marginBottom: 8 }}>Total £{grandTotal.toLocaleString()} แลกที่ rate ต่างกัน</div>
               {[41, 44, 46].map(function(testRate) {
                 var thb = Math.round(grandTotal * testRate);
                 var diff = thb - Math.round(grandTotal * 44);
                 var isCurrent = Math.abs(testRate - r) < 1.5;
                 return (
                   <div key={testRate} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid " + C.border }}>
-                    <span style={{ fontSize: 10, fontWeight: isCurrent ? 800 : 400, color: isCurrent ? "#E65100" : C.text }}>
+                    <span style={{ fontSize: 13, fontWeight: isCurrent ? 800 : 400, color: isCurrent ? "#E65100" : C.text }}>
                       ฿{testRate}/£{isCurrent ? " ← ปัจจุบัน" : ""}
                     </span>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 10, fontWeight: 800, color: C.text }}>฿{thb.toLocaleString()}</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: C.text }}>฿{thb.toLocaleString()}</div>
                       {testRate !== 44 && (
-                        <div style={{ fontSize: 9, color: diff < 0 ? "#2E7D32" : "#C62828" }}>
+                        <div style={{ fontSize: 12, color: diff < 0 ? "#2E7D32" : "#C62828" }}>
                           {diff < 0 ? "ประหยัด" : "เพิ่ม"} ฿{Math.abs(diff).toLocaleString()}
                         </div>
                       )}
@@ -1963,10 +1967,10 @@ export default function App() {
                 );
               })}
               <div style={{ marginTop: 8, padding: "6px 10px", background: "#FFF3E0", borderRadius: 6 }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "#E65100" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#E65100" }}>
                   ต่างกัน ฿{Math.round(grandTotal * (46 - 41)).toLocaleString()} ระหว่าง rate ดีสุด (฿41) vs แย่สุด (฿46)!
                 </div>
-                <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>
                   💡 ทยอยแลกตอน rate ≤ ฿42 ผ่าน Wise หรือ SCB Travel Card
                 </div>
               </div>
@@ -1978,26 +1982,26 @@ export default function App() {
       {/* ── MONEY ── */}
       {tab === "money" && (
         <div>
-          <div style={{ background: "linear-gradient(135deg,#1B5E20,#388E3C)", borderRadius: 12, padding: 14, color: "#fff", textAlign: "center", marginBottom: 8 }}>
-            <div style={{ fontSize: 9, opacity: 0.6 }}>Realtime Exchange Rate</div>
+          <div style={{ background: "linear-gradient(135deg,#1B5E20,#388E3C)", borderRadius: 12, padding: 20, color: "#fff", textAlign: "center", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, opacity: 0.6 }}>Realtime Exchange Rate</div>
             <div style={{ fontSize: 26, fontWeight: 800 }}>1 GBP = ฿{r.toFixed(2)}</div>
-            <div style={{ fontSize: 11, marginTop: 4, padding: "4px 12px", background: "rgba(255,255,255,0.15)", borderRadius: 8, display: "inline-block" }}>
+            <div style={{ fontSize: 14, marginTop: 4, padding: "4px 12px", background: "rgba(255,255,255,0.15)", borderRadius: 8, display: "inline-block" }}>
               {r <= 42 ? "🟢 ถูกมาก! แลกเยอะๆ เลย" : r <= 43.5 ? "🟡 โอเค ทยอยแลกได้" : r <= 45 ? "🟠 ปกติ แลกบางส่วน" : "🔴 แพง รอก่อนถ้าได้"}
             </div>
-            <div style={{ fontSize: 9, opacity: 0.5, marginTop: 4 }}>YouTrip/SCB Travel Card เรทใกล้เคียง Visa rate · Wise เรทดีกว่า ~0.3-0.5%</div>
+            <div style={{ fontSize: 12, opacity: 0.5, marginTop: 4 }}>YouTrip/SCB Travel Card เรทใกล้เคียง Visa rate · Wise เรทดีกว่า ~0.3-0.5%</div>
           </div>
 
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>💰 งบประมาณรวมทั้งหมด (ประมาณ)</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>💰 งบประมาณรวมทั้งหมด (ประมาณ)</div>
 
             {/* ── ค่าใช้จ่ายคงที่ก่อนเดินทาง (from budgetData) ── */}
             <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าใช้จ่ายก่อนเดินทาง</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าใช้จ่ายก่อนเดินทาง</div>
               {budgetData.fixedCosts.beforeGo.map(function(item, i) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>{item.name}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}{item.note ? " (" + item.note + ")" : ""}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{item.name}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}{item.note ? " (" + item.note + ")" : ""}</span>
                   </div>
                 );
               })}
@@ -2005,12 +2009,12 @@ export default function App() {
 
             {/* ── ค่าที่พัก ── */}
             <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าที่พัก</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าที่พัก</div>
               {budgetData.fixedCosts.accommodation.map(function(item, i) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>{item.name}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{item.name}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>£{item.amount.toLocaleString()}</span>
                   </div>
                 );
               })}
@@ -2019,8 +2023,8 @@ export default function App() {
                 var total = a.room ? a.room.pw * wk : 0;
                 return total ? (
                   <div key={"a"+i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>Studio {wk}wk — {a.name} {a.room ? a.room.name : ""}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: i===0 ? "#1B5E20" : C.text }}>£{total.toLocaleString()}{i===0 ? " ⭐" : ""}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>Studio {wk}wk — {a.name} {a.room ? a.room.name : ""}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: i===0 ? "#1B5E20" : C.text }}>£{total.toLocaleString()}{i===0 ? " ⭐" : ""}</span>
                   </div>
                 ) : null;
               })}
@@ -2028,12 +2032,12 @@ export default function App() {
 
             {/* ── ค่าครองชีพ (balanced lifestyle × 12 months) ── */}
             <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าครองชีพ ~12 เดือน ({budgetData.lifestyle.balanced.label || "🟡 สมดุล"})</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>ค่าครองชีพ ~12 เดือน ({budgetData.lifestyle.balanced.label || "🟡 สมดุล"})</div>
               {budgetData.lifestyle.balanced.categories.map(function(cat, i) {
                 return (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>{cat.emoji} {cat.name}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: C.text }}>~£{Math.round(cat.amount * 12).toLocaleString()}/ปี</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{cat.emoji} {cat.name}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>~£{Math.round(cat.amount * 12).toLocaleString()}/ปี</span>
                   </div>
                 );
               })}
@@ -2051,30 +2055,30 @@ export default function App() {
               return (
                 <div style={{ borderTop: "2px solid #1a237e", paddingTop: 8, marginTop: 4 }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: "#C62828" }}>~£{grandTotal.toLocaleString()}</span>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: "#1a237e" }}>รวมทั้งหมด (ประมาณ)</span>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: "#C62828" }}>~£{grandTotal.toLocaleString()}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: C.sub }}>เป็นเงินไทย</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: "#C62828" }}>~฿{Math.round(grandTotal * r).toLocaleString()}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>เฉลี่ยต่อเดือน (~{months} เดือน)</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(grandTotal * r / months).toLocaleString()}/เดือน</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>เฉลี่ยต่อเดือน (~{months} เดือน)</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#E65100" }}>~฿{Math.round(grandTotal * r / months).toLocaleString()}/เดือน</span>
                   </div>
                 </div>
               );
             })()}
           </div>
 
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1565C0", marginBottom: 8 }}>💳 แนะนำ Travel Card + แลกเงิน</div>
-            <div style={{ fontSize: 10, color: C.text, lineHeight: 1.7 }}>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1565C0", marginBottom: 8 }}>💳 แนะนำ Travel Card + แลกเงิน</div>
+            <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>
               <strong>Wise</strong> — แนะนำมากสุด! เรทดีสุด ค่าธรรมเนียมต่ำ สมัครจากไทยได้ ใช้จ่าย UK ได้เลย<br />
               <strong>YouTrip</strong> — สะดวก เรท Visa/Mastercard ไม่มี markup สมัครง่าย<br />
               <strong>SCB Travel Card</strong> — ดีสำหรับคนใช้ SCB อยู่แล้ว เรทค่อนข้างดี
             </div>
-            <div style={{ background: "#E3F2FD", borderRadius: 8, padding: 8, marginTop: 6, fontSize: 10, color: "#0D47A1", lineHeight: 1.6 }}>
+            <div style={{ background: "#E3F2FD", borderRadius: 8, padding: 8, marginTop: 6, fontSize: 13, color: "#0D47A1", lineHeight: 1.6 }}>
               <strong>กลยุทธ์แลกเงิน:</strong><br />
               • เปิด Wise ตอนนี้เลย → ตั้ง Rate Alert<br />
               • ทยอยแลก 3-5 ครั้ง อย่าแลกทีเดียวหมด<br />
@@ -2092,30 +2096,30 @@ export default function App() {
       {/* ── VISA ── */}
       {tab === "visa" && (
         <div>
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>📋 เอกสารยื่น Student Visa (ครบทุกอย่าง)</div>
-            <div style={{ fontSize: 10, color: C.sub, marginBottom: 6 }}>ยื่นผ่าน VFS Global · เวลา 08:30-14:00 · ผล 10-15 วันทำการ · Priority 5 วัน (+£500) · Super Priority 1-2 วัน (+£1,000)</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>📋 เอกสารยื่น Student Visa (ครบทุกอย่าง)</div>
+            <div style={{ fontSize: 13, color: C.sub, marginBottom: 6 }}>ยื่นผ่าน VFS Global · เวลา 08:30-14:00 · ผล 10-15 วันทำการ · Priority 5 วัน (+£500) · Super Priority 1-2 วัน (+£1,000)</div>
             {[
               { c: "📄 เอกสารหลัก", i: ["ใบสมัคร Online กรอกเสร็จ (ผ่าน GOV.UK) + ชำระค่าวีซ่า £524", "ใบนัดหมาย VFS Online", "IHS Reference Number (จ่าย Health Surcharge £1,164 สำหรับ 18 เดือน)", "Passport ตัวจริง + สำเนาหน้าแรก 2 ชุด + สำเนาทุกหน้าที่มีตราเข้า-ออก", "Passport เล่มเก่า (ถ้ามี)", "สำเนาบัตร ปชช. 1 ชุด", "CAS Statement จาก Durham", "เอกสารการเรียนตาม CAS: Transcript + ปริญญาบัตร + IELTS certificate", "TB Certificate (ผลตรวจวัณโรค จาก IOM/BNH)"] },
               { c: "💰 หลักฐานการเงิน", i: ["Bank Statement จากธนาคาร (อายุไม่เกิน 1 เดือน)", "ยอดเงินขั้นต่ำ: £37,579 (~฿1.65M) อยู่ในบัญชี 28 วัน+", "ถ้าเป็นบัญชีผู้ปกครอง ต้องมี:", "  — สูติบัตร ภาษาไทย + แปลอังกฤษ", "  — จดหมาย Sponsorship Letter จากผู้ปกครอง + ลายเซ็น", "  — สำเนาบัตร ปชช. ผู้ปกครอง + ลายเซ็น", "  — ใบเปลี่ยนชื่อ/นามสกุล + แปลอังกฤษ (ถ้ามี)"] },
             ].map(function (sec, si) {
               return (
                 <div key={si} style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#C62828", marginBottom: 3 }}>{sec.c}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#C62828", marginBottom: 3 }}>{sec.c}</div>
                   {sec.i.map(function (it, ii) {
-                    return <div key={ii} style={{ fontSize: 10, color: it.startsWith("  ") ? C.sub : C.text, marginBottom: 2, paddingLeft: it.startsWith("  ") ? 16 : 8, borderLeft: "2px solid #FFCDD2" }}>{it}</div>;
+                    return <div key={ii} style={{ fontSize: 13, color: it.startsWith("  ") ? C.sub : C.text, marginBottom: 2, paddingLeft: it.startsWith("  ") ? 16 : 8, borderLeft: "2px solid #FFCDD2" }}>{it}</div>;
                   })}
                 </div>
               );
             })}
-            <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 8, fontSize: 10, color: "#E65100" }}>
+            <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 8, fontSize: 13, color: "#E65100" }}>
               ⚠️ เอกสารทุกอย่างต้องเป็นภาษาอังกฤษ ถ้าเป็นภาษาอื่นต้องแปลโดยผู้แปลที่ได้รับการรับรอง
             </div>
           </div>
 
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>💼 Part-time Work + หลังจบ</div>
-            <div style={{ fontSize: 10, color: C.text, lineHeight: 1.7 }}>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>💼 Part-time Work + หลังจบ</div>
+            <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>
               <strong>ระหว่างเรียน:</strong> ทำงานได้สูงสุด 20 ชม./สัปดาห์ (part-time)<br />
               <strong>ช่วงปิดเทอม:</strong> ทำงาน full-time ได้<br />
               <strong>งานที่ นศ. Law นิยม:</strong> Library assistant, Café/Bar staff, Tutor, Legal intern<br />
@@ -2128,9 +2132,9 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#4285F4", marginBottom: 8 }}>📅 Add to Google Calendar</div>
-            <div style={{ fontSize: 10, color: C.sub, marginBottom: 6 }}>กดปุ่มเพื่อเพิ่ม deadline สำคัญลง Google Calendar</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#4285F4", marginBottom: 8 }}>📅 Add to Google Calendar</div>
+            <div style={{ fontSize: 13, color: C.sub, marginBottom: 6 }}>กดปุ่มเพื่อเพิ่ม deadline สำคัญลง Google Calendar</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {[
                 { t: "College Preference เปิด", d: "20260330", de: "20260331", c: "สมัคร College Preference! เลือก Ustinov > St Cuthbert's > South" },
@@ -2150,10 +2154,10 @@ export default function App() {
                 return (
                   <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", background: i < 1 ? "#E8F5E9" : C.border, borderRadius: 6, textDecoration: "none", color: C.text }}>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{ev.t}</div>
-                      <div style={{ fontSize: 9, color: C.sub }}>{ev.d.substring(6, 8) + "/" + ev.d.substring(4, 6) + "/" + ev.d.substring(0, 4)}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{ev.t}</div>
+                      <div style={{ fontSize: 12, color: C.sub }}>{ev.d.substring(6, 8) + "/" + ev.d.substring(4, 6) + "/" + ev.d.substring(0, 4)}</div>
                     </div>
-                    <div style={{ background: "#4285F4", color: "#fff", padding: "3px 8px", borderRadius: 6, fontSize: 9, fontWeight: 700, flexShrink: 0 }}>+ Calendar</div>
+                    <div style={{ background: "#4285F4", color: "#fff", padding: "3px 8px", borderRadius: 6, fontSize: 12, fontWeight: 700, flexShrink: 0 }}>+ Calendar</div>
                   </a>
                 );
               })}
@@ -2166,15 +2170,15 @@ export default function App() {
       {tab === "vax" && (
         <div>
           <div style={{ background: "#C62828", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800 }}>⚠️ Meningitis ระบาดใน UK! มี.ค. 2026</div>
-            <div style={{ fontSize: 10, opacity: 0.9 }}>นศ.เสียชีวิต 2 คน + 11 ป่วยหนัก Kent · สายพันธุ์ MenB · แนะนำฉีด MenACWY + MenB ก่อนไป!</div>
+            <div style={{ fontSize: 15, fontWeight: 800 }}>⚠️ Meningitis ระบาดใน UK! มี.ค. 2026</div>
+            <div style={{ fontSize: 13, opacity: 0.9 }}>นศ.เสียชีวิต 2 คน + 11 ป่วยหนัก Kent · สายพันธุ์ MenB · แนะนำฉีด MenACWY + MenB ก่อนไป!</div>
           </div>
 
           {/* Vaccine progress bar */}
           <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>📊 วัคซีนที่ฉีดแล้ว</span>
-              <span style={{ fontSize: 11, fontWeight: 800, color: "#1a237e" }}>{vaccines.filter(function(v) { return checked['vax_' + v.n]; }).length}/{vaccines.length}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#1a237e" }}>📊 วัคซีนที่ฉีดแล้ว</span>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "#1a237e" }}>{vaccines.filter(function(v) { return checked['vax_' + v.n]; }).length}/{vaccines.length}</span>
             </div>
             <div style={{ background: C.border, borderRadius: 4, height: 10 }}>
               <div style={{ background: "#2E7D32", borderRadius: 4, height: 10, width: (vaccines.length ? (vaccines.filter(function(v) { return checked['vax_' + v.n]; }).length / vaccines.length * 100) : 0) + "%", transition: "width 0.3s" }} />
@@ -2192,19 +2196,19 @@ export default function App() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 3, border: "2px solid " + (vChecked ? "#4CAF50" : "#ddd"), background: vChecked ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, flexShrink: 0 }}>
+                    <div style={{ width: 18, height: 18, borderRadius: 3, border: "2px solid " + (vChecked ? "#4CAF50" : "#ddd"), background: vChecked ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0 }}>
                       {vChecked ? "✓" : ""}
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: v.u ? "#C62828" : C.text, textDecoration: vChecked ? "line-through" : "none" }}>{v.n}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: v.u ? "#C62828" : C.text, textDecoration: vChecked ? "line-through" : "none" }}>{v.n}</span>
                   </div>
-                  {v.u && <span style={{ background: "#C62828", color: "#fff", padding: "1px 6px", borderRadius: 8, fontSize: 8, fontWeight: 700 }}>เร่งด่วน!</span>}
+                  {v.u && <span style={{ background: "#C62828", color: "#fff", padding: "1px 6px", borderRadius: 8, fontSize: 11, fontWeight: 700 }}>เร่งด่วน!</span>}
                 </div>
-                <div style={{ fontSize: 10, color: C.sub, marginTop: 3 }}>{v.d}</div>
-                <div style={{ fontSize: 9, color: C.sub, marginTop: 2 }}>📍 {v.w} · 💰 {v.p} · 💉 {v.dos}</div>
+                <div style={{ fontSize: 13, color: C.sub, marginTop: 3 }}>{v.d}</div>
+                <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📍 {v.w} · 💰 {v.p} · 💉 {v.dos}</div>
               </div>
             );
           })}
-          <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 10, color: "#E65100" }}>
+          <div style={{ background: "#FFF3E0", borderRadius: 8, padding: 10, fontSize: 13, color: "#E65100" }}>
             💡 ฉีด MenACWY+MenB ที่ไทย พ.ค. เพราะ MenB 2 เข็มห่าง 1 เดือน ฉีด พ.ค.+มิ.ย. ทันก่อนบิน ส.ค.
           </div>
         </div>
@@ -2213,9 +2217,9 @@ export default function App() {
       {/* ── FLIGHTS ── */}
       {tab === "fly" && (
         <div>
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>✈️ BKK → Newcastle · 3 สายการบิน + กระเป๋า + Business vs Economy</div>
-            <div style={{ fontSize: 10, color: C.sub, marginBottom: 8 }}>ไม่มีไฟลท์ตรง BKK-NCL ต้อง transit 1 ครั้ง · ไป Durham ครั้งแรก ขนของ ~25-35 kg!</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>✈️ BKK → Newcastle · 3 สายการบิน + กระเป๋า + Business vs Economy</div>
+            <div style={{ fontSize: 13, color: C.sub, marginBottom: 8 }}>ไม่มีไฟลท์ตรง BKK-NCL ต้อง transit 1 ครั้ง · ไป Durham ครั้งแรก ขนของ ~25-35 kg!</div>
             {[
               { a: "🇶🇦 Qatar Airways", hi: true, rt: ["BKK → Doha (~6.5 ชม.)", "Doha → Newcastle NCL (~7 ชม.)"], eco: "£450-700", ecoBag: "30-35 kg + cabin 7kg", biz: "£2,500-4,000", bizBag: "40 kg (2x32) + cabin 15kg x2", stu: "สมัคร Student Club ฟรี → extra 10kg + ส่วนลด + Free WiFi!", note: "✅ แนะนำ Economy + Student Club! บินตรง NCL ไม่ต้องต่อ train กระเป๋า 40-45kg พอ!" },
               { a: "🇦🇪 Emirates", hi: false, rt: ["BKK → Dubai (~6.5 ชม.)", "Dubai → Newcastle NCL (~7.5 ชม.)"], eco: "£500-800", ecoBag: "30 kg + cabin 7kg", biz: "£3,000-5,000", bizBag: "40 kg (2x32) + cabin 2 ใบ", stu: "ไม่มี Student Club", note: "Service ดี ICE entertainment แต่ราคาสูงกว่า Qatar ~£50-100 ไม่มี Student discount" },
@@ -2223,18 +2227,18 @@ export default function App() {
             ].map(function (f, i) {
               return (
                 <div key={i} style={{ background: f.hi ? "#E8F5E9" : C.border, borderRadius: 10, padding: 12, marginBottom: 8, border: f.hi ? "2px solid #2E7D32" : "1px solid " + C.border }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: C.text }}>{f.a} {f.hi && <span style={{ background: "#2E7D32", color: "#fff", padding: "1px 8px", borderRadius: 8, fontSize: 9, fontWeight: 700 }}>แนะนำ!</span>}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: C.text }}>{f.a} {f.hi && <span style={{ background: "#2E7D32", color: "#fff", padding: "1px 8px", borderRadius: 8, fontSize: 12, fontWeight: 700 }}>แนะนำ!</span>}</div>
                   <div style={{ margin: "6px 0" }}>
                     {f.rt.map(function (leg, li) {
-                      return <div key={li} style={{ display: "flex", gap: 6, marginBottom: 2 }}><div style={{ width: 16, height: 16, borderRadius: "50%", background: "#E3F2FD", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: "#1565C0", flexShrink: 0 }}>{li + 1}</div><div style={{ fontSize: 10, color: C.sub }}>{leg}</div></div>;
+                      return <div key={li} style={{ display: "flex", gap: 6, marginBottom: 2 }}><div style={{ width: 16, height: 16, borderRadius: "50%", background: "#E3F2FD", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#1565C0", flexShrink: 0 }}>{li + 1}</div><div style={{ fontSize: 13, color: C.sub }}>{leg}</div></div>;
                     })}
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                    <div style={{ background: C.card, borderRadius: 6, padding: 6, border: "1px solid " + C.border }}><div style={{ fontSize: 9, fontWeight: 700, color: "#1565C0" }}>💺 Economy</div><div style={{ fontSize: 13, fontWeight: 800, color: C.text }}>{f.eco}</div><div style={{ fontSize: 9, color: C.sub }}>🧳 {f.ecoBag}</div></div>
-                    <div style={{ background: C.card, borderRadius: 6, padding: 6, border: "1px solid #CE93D8" }}><div style={{ fontSize: 9, fontWeight: 700, color: "#6A1B9A" }}>👔 Business</div><div style={{ fontSize: 13, fontWeight: 800, color: "#6A1B9A" }}>{f.biz}</div><div style={{ fontSize: 9, color: C.sub }}>🧳 {f.bizBag}</div></div>
+                    <div style={{ background: C.card, borderRadius: 6, padding: 6, border: "1px solid " + C.border }}><div style={{ fontSize: 12, fontWeight: 700, color: "#1565C0" }}>💺 Economy</div><div style={{ fontSize: 16, fontWeight: 800, color: C.text }}>{f.eco}</div><div style={{ fontSize: 12, color: C.sub }}>🧳 {f.ecoBag}</div></div>
+                    <div style={{ background: C.card, borderRadius: 6, padding: 6, border: "1px solid #CE93D8" }}><div style={{ fontSize: 12, fontWeight: 700, color: "#6A1B9A" }}>👔 Business</div><div style={{ fontSize: 16, fontWeight: 800, color: "#6A1B9A" }}>{f.biz}</div><div style={{ fontSize: 12, color: C.sub }}>🧳 {f.bizBag}</div></div>
                   </div>
-                  <div style={{ fontSize: 9, color: "#2E7D32", marginTop: 4 }}>🎓 {f.stu}</div>
-                  <div style={{ fontSize: 10, color: C.text, background: C.card, borderRadius: 6, padding: 6, marginTop: 4 }}>{f.note}</div>
+                  <div style={{ fontSize: 12, color: "#2E7D32", marginTop: 4 }}>🎓 {f.stu}</div>
+                  <div style={{ fontSize: 13, color: C.text, background: C.card, borderRadius: 6, padding: 6, marginTop: 4 }}>{f.note}</div>
                 </div>
               );
             })}
@@ -2246,15 +2250,15 @@ export default function App() {
       {tab === "shop" && (
         <div>
           <div style={{ background: "linear-gradient(135deg,#1a237e,#3949AB)", borderRadius: 12, padding: 12, color: "#fff", marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>🛒 อุปกรณ์ที่ต้องซื้อ — ซื้อที่ไหนคุ้มกว่า?</div>
-            <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>เปรียบเทียบราคา 🇹🇭 ไทย vs 🇬🇧 UK พร้อมเหตุผลว่าซื้อที่ไหนดีกว่า</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>🛒 อุปกรณ์ที่ต้องซื้อ — ซื้อที่ไหนคุ้มกว่า?</div>
+            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2 }}>เปรียบเทียบราคา 🇹🇭 ไทย vs 🇬🇧 UK พร้อมเหตุผลว่าซื้อที่ไหนดีกว่า</div>
             <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
               {[
                 { l: "🇹🇭 ซื้อไทย", n: shopping.reduce(function (a, c) { return a + c.items.filter(function (x) { return x.buyWhere === "TH"; }).length; }, 0) },
                 { l: "🇬🇧 ซื้อ UK", n: shopping.reduce(function (a, c) { return a + c.items.filter(function (x) { return x.buyWhere === "UK"; }).length; }, 0) },
                 { l: "ที่ไหนก็ได้", n: shopping.reduce(function (a, c) { return a + c.items.filter(function (x) { return x.buyWhere === "EITHER"; }).length; }, 0) },
               ].map(function (b, bi) {
-                return <div key={bi} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "4px 10px", fontSize: 10 }}><span style={{ fontWeight: 700 }}>{b.n}</span> {b.l}</div>;
+                return <div key={bi} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "4px 10px", fontSize: 13 }}><span style={{ fontWeight: 700 }}>{b.n}</span> {b.l}</div>;
               })}
             </div>
           </div>
@@ -2264,7 +2268,7 @@ export default function App() {
             value={shopSearch}
             onChange={function(e) { setShopSearch(e.target.value); }}
             placeholder="🔍 ค้นหาสินค้า..."
-            style={{ width: "100%", padding: "8px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, background: C.card, color: C.text, outline: "none", marginBottom: 8, boxSizing: "border-box" }}
+            style={{ width: "100%", padding: "8px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, background: C.card, color: C.text, outline: "none", marginBottom: 8, boxSizing: "border-box" }}
           />
 
           {shopping.map(function (cat, ci) {
@@ -2274,10 +2278,10 @@ export default function App() {
             return (
               <div key={ci} style={{ background: C.card, borderRadius: 12, marginBottom: 6, overflow: "hidden" }}>
                 <div onClick={function () { setOpenShop(isOpenCat ? -1 : ci); }} style={{ padding: "10px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>{cat.c}</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e" }}>{cat.c}</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: 10, color: C.sub }}>{filteredItems.length} รายการ</span>
-                    <span style={{ fontSize: 10, color: C.sub }}>{isOpenCat ? "▲" : "▼"}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{filteredItems.length} รายการ</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{isOpenCat ? "▲" : "▼"}</span>
                   </div>
                 </div>
                 {isOpenCat && (
@@ -2296,27 +2300,27 @@ export default function App() {
                               <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
                                 <div
                                   onClick={function() { toggle(shopKey); }}
-                                  style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid " + (isBought ? "#4CAF50" : "#ddd"), background: isBought ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, flexShrink: 0, cursor: "pointer" }}
+                                  style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid " + (isBought ? "#4CAF50" : "#ddd"), background: isBought ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0, cursor: "pointer" }}
                                 >
                                   {isBought ? "✓" : ""}
                                 </div>
-                                <span style={{ fontSize: 8, padding: "1px 6px", borderRadius: 8, background: tagColor, color: "#fff", fontWeight: 700 }}>{item.tag}</span>
-                                <span style={{ fontSize: 8, padding: "1px 6px", borderRadius: 8, background: whereBg, color: whereColor, fontWeight: 700 }}>{whereText}</span>
+                                <span style={{ fontSize: 11, padding: "1px 6px", borderRadius: 8, background: tagColor, color: "#fff", fontWeight: 700 }}>{item.tag}</span>
+                                <span style={{ fontSize: 11, padding: "1px 6px", borderRadius: 8, background: whereBg, color: whereColor, fontWeight: 700 }}>{whereText}</span>
                               </div>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginTop: 3, textDecoration: isBought ? "line-through" : "none" }}>{item.name}</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginTop: 3, textDecoration: isBought ? "line-through" : "none" }}>{item.name}</div>
                             </div>
                             <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 8 }}>
-                              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>{item.price}</div>
+                              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e" }}>{item.price}</div>
                             </div>
                           </div>
                           {(item.priceTH || item.priceUK) && (
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 4 }}>
-                              {item.priceTH && item.priceTH !== "-" && <div style={{ background: "#E8F5E9", borderRadius: 6, padding: "3px 6px", textAlign: "center" }}><div style={{ fontSize: 8, color: "#888" }}>🇹🇭 ไทย</div><div style={{ fontSize: 10, fontWeight: 700, color: "#1B5E20" }}>{item.priceTH}</div></div>}
-                              {item.priceUK && item.priceUK !== "-" && <div style={{ background: "#FFF3E0", borderRadius: 6, padding: "3px 6px", textAlign: "center" }}><div style={{ fontSize: 8, color: "#888" }}>🇬🇧 UK</div><div style={{ fontSize: 10, fontWeight: 700, color: "#E65100" }}>{item.priceUK}</div></div>}
+                              {item.priceTH && item.priceTH !== "-" && <div style={{ background: "#E8F5E9", borderRadius: 6, padding: "3px 6px", textAlign: "center" }}><div style={{ fontSize: 11, color: "#888" }}>🇹🇭 ไทย</div><div style={{ fontSize: 13, fontWeight: 700, color: "#1B5E20" }}>{item.priceTH}</div></div>}
+                              {item.priceUK && item.priceUK !== "-" && <div style={{ background: "#FFF3E0", borderRadius: 6, padding: "3px 6px", textAlign: "center" }}><div style={{ fontSize: 11, color: "#888" }}>🇬🇧 UK</div><div style={{ fontSize: 13, fontWeight: 700, color: "#E65100" }}>{item.priceUK}</div></div>}
                             </div>
                           )}
-                          <div style={{ fontSize: 10, color: "#1565C0", fontWeight: 600, marginBottom: 2 }}>💡 {item.why}</div>
-                          <div style={{ fontSize: 9, color: C.sub, lineHeight: 1.5 }}>{item.whyDetail}</div>
+                          <div style={{ fontSize: 13, color: "#1565C0", fontWeight: 600, marginBottom: 2 }}>💡 {item.why}</div>
+                          <div style={{ fontSize: 12, color: C.sub, lineHeight: 1.5 }}>{item.whyDetail}</div>
                         </div>
                       );
                     })}
@@ -2337,9 +2341,9 @@ export default function App() {
               value={packSearch}
               onChange={function(e) { setPackSearch(e.target.value); }}
               placeholder="🔍 ค้นหาของที่ต้องเตรียม..."
-              style={{ flex: 1, padding: "8px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, background: C.card, color: C.text, outline: "none" }}
+              style={{ flex: 1, padding: "8px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, background: C.card, color: C.text, outline: "none" }}
             />
-            <button onClick={function() { window.print(); }} style={{ padding: "8px 12px", background: "#1a237e", color: "#fff", border: "none", borderRadius: 8, fontSize: 10, cursor: "pointer", whiteSpace: "nowrap" }}>🖨️ Print</button>
+            <button onClick={function() { window.print(); }} style={{ padding: "8px 12px", background: "#1a237e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, cursor: "pointer", whiteSpace: "nowrap" }}>🖨️ Print</button>
           </div>
 
           {/* Packing progress bar */}
@@ -2351,8 +2355,8 @@ export default function App() {
             return (
               <div style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>📦 ของที่เตรียมแล้ว</span>
-                  <span style={{ fontSize: 11, fontWeight: 800, color: "#1a237e" }}>{packDone}/{packTotal}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#1a237e" }}>📦 ของที่เตรียมแล้ว</span>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: "#1a237e" }}>{packDone}/{packTotal}</span>
                 </div>
                 <div style={{ background: C.border, borderRadius: 4, height: 10 }}>
                   <div style={{ background: packDone === packTotal && packTotal > 0 ? "#2E7D32" : "#1a237e", borderRadius: 4, height: 10, width: (packTotal ? (packDone / packTotal * 100) : 0) + "%", transition: "width 0.3s" }} />
@@ -2368,7 +2372,7 @@ export default function App() {
             if (filteredItems.length === 0) return null;
             return (
               <div key={ci} style={{ background: C.card, borderRadius: 12, padding: 12, marginBottom: 6 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>{cat.c}</div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>{cat.c}</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
                   {filteredItems.map(function (item, ii) {
                     var packKey = 'pack_' + cat.c + '_' + item;
@@ -2379,10 +2383,10 @@ export default function App() {
                         onClick={function() { toggle(packKey); }}
                         style={{ display: "flex", gap: 6, alignItems: "center", cursor: "pointer", opacity: isCh ? 0.5 : 1, padding: "3px 5px" }}
                       >
-                        <div style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid " + (isCh ? "#4CAF50" : "#ddd"), background: isCh ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, flexShrink: 0 }}>
+                        <div style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid " + (isCh ? "#4CAF50" : "#ddd"), background: isCh ? "#E8F5E9" : C.card, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>
                           {isCh ? "✓" : ""}
                         </div>
-                        <div style={{ fontSize: 10, color: C.text, textDecoration: isCh ? "line-through" : "none" }}>{item}</div>
+                        <div style={{ fontSize: 13, color: C.text, textDecoration: isCh ? "line-through" : "none" }}>{item}</div>
                       </div>
                     );
                   })}
@@ -2396,16 +2400,16 @@ export default function App() {
       {/* ── INTROVERT GUIDE ── */}
       {tab === "intro" && (
         <div>
-          <div style={{ background: "linear-gradient(135deg,#4A148C,#7B1FA2)", borderRadius: 12, padding: 14, color: "#fff", marginBottom: 8 }}>
+          <div style={{ background: "linear-gradient(135deg,#4A148C,#7B1FA2)", borderRadius: 12, padding: 20, color: "#fff", marginBottom: 8 }}>
             <div style={{ fontSize: 14, fontWeight: 800 }}>🧠 Introvert Survival Guide</div>
-            <div style={{ fontSize: 11, opacity: 0.9, marginTop: 2 }}>สำหรับ Pannathorn — ไม่เคยอยู่คนเดียว ครั้งแรกที่ไปเรียนต่างประเทศ</div>
-            <div style={{ fontSize: 10, opacity: 0.7, marginTop: 4, lineHeight: 1.5 }}>ทุกอย่างที่รู้สึกตอนนี้ — กลัว ตื่นเต้น กังวล — ปกติ 100% 💜</div>
+            <div style={{ fontSize: 14, opacity: 0.9, marginTop: 2 }}>สำหรับ Pannathorn — ไม่เคยอยู่คนเดียว ครั้งแรกที่ไปเรียนต่างประเทศ</div>
+            <div style={{ fontSize: 13, opacity: 0.7, marginTop: 4, lineHeight: 1.5 }}>ทุกอย่างที่รู้สึกตอนนี้ — กลัว ตื่นเต้น กังวล — ปกติ 100% 💜</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 4, marginTop: 8 }}>
               {[{ n: introvert.length, l: "หมวด" }, { n: introvert.reduce(function (a, c) { return a + c.tips.length; }, 0) + "+", l: "เทคนิค" }, { n: "∞", l: "กำลังใจ" }].map(function (s, si) {
                 return (
                   <div key={si} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "5px 4px", textAlign: "center" }}>
                     <div style={{ fontSize: 16, fontWeight: 800 }}>{s.n}</div>
-                    <div style={{ fontSize: 8, opacity: 0.7 }}>{s.l}</div>
+                    <div style={{ fontSize: 11, opacity: 0.7 }}>{s.l}</div>
                   </div>
                 );
               })}
@@ -2421,11 +2425,11 @@ export default function App() {
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 20 }}>{cat.icon}</span>
                       <div>
-                        <div style={{ fontSize: 12, fontWeight: 800, color: cat.color }}>{cat.c}</div>
-                        <div style={{ fontSize: 9, color: C.sub }}>{cat.tips.length} เทคนิค</div>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: cat.color }}>{cat.c}</div>
+                        <div style={{ fontSize: 12, color: C.sub }}>{cat.tips.length} เทคนิค</div>
                       </div>
                     </div>
-                    <span style={{ fontSize: 10, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
+                    <span style={{ fontSize: 13, color: C.sub }}>{isOpen ? "▲" : "▼"}</span>
                   </div>
                 </div>
                 {isOpen && (
@@ -2433,8 +2437,8 @@ export default function App() {
                     {cat.tips.map(function (tip, ti) {
                       return (
                         <div key={ti} style={{ background: cat.bg, borderRadius: 8, padding: 10, marginTop: 6 }}>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: cat.color, marginBottom: 3 }}>{tip.t}</div>
-                          <div style={{ fontSize: 10, color: "#555", lineHeight: 1.6 }}>{tip.d}</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: cat.color, marginBottom: 3 }}>{tip.t}</div>
+                          <div style={{ fontSize: 13, color: "#555", lineHeight: 1.6 }}>{tip.d}</div>
                         </div>
                       );
                     })}
@@ -2445,14 +2449,14 @@ export default function App() {
           })}
 
           <div style={{ background: "linear-gradient(135deg,#C62828,#E53935)", borderRadius: 12, padding: 12, color: "#fff", marginTop: 4 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>🆘 เบอร์ฉุกเฉิน Mental Health</div>
+            <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>🆘 เบอร์ฉุกเฉิน Mental Health</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
               {[["Nightline (นศ.ฟัง)", "0191 334 0333", "ทุกคืน 21:00-08:00"], ["Samaritans", "116 123", "ฟรี 24 ชม."], ["Shout (text)", "85258", "ส่ง text 24 ชม."], ["Durham Counselling", "email", "counselling.service\n@durham.ac.uk"]].map(function (e, ei) {
                 return (
                   <div key={ei} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 8px" }}>
-                    <div style={{ fontSize: 9, opacity: 0.7 }}>{e[0]}</div>
-                    <div style={{ fontSize: 11, fontWeight: 800 }}>{e[1]}</div>
-                    <div style={{ fontSize: 8, opacity: 0.6, whiteSpace: "pre-line" }}>{e[2]}</div>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>{e[0]}</div>
+                    <div style={{ fontSize: 14, fontWeight: 800 }}>{e[1]}</div>
+                    <div style={{ fontSize: 11, opacity: 0.6, whiteSpace: "pre-line" }}>{e[2]}</div>
                   </div>
                 );
               })}
@@ -2466,14 +2470,14 @@ export default function App() {
         <div>
           {/* Apps — section="apps", c2=name, c3=description */}
           {lifeuk.filter(function(l) { return l.section === 'apps'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📱 App ที่ต้องโหลดก่อนไป</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📱 App ที่ต้องโหลดก่อนไป</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
                 {lifeuk.filter(function(l) { return l.section === 'apps'; }).map(function(a, i) {
                   return (
                     <div key={i} style={{ background: C.border, borderRadius: 6, padding: "5px 8px" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{a.c2}</div>
-                      <div style={{ fontSize: 9, color: C.sub }}>{a.c3}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{a.c2}</div>
+                      <div style={{ fontSize: 12, color: C.sub }}>{a.c3}</div>
                     </div>
                   );
                 })}
@@ -2482,24 +2486,24 @@ export default function App() {
           )}
           {/* First Week — section="firstweek", c2=task */}
           {lifeuk.filter(function(l) { return l.section === 'firstweek'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>🏥 สิ่งที่ต้องทำสัปดาห์แรกที่ถึง Durham</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>🏥 สิ่งที่ต้องทำสัปดาห์แรกที่ถึง Durham</div>
               {lifeuk.filter(function(l) { return l.section === 'firstweek'; }).map(function(t, i) {
-                return <div key={i} style={{ fontSize: 10, color: C.text, marginBottom: 4, paddingLeft: 8, borderLeft: "2px solid #FFCDD2" }}>{t.c2}</div>;
+                return <div key={i} style={{ fontSize: 13, color: C.text, marginBottom: 4, paddingLeft: 8, borderLeft: "2px solid #FFCDD2" }}>{t.c2}</div>;
               })}
             </div>
           )}
           {/* Emergency numbers — reuse contacts data */}
           {contacts.filter(function(c) { return c.cat && (c.cat.includes('Emergency') || c.cat.includes('ฉุกเฉิน')); }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>📞 เบอร์ฉุกเฉิน UK</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#C62828", marginBottom: 8 }}>📞 เบอร์ฉุกเฉิน UK</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
                 {contacts.filter(function(c) { return c.cat && (c.cat.includes('Emergency') || c.cat.includes('ฉุกเฉิน')); }).map(function(e, i) {
                   var isTop = e.contact === '999';
                   return (
                     <div key={i} style={{ background: isTop ? "#FFEBEE" : C.border, borderRadius: 6, padding: "5px 8px" }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: isTop ? "#C62828" : C.text }}>{e.contact || e.name}</div>
-                      <div style={{ fontSize: 9, color: C.sub }}>{e.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: isTop ? "#C62828" : C.text }}>{e.contact || e.name}</div>
+                      <div style={{ fontSize: 12, color: C.sub }}>{e.name}</div>
                     </div>
                   );
                 })}
@@ -2507,21 +2511,21 @@ export default function App() {
             </div>
           )}
           {/* Weather — hardcoded (factual, rarely changes) */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#0D47A1", marginBottom: 8 }}>🌡️ สภาพอากาศ Durham</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#0D47A1", marginBottom: 8 }}>🌡️ สภาพอากาศ Durham</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 3 }}>
               {[["ส.ค.", "☀️", "12-19°C", "Pre-sess\nเย็นสบาย"], ["ก.ย.-พ.ย.", "🍂", "5-15°C", "ใบไม้ร่วง\nเริ่มหนาว"], ["ธ.ค.-ก.พ.", "❄️", "0-7°C", "หนาวมาก!\nอาจมีหิมะ"], ["มี.ค.-มิ.ย.", "🌸", "6-18°C", "เริ่มอุ่น\nDissertation"]].map(function(w, i) {
-                return <div key={i} style={{ background: C.border, borderRadius: 6, padding: "6px 4px", textAlign: "center" }}><div style={{ fontSize: 9, fontWeight: 700, color: C.text }}>{w[0]}</div><div style={{ fontSize: 16 }}>{w[1]}</div><div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{w[2]}</div><div style={{ fontSize: 8, color: C.sub, whiteSpace: "pre-line" }}>{w[3]}</div></div>;
+                return <div key={i} style={{ background: C.border, borderRadius: 6, padding: "6px 4px", textAlign: "center" }}><div style={{ fontSize: 12, fontWeight: 700, color: C.text }}>{w[0]}</div><div style={{ fontSize: 16 }}>{w[1]}</div><div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{w[2]}</div><div style={{ fontSize: 11, color: C.sub, whiteSpace: "pre-line" }}>{w[3]}</div></div>;
               })}
             </div>
-            <div style={{ fontSize: 9, color: C.sub, marginTop: 4 }}>Durham อยู่ภาคตะวันออกเฉียงเหนือ หนาวและฝนเยอะกว่า London! เตรียมเสื้อกันหนาว+กันน้ำ ให้พร้อม</div>
+            <div style={{ fontSize: 12, color: C.sub, marginTop: 4 }}>Durham อยู่ภาคตะวันออกเฉียงเหนือ หนาวและฝนเยอะกว่า London! เตรียมเสื้อกันหนาว+กันน้ำ ให้พร้อม</div>
           </div>
           {/* Tips — section="tips", c2=tip */}
           {lifeuk.filter(function(l) { return l.section === 'tips'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#6A1B9A", marginBottom: 8 }}>💡 Tips จากรุ่นพี่</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#6A1B9A", marginBottom: 8 }}>💡 Tips จากรุ่นพี่</div>
               {lifeuk.filter(function(l) { return l.section === 'tips'; }).map(function(t, i) {
-                return <div key={i} style={{ fontSize: 10, color: C.text, marginBottom: 4, paddingLeft: 8, borderLeft: "2px solid #CE93D8" }}>{t.c2}</div>;
+                return <div key={i} style={{ fontSize: 13, color: C.text, marginBottom: 4, paddingLeft: 8, borderLeft: "2px solid #CE93D8" }}>{t.c2}</div>;
               })}
             </div>
           )}
@@ -2536,16 +2540,16 @@ export default function App() {
             var cats = [...new Set(sheetExpenses.map(function(e) { return e.cat; }).filter(Boolean))];
             var total = sheetExpenses.reduce(function(a, e) { return a + (e.amount || 0); }, 0);
             return (
-              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1B5E20" }}>📊 Google Sheets — รายจ่ายทั้งหมด</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: "#1B5E20" }}>£{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#1B5E20" }}>📊 Google Sheets — รายจ่ายทั้งหมด</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#1B5E20" }}>£{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 </div>
                 {/* By category summary */}
                 {cats.map(function(cat) {
                   var catTotal = sheetExpenses.filter(function(e) { return e.cat === cat; }).reduce(function(a, e) { return a + (e.amount || 0); }, 0);
                   return (
-                    <div key={cat} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid " + C.border, fontSize: 10 }}>
+                    <div key={cat} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid " + C.border, fontSize: 13 }}>
                       <span style={{ color: C.text }}>{cat || "อื่นๆ"}</span>
                       <span style={{ fontWeight: 700, color: "#1a237e" }}>£{catTotal.toFixed(2)}</span>
                     </div>
@@ -2553,21 +2557,21 @@ export default function App() {
                 })}
                 {/* Line items */}
                 <div style={{ marginTop: 10 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.sub, marginBottom: 6 }}>รายการล่าสุด</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 6 }}>รายการล่าสุด</div>
                   {sheetExpenses.slice(0, 10).map(function(e, ei) {
                     return (
                       <div key={ei} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: "1px solid " + C.border }}>
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{e.item}</div>
-                          <div style={{ fontSize: 9, color: C.sub }}>{e.cat}{e.payment ? " · " + e.payment : ""}{e.date ? " · " + e.date : ""}</div>
-                          {e.note && <div style={{ fontSize: 9, color: C.sub, fontStyle: "italic" }}>{e.note}</div>}
+                          <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{e.item}</div>
+                          <div style={{ fontSize: 12, color: C.sub }}>{e.cat}{e.payment ? " · " + e.payment : ""}{e.date ? " · " + e.date : ""}</div>
+                          {e.note && <div style={{ fontSize: 12, color: C.sub, fontStyle: "italic" }}>{e.note}</div>}
                         </div>
-                        <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>£{(e.amount || 0).toFixed(2)}</div>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e" }}>£{(e.amount || 0).toFixed(2)}</div>
                       </div>
                     );
                   })}
                   {sheetExpenses.length > 10 && (
-                    <div style={{ fontSize: 9, color: C.sub, textAlign: "center", paddingTop: 6 }}>+ {sheetExpenses.length - 10} รายการ — เพิ่มใน Google Sheets</div>
+                    <div style={{ fontSize: 12, color: C.sub, textAlign: "center", paddingTop: 6 }}>+ {sheetExpenses.length - 10} รายการ — เพิ่มใน Google Sheets</div>
                   )}
                 </div>
               </div>
@@ -2575,13 +2579,13 @@ export default function App() {
           })()}
 
           {/* Add form */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>➕ บันทึกค่าใช้จ่ายชั่วคราว (local)</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>➕ บันทึกค่าใช้จ่ายชั่วคราว (local)</div>
             <input
               value={expForm.desc}
               onChange={function(e) { setExpForm(function(f) { return { ...f, desc: e.target.value }; }); }}
               placeholder="รายการ เช่น ข้าวมันไก่"
-              style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, marginBottom: 6, background: C.bg, color: C.text, boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, marginBottom: 6, background: C.bg, color: C.text, boxSizing: "border-box" }}
             />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 6 }}>
               <input
@@ -2589,33 +2593,33 @@ export default function App() {
                 value={expForm.amount}
                 onChange={function(e) { setExpForm(function(f) { return { ...f, amount: e.target.value }; }); }}
                 placeholder="£ จำนวน"
-                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, background: C.bg, color: C.text }}
+                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, background: C.bg, color: C.text }}
               />
               <input
                 type="date"
                 value={expForm.date}
                 onChange={function(e) { setExpForm(function(f) { return { ...f, date: e.target.value }; }); }}
-                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, background: C.bg, color: C.text }}
+                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, background: C.bg, color: C.text }}
               />
             </div>
             <select
               value={expForm.cat}
               onChange={function(e) { setExpForm(function(f) { return { ...f, cat: e.target.value }; }); }}
-              style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 11, marginBottom: 8, background: C.bg, color: C.text }}
+              style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid " + C.border, fontSize: 14, marginBottom: 8, background: C.bg, color: C.text }}
             >
               {EXPENSE_CATS.map(function(c) { return <option key={c} value={c}>{c}</option>; })}
             </select>
             <button
               onClick={addExpense}
-              style={{ width: "100%", padding: "9px", borderRadius: 8, border: "none", background: "#1a237e", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+              style={{ width: "100%", padding: "9px", borderRadius: 8, border: "none", background: "#1a237e", color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer" }}
             >
               ➕ เพิ่มรายการ
             </button>
           </div>
 
           {/* Budget summary */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>📊 สรุปงบรายเดือน (เดือนนี้)</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 10 }}>📊 สรุปงบรายเดือน (เดือนนี้)</div>
             {EXPENSE_CATS.map(function(cat) {
               var now = new Date();
               var monthSpent = expenses.filter(function(e) {
@@ -2628,8 +2632,8 @@ export default function App() {
               return (
                 <div key={cat} style={{ marginBottom: 10 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                    <span style={{ fontSize: 10, color: C.text }}>{cat}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: over ? "#C62828" : "#1a237e" }}>
+                    <span style={{ fontSize: 13, color: C.text }}>{cat}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: over ? "#C62828" : "#1a237e" }}>
                       £{monthSpent.toFixed(2)} / £{budget}
                     </span>
                   </div>
@@ -2640,8 +2644,8 @@ export default function App() {
               );
             })}
             <div style={{ borderTop: "1px solid " + C.border, paddingTop: 8, display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>รวมเดือนนี้</span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: "#1a237e" }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: C.text }}>รวมเดือนนี้</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#1a237e" }}>
                 £{expenses.filter(function(e) { var d = new Date(e.date); var n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).reduce(function(a, e) { return a + e.amount; }, 0).toFixed(2)}
                 {" / £"}
                 {Object.values(BUDGETS).reduce(function(a, b) { return a + b; }, 0)}
@@ -2650,17 +2654,17 @@ export default function App() {
           </div>
 
           {/* Expense list */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🧾 รายการทั้งหมด ({expenses.length})</div>
-            {expenses.length === 0 && <div style={{ fontSize: 11, color: C.sub, textAlign: "center", padding: 20 }}>ยังไม่มีรายการ</div>}
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🧾 รายการทั้งหมด ({expenses.length})</div>
+            {expenses.length === 0 && <div style={{ fontSize: 14, color: C.sub, textAlign: "center", padding: 20 }}>ยังไม่มีรายการ</div>}
             {expenses.map(function(e) {
               return (
                 <div key={e.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: "1px solid " + C.border }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: C.text }}>{e.desc}</div>
-                    <div style={{ fontSize: 9, color: C.sub }}>{e.cat} · {e.date}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{e.desc}</div>
+                    <div style={{ fontSize: 12, color: C.sub }}>{e.cat} · {e.date}</div>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: "#1a237e" }}>£{e.amount.toFixed(2)}</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e" }}>£{e.amount.toFixed(2)}</div>
                   <button
                     onClick={function() { delExpense(e.id); }}
                     style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: "#C62828", padding: "0 4px" }}
@@ -2677,14 +2681,14 @@ export default function App() {
         <div>
           {/* OSCOLA */}
           {academic.filter(function(a) { return a.section === 'oscola'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📚 OSCOLA Referencing (Law)</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📚 OSCOLA Referencing (Law)</div>
               {academic.filter(function(a) { return a.section === 'oscola'; }).map(function(r, i) {
                 return (
                   <div key={i} style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#0D47A1" }}>{r.c2}</div>
-                    <div style={{ fontSize: 9, fontFamily: "monospace", background: C.border, borderRadius: 6, padding: "5px 8px", margin: "3px 0", color: C.text }}>{r.c3}</div>
-                    {r.c4 && <div style={{ fontSize: 9, color: C.sub }}>{r.c4}</div>}
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0D47A1" }}>{r.c2}</div>
+                    <div style={{ fontSize: 12, fontFamily: "monospace", background: C.border, borderRadius: 6, padding: "5px 8px", margin: "3px 0", color: C.text }}>{r.c3}</div>
+                    {r.c4 && <div style={{ fontSize: 12, color: C.sub }}>{r.c4}</div>}
                   </div>
                 );
               })}
@@ -2692,13 +2696,13 @@ export default function App() {
           )}
           {/* LLM Timeline */}
           {academic.filter(function(a) { return a.section === 'timeline'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 LLM Timeline 2026-27</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>📅 LLM Timeline 2026-27</div>
               {academic.filter(function(a) { return a.section === 'timeline'; }).map(function(e, i, arr) {
                 return (
                   <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, paddingBottom: 8, borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
-                    <div style={{ width: 90, fontSize: 9, fontWeight: 700, color: e.c5 || "#1a237e", flexShrink: 0 }}>{e.c2}</div>
-                    <div style={{ fontSize: 10, color: C.text }}>{e.c3}</div>
+                    <div style={{ width: 90, fontSize: 12, fontWeight: 700, color: e.c5 || "#1a237e", flexShrink: 0 }}>{e.c2}</div>
+                    <div style={{ fontSize: 13, color: C.text }}>{e.c3}</div>
                   </div>
                 );
               })}
@@ -2706,13 +2710,13 @@ export default function App() {
           )}
           {/* University Systems */}
           {academic.filter(function(a) { return a.section === 'systems'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>💻 Durham University Systems</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>💻 Durham University Systems</div>
               {academic.filter(function(a) { return a.section === 'systems'; }).map(function(s, i, arr) {
                 return (
                   <div key={i} style={{ marginBottom: 8, paddingBottom: 8, borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#0D47A1" }}>{s.c2}</div>
-                    <div style={{ fontSize: 9, color: C.sub, marginTop: 2, lineHeight: 1.5 }}>{s.c3}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0D47A1" }}>{s.c2}</div>
+                    <div style={{ fontSize: 12, color: C.sub, marginTop: 2, lineHeight: 1.5 }}>{s.c3}</div>
                   </div>
                 );
               })}
@@ -2720,18 +2724,18 @@ export default function App() {
           )}
           {/* Dissertation */}
           {academic.filter(function(a) { return a.section === 'dissertation'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#6A1B9A", marginBottom: 8 }}>🎯 Dissertation Tips</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#6A1B9A", marginBottom: 8 }}>🎯 Dissertation Tips</div>
               {academic.filter(function(a) { return a.section === 'dissertation'; }).map(function(t, i) {
-                return <div key={i} style={{ fontSize: 10, color: C.text, marginBottom: 5, paddingLeft: 8, borderLeft: "2px solid #CE93D8" }}>{t.c2}</div>;
+                return <div key={i} style={{ fontSize: 13, color: C.text, marginBottom: 5, paddingLeft: 8, borderLeft: "2px solid #CE93D8" }}>{t.c2}</div>;
               })}
             </div>
           )}
           {academic.length === 0 && (
             <div style={{ background: C.card, borderRadius: 12, padding: 24, textAlign: "center", color: C.sub }}>
               <div style={{ fontSize: 20, marginBottom: 8 }}>🎓</div>
-              <div style={{ fontSize: 12, fontWeight: 700 }}>เพิ่มข้อมูลใน Google Sheets</div>
-              <div style={{ fontSize: 10, marginTop: 4 }}>สร้าง tab ชื่อ "🎓 Academic" ใน Spreadsheet</div>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>เพิ่มข้อมูลใน Google Sheets</div>
+              <div style={{ fontSize: 13, marginTop: 4 }}>สร้าง tab ชื่อ "🎓 Academic" ใน Spreadsheet</div>
             </div>
           )}
         </div>
@@ -2750,14 +2754,14 @@ export default function App() {
               if (c.c5) pathMap.get(c.c2).steps.push(c.c5);
             });
             return (
-              <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>⚖️ UK Legal Career Paths</div>
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>⚖️ UK Legal Career Paths</div>
                 {order.map(function(p) {
                   var path = pathMap.get(p);
                   return (
                     <div key={p} style={{ background: path.bg, borderRadius: 10, padding: 12, marginBottom: 8 }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, color: path.color, marginBottom: 6 }}>{path.path}</div>
-                      {path.steps.map(function(s, si) { return <div key={si} style={{ fontSize: 10, color: "#444", marginBottom: 3 }}>→ {s}</div>; })}
+                      <div style={{ fontSize: 14, fontWeight: 800, color: path.color, marginBottom: 6 }}>{path.path}</div>
+                      {path.steps.map(function(s, si) { return <div key={si} style={{ fontSize: 13, color: "#444", marginBottom: 3 }}>→ {s}</div>; })}
                     </div>
                   );
                 })}
@@ -2766,13 +2770,13 @@ export default function App() {
           })()}
           {/* Societies — section="societies", c2=name, c3=icon, c4=description */}
           {career.filter(function(c) { return c.section === 'societies'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🏛️ Durham Law Societies</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🏛️ Durham Law Societies</div>
               {career.filter(function(c) { return c.section === 'societies'; }).map(function(s, i, arr) {
                 return (
                   <div key={i} style={{ marginBottom: 8, paddingBottom: 8, borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: C.text }}>{s.c3} {s.c2}</div>
-                    <div style={{ fontSize: 9, color: C.sub, marginTop: 2, lineHeight: 1.5 }}>{s.c4}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{s.c3} {s.c2}</div>
+                    <div style={{ fontSize: 12, color: C.sub, marginTop: 2, lineHeight: 1.5 }}>{s.c4}</div>
                   </div>
                 );
               })}
@@ -2780,16 +2784,16 @@ export default function App() {
           )}
           {/* Schemes — section="schemes", c2=firm, c3=description, c5=deadline */}
           {career.filter(function(c) { return c.section === 'schemes'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>📋 Vacation Schemes & Internships</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#E65100", marginBottom: 8 }}>📋 Vacation Schemes & Internships</div>
               {career.filter(function(c) { return c.section === 'schemes'; }).map(function(f, i, arr) {
                 return (
                   <div key={i} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: "#0D47A1" }}>{f.c2}</span>
-                      {f.c5 && <span style={{ fontSize: 9, background: "#FFF3E0", color: "#E65100", padding: "1px 6px", borderRadius: 6, fontWeight: 700 }}>{f.c5}</span>}
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#0D47A1" }}>{f.c2}</span>
+                      {f.c5 && <span style={{ fontSize: 12, background: "#FFF3E0", color: "#E65100", padding: "1px 6px", borderRadius: 6, fontWeight: 700 }}>{f.c5}</span>}
                     </div>
-                    <div style={{ fontSize: 9, color: C.sub, lineHeight: 1.5 }}>{f.c3}</div>
+                    <div style={{ fontSize: 12, color: C.sub, lineHeight: 1.5 }}>{f.c3}</div>
                   </div>
                 );
               })}
@@ -2797,27 +2801,27 @@ export default function App() {
           )}
           {/* Graduate Route Visa — section="visa", c2=tip */}
           {career.filter(function(c) { return c.section === 'visa'; }).length > 0 && (
-            <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>🌍 Graduate Route Visa</div>
+            <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1B5E20", marginBottom: 8 }}>🌍 Graduate Route Visa</div>
               {career.filter(function(c) { return c.section === 'visa'; }).map(function(t, i) {
-                return <div key={i} style={{ fontSize: 10, color: C.text, marginBottom: 5, paddingLeft: 8, borderLeft: "2px solid #C8E6C9" }}>{t.c2}</div>;
+                return <div key={i} style={{ fontSize: 13, color: C.text, marginBottom: 5, paddingLeft: 8, borderLeft: "2px solid #C8E6C9" }}>{t.c2}</div>;
               })}
             </div>
           )}
           {/* LinkedIn Tips — section="linkedin", c2=tip */}
           {career.filter(function(c) { return c.section === 'linkedin'; }).length > 0 && (
-            <div style={{ background: "linear-gradient(135deg,#1a237e,#283593)", borderRadius: 12, padding: 14, color: "#fff", marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 8 }}>💡 LinkedIn Tips</div>
+            <div style={{ background: "linear-gradient(135deg,#1a237e,#283593)", borderRadius: 12, padding: 20, color: "#fff", marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 8 }}>💡 LinkedIn Tips</div>
               {career.filter(function(c) { return c.section === 'linkedin'; }).map(function(t, i) {
-                return <div key={i} style={{ fontSize: 10, marginBottom: 4, opacity: 0.9 }}>• {t.c2}</div>;
+                return <div key={i} style={{ fontSize: 13, marginBottom: 4, opacity: 0.9 }}>• {t.c2}</div>;
               })}
             </div>
           )}
           {career.length === 0 && (
             <div style={{ background: C.card, borderRadius: 12, padding: 24, textAlign: "center", color: C.sub }}>
               <div style={{ fontSize: 20, marginBottom: 8 }}>💼</div>
-              <div style={{ fontSize: 12, fontWeight: 700 }}>เพิ่มข้อมูลใน Google Sheets</div>
-              <div style={{ fontSize: 10, marginTop: 4 }}>สร้าง tab ชื่อ "💼 Career" ใน Spreadsheet</div>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>เพิ่มข้อมูลใน Google Sheets</div>
+              <div style={{ fontSize: 13, marginTop: 4 }}>สร้าง tab ชื่อ "💼 Career" ใน Spreadsheet</div>
             </div>
           )}
         </div>
@@ -2827,12 +2831,12 @@ export default function App() {
       {tab === "decide" && (
         <div>
           {/* ── Profile Inputs ── */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#1a237e", marginBottom: 12 }}>👤 โปรไฟล์ของคุณ</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1a237e", marginBottom: 12 }}>👤 โปรไฟล์ของคุณ</div>
 
             {/* IELTS Scores */}
             <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 6 }}>IELTS Scores — Durham LLM: Overall 7.0 · W ≥7.0 · L/R/S ≥6.5</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.sub, marginBottom: 6 }}>IELTS Scores — Durham LLM: Overall 7.0 · W ≥7.0 · L/R/S ≥6.5</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
                 {[['ieltsL','L','Listening',6.5],['ieltsR','R','Reading',6.5],['ieltsW','W','Writing ⚠️',7.0],['ieltsS','S','Speaking',6.5]].map(function(x) {
                   var val = parseFloat(profile[x[0]])||0;
@@ -2840,7 +2844,7 @@ export default function App() {
                   var entered = !!profile[x[0]];
                   return (
                     <div key={x[0]}>
-                      <div style={{ fontSize: 9, color: x[3]===7.0?"#E65100":C.sub, marginBottom: 3, textAlign: "center", fontWeight: x[3]===7.0?700:400 }}>{x[2]}</div>
+                      <div style={{ fontSize: 12, color: x[3]===7.0?"#E65100":C.sub, marginBottom: 3, textAlign: "center", fontWeight: x[3]===7.0?700:400 }}>{x[2]}</div>
                       <input type="number" min="0" max="9" step="0.5" value={profile[x[0]]} onChange={function(e){ updateProfile(x[0], e.target.value); }} placeholder="0.0"
                         style={{ width:"100%", boxSizing:"border-box", padding:"8px 4px", border:"2px solid "+(entered?(ok?"#4CAF50":"#C62828"):C.border), borderRadius:8, fontSize:16, fontWeight:800, textAlign:"center", background:C.bg, color:C.text, outline:"none" }} />
                       {entered && <div style={{ fontSize:8, textAlign:"center", color: ok?"#4CAF50":"#C62828", marginTop:2 }}>min {x[3]}</div>}
@@ -2890,13 +2894,13 @@ export default function App() {
           </div>
 
           {/* ── Accommodation Quiz ── */}
-          <div style={{ background: C.card, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 ช่วยเลือกที่พัก</div>
-            <div style={{ fontSize: 10, color: C.sub, marginBottom: 14 }}>ตอบ 3 คำถาม → ได้ Top 3 แนะนำจากข้อมูลจริง</div>
+          <div style={{ background: C.card, borderRadius: 12, padding: 20, marginBottom: 8 }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e", marginBottom: 4 }}>🏠 ช่วยเลือกที่พัก</div>
+            <div style={{ fontSize: 13, color: C.sub, marginBottom: 14 }}>ตอบ 3 คำถาม → ได้ Top 3 แนะนำจากข้อมูลจริง</div>
 
             {/* Q1: Budget */}
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>1. งบต่อสัปดาห์?</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6 }}>1. งบต่อสัปดาห์?</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {[
                   ['low',   '≤ £270',    'ถูกที่สุด'],
@@ -2919,7 +2923,7 @@ export default function App() {
 
             {/* Q2: Top priority */}
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>2. สิ่งสำคัญที่สุด?</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6 }}>2. สิ่งสำคัญที่สุด?</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {[
                   ['distance',   '📍 ใกล้ Law School', 'เดินถึงเร็ว'],
@@ -2942,7 +2946,7 @@ export default function App() {
 
             {/* Q3: Deposit */}
             <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 6 }}>3. Deposit?</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6 }}>3. Deposit?</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {[
                   ['no', '❌ ไม่อยากจ่าย', 'Student Castle = £0'],
@@ -2999,7 +3003,7 @@ export default function App() {
 
               return (
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🏆 ผลแนะนำ — เรียงตามความเหมาะสม</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#1a237e", marginBottom: 8 }}>🏆 ผลแนะนำ — เรียงตามความเหมาะสม</div>
                   {scored.slice(0, 3).map(function(a, i) {
                     var pct = Math.round((a._score / maxScore) * 100);
                     return (
@@ -3007,13 +3011,13 @@ export default function App() {
                         border: "2px solid " + (i === 0 ? a.color : C.border) }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                           <div style={{ flex: 1 }}>
-                            {i === 0 && <span style={{ fontSize: 9, background: a.color, color: "#fff", padding: "1px 7px", borderRadius: 8, marginBottom: 4, display: "inline-block" }}>🏆 แนะนำที่สุด</span>}
-                            <div style={{ fontSize: 13, fontWeight: 800, color: a.color, marginTop: i === 0 ? 3 : 0 }}>{a.name}</div>
-                            <div style={{ fontSize: 9, color: C.sub }}>£{a.room ? a.room.pw : '?'}/wk · {a.dist || '–'}</div>
+                            {i === 0 && <span style={{ fontSize: 12, background: a.color, color: "#fff", padding: "1px 7px", borderRadius: 8, marginBottom: 4, display: "inline-block" }}>🏆 แนะนำที่สุด</span>}
+                            <div style={{ fontSize: 16, fontWeight: 800, color: a.color, marginTop: i === 0 ? 3 : 0 }}>{a.name}</div>
+                            <div style={{ fontSize: 12, color: C.sub }}>£{a.room ? a.room.pw : '?'}/wk · {a.dist || '–'}</div>
                           </div>
                           <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 8 }}>
                             <div style={{ fontSize: 20, fontWeight: 800, color: a.color }}>{pct}%</div>
-                            <div style={{ fontSize: 8, color: C.sub }}>match</div>
+                            <div style={{ fontSize: 11, color: C.sub }}>match</div>
                           </div>
                         </div>
                         <div style={{ background: C.border, borderRadius: 4, height: 6 }}>
@@ -3023,7 +3027,7 @@ export default function App() {
                     );
                   })}
                   <button onClick={function(){ setTab('accom'); setShowMore(false); }}
-                    style={{ width: "100%", padding: "9px", marginTop: 4, borderRadius: 8, border: "none", background: "#1a237e", color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    style={{ width: "100%", padding: "9px", marginTop: 4, borderRadius: 8, border: "none", background: "#1a237e", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
                     ดูรายละเอียดที่พักทั้งหมด →
                   </button>
                 </div>
@@ -3032,7 +3036,7 @@ export default function App() {
 
             {(accomQuiz.budget || accomQuiz.priority || accomQuiz.deposit) && (
               <button onClick={function(){ setAccomQuiz({ budget: null, priority: null, deposit: null }); }}
-                style={{ marginTop: 10, fontSize: 9, color: C.sub, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                style={{ marginTop: 10, fontSize: 12, color: C.sub, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
                 เริ่มใหม่
               </button>
             )}
@@ -3122,7 +3126,7 @@ export default function App() {
         </div>
       )}
 
-      <div style={{ textAlign: "center", marginTop: 12, fontSize: 9, color: C.sub }}>
+      <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: C.sub }}>
         ข้อมูล ณ 22 มี.ค. 2026 · อัตราแลกเปลี่ยนอาจเปลี่ยนแปลง
         {sheetsStatus === "ok" && " · Live จาก Google Sheets"}
       </div>
@@ -3160,7 +3164,7 @@ export default function App() {
             {MORE_GROUPS.map(function(group) {
               return (
                 <div key={group.g} style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.sub, marginBottom: 8, letterSpacing: 0.5 }}>{group.g}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 8, letterSpacing: 0.5 }}>{group.g}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                     {group.ids.map(function(tabId) {
                       var t = tabs.find(function(t) { return t.id === tabId; });
@@ -3176,7 +3180,7 @@ export default function App() {
                             borderRadius: 12,
                             background: isCur ? "#1a237e" : C.pill,
                             color: isCur ? "#fff" : C.text,
-                            fontSize: 11,
+                            fontSize: 14,
                             fontWeight: 700,
                             cursor: "pointer",
                             textAlign: "center",
@@ -3201,7 +3205,7 @@ export default function App() {
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   padding: "14px", borderRadius: 12, marginTop: 4,
                   background: "#1a237e", color: "#fff", textDecoration: "none",
-                  fontSize: 13, fontWeight: 700,
+                  fontSize: 16, fontWeight: 700,
                   boxShadow: "0 4px 12px rgba(26,35,126,0.3)",
                 }}
               >
@@ -3257,13 +3261,13 @@ export default function App() {
                       position: "absolute", top: -2, right: -6,
                       background: "#C62828", color: "#fff",
                       borderRadius: 10, minWidth: 16, height: 16,
-                      fontSize: 9, fontWeight: 800,
+                      fontSize: 12, fontWeight: 800,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       padding: "0 3px",
                     }}>{checkUrgent > 99 ? "99+" : checkUrgent}</div>
                   )}
                 </div>
-                <div style={{ fontSize: 10, fontWeight: isActive ? 800 : 500, letterSpacing: -0.2 }}>{n.l}</div>
+                <div style={{ fontSize: 13, fontWeight: isActive ? 800 : 500, letterSpacing: -0.2 }}>{n.l}</div>
               </button>
             );
           })}
