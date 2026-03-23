@@ -10,7 +10,22 @@
       "Bash(npx vite:*)",
       "Bash(node -e \":*)",
       "Bash(npm --version)",
-      "Bash(git --version)"
+      "Bash(git --version)",
+      "Bash(vercel --prod)",
+      "Bash(npx vercel:*)",
+      "Bash(grep:*)",
+      "Read(//c/Users/66959/Downloads/**)",
+      "Bash(python3 -c \":*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(pkill -f \"vite --port 5173\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh api:*)",
+      "mcp__claude_ai_Vercel__deploy_to_vercel",
+      "Bash(cd:*)",
+      "Bash(wc:*)"
     ]
   }
 }
