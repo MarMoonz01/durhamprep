@@ -657,21 +657,39 @@ export const defaultBudgetData = {
     },
   },
   fixedCosts: {
-    beforeGo: [
-      { name: "Tuition LLM (หลัง Scholarship £5k)", amount: 23500, note: "£30,500 gross − £5,000 scholarship − £2,000 deposit" },
-      { name: "Pre-sessional 6wk (Josephine Butler)", amount: 1200, note: "£200/wk × 6 สัปดาห์" },
+    // Group A: ค่าเรียน (เปลี่ยนไม่ได้)
+    tuition: [
+      { name: "Tuition LLM (£30,500 − Scholarship £5k − Deposit £2k)", amount: 23500, note: "Durham Law School 2026/27" },
+      { name: "Pre-sessional English 6 weeks", amount: 3540, note: "3 Aug – 11 Sep 2026 (ค่าเรียนเท่านั้น ไม่รวมหอ)" },
+    ],
+    // Group B: ค่าวีซ่า (เปลี่ยนไม่ได้)
+    visa: [
       { name: "Student Visa (UK)", amount: 524, note: "UK Visas & Immigration fee" },
-      { name: "IHS Health Surcharge (18 เดือน)", amount: 1164, note: "£776/ปี × 18 เดือน ≈ £1,164" },
-      { name: "TB Test (IOM Bangkok)", amount: 65, note: "~฿3,800 ที่ IOM / BNH ฿4,000" },
-      { name: "วัคซีน MenACWY + MenB + MMR", amount: 120, note: "ฉีด 3 วัคซีนก่อนไป UK" },
-      { name: "ตั๋วเครื่องบิน BKK↔NCL", amount: 950, note: "Qatar/Emirates เฉลี่ย (ไป-กลับ)" },
-      { name: "เตรียมของก่อนไป + เบ็ดเตล็ด", amount: 150, note: "เสื้อกันหนาว, adapter, ของใช้ส่วนตัว" },
+      { name: "IHS Health Surcharge (18 เดือน)", amount: 1164, note: "£776/ปี + £388/6 เดือน — คำนวณจากวันเริ่มถึงจบ+4เดือน" },
+      { name: "TB Test (IOM Bangkok)", amount: 65, note: "อาคารเกษมกิจ ชั้น 8 สีลม" },
     ],
+    // ค่าหอ pre-sess (ใช้ใน Step 2 Accommodation)
     accommodation: [
-      { name: "Pre-sess 6wk (Josephine Butler)", amount: 1200, note: "£200/wk × 6 wk" },
-      { name: "Deposit ที่พัก", amount: 250, note: "คืนหลังออก ถ้าห้องไม่เสียหาย" },
+      { name: "Pre-sess 6wk หอ Josephine Butler", amount: 1200, note: "£200/wk × 6 wk (ค่าหอ ไม่ใช่ค่าเรียน)" },
     ],
+    // Visa funds — เงินที่ต้องแสดงในบัญชี (ไม่รวมใน grand total!)
+    visaFunds: {
+      tuition: 23500,
+      preSess: 3540,
+      maintenance: 10539,
+      total: 37579,
+      note: "ต้องมีในบัญชี 28 วันก่อนยื่นวีซ่า · แนะนำ ฿1.7M",
+    },
     emergencyFund: 500,
+  },
+  // Step 4: ค่าใช้จ่ายเพิ่มเติม (adjustable sliders)
+  additionalCosts: {
+    defaults: [
+      { name: "ตั๋วเครื่องบิน BKK↔NCL", amount: 950, note: "Qatar/Emirates เฉลี่ย (ไป-กลับ)", min: 500, max: 1500, emoji: "✈️" },
+      { name: "วัคซีน MenACWY + MenB + MMR", amount: 120, note: "ฉีด 3 วัคซีนก่อนไป UK", min: 50, max: 300, emoji: "💉" },
+      { name: "เตรียมของก่อนไป + เบ็ดเตล็ด", amount: 150, note: "Adapter, เสื้อกันหนาว, ของใช้", min: 0, max: 500, emoji: "🧳" },
+      { name: "Emergency Fund", amount: 500, note: "กองฉุกเฉิน แนะนำไม่น้อยกว่า £500", min: 0, max: 1000, emoji: "🆘" },
+    ],
   },
   peakMonths: [
     { month: "ก.ย. 2026", color: "#C62828", amount: 9400, note: "Tuition Term 1 + Studio starts" },

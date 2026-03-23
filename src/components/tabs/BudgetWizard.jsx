@@ -71,7 +71,8 @@ function SheetsStatusBadge({ sheetsStatus, SHEETS_URL }) {
 // ─── StepIndicator ──────────────────────────────────────────────────────────
 
 function StepIndicator({ step, setStep }) {
-  var labels = ['Fixed', 'Accom', 'Living', 'Income', '📊'];
+  var labels = ['Fixed', 'Accom', 'Living', 'Extra', 'Income', '📊'];
+  var last = labels.length - 1;
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexWrap: 'nowrap', gap: 0 }}>
       {labels.map(function (label, i) {
@@ -85,20 +86,20 @@ function StepIndicator({ step, setStep }) {
             <div
               onClick={function () { if (isDone) setStep(i); }}
               style={{
-                width: 36, height: 36, borderRadius: '50%',
+                width: 34, height: 34, borderRadius: '50%',
                 background: circleColor,
                 color: textColor,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 700, fontSize: i === 4 ? 16 : 14,
+                fontWeight: 700, fontSize: i === last ? 15 : 13,
                 cursor: cursor,
                 flexShrink: 0,
                 transition: 'background 0.2s',
               }}
             >
-              {i === 4 ? '📊' : i + 1}
+              {i === last ? '📊' : i + 1}
             </div>
-            {i < 4 && (
-              <div style={{ width: 28, height: 2, background: i < step ? 'var(--success)' : 'var(--border)', flexShrink: 0 }} />
+            {i < last && (
+              <div style={{ width: 20, height: 2, background: i < step ? 'var(--success)' : 'var(--border)', flexShrink: 0 }} />
             )}
           </div>
         );
@@ -109,10 +110,47 @@ function StepIndicator({ step, setStep }) {
 
 // ─── Step 1: Fixed Costs ─────────────────────────────────────────────────────
 
-function StepFixed({ budgetData, rate, onNext }) {
-  var items = budgetData.fixedCosts.beforeGo;
-  var total = items.reduce(function (s, i) { return s + i.amount; }, 0);
+function ItemList({ items, rate }) {
   var cardStyle = { background: 'var(--card)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow)', marginBottom: 12 };
+  return (
+    <div style={cardStyle}>
+      {items.map(function (item, idx) {
+        return (
+          <div key={idx} style={{
+            display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+            padding: '10px 0',
+            borderBottom: idx < items.length - 1 ? '1px solid var(--border)' : 'none',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{itemEmoji(item.name)}</span>
+              <div>
+                <div style={{ fontSize: 14, color: 'var(--text)', wordBreak: 'break-word' }}>{item.name}</div>
+                {item.note && <div style={{ fontSize: 11, color: 'var(--text-sub)', marginTop: 2 }}>{item.note}</div>}
+              </div>
+            </div>
+            <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{fmtGBP(item.amount)}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>{fmtTHB(item.amount, rate)}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function StepFixed({ budgetData, rate, onNext }) {
+  var fc = budgetData.fixedCosts;
+  var tuitionTotal = fc.tuition.reduce(function (s, i) { return s + i.amount; }, 0);
+  var visaTotal = fc.visa.reduce(function (s, i) { return s + i.amount; }, 0);
+  var fixedTotal = tuitionTotal + visaTotal;
+  var vf = fc.visaFunds;
+  var sectionHead = { fontWeight: 700, fontSize: 13, color: 'var(--text-sub)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8, marginTop: 4 };
+  var subtotalRow = {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border)',
+  };
+
   return (
     <div>
       <div style={{ marginBottom: 4, fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
@@ -122,31 +160,58 @@ function StepFixed({ budgetData, rate, onNext }) {
         ค่าใช้จ่ายที่เลี่ยงไม่ได้ ปรับเปลี่ยนไม่ได้
       </div>
 
-      <div style={cardStyle}>
-        {items.map(function (item, idx) {
-          return (
-            <div key={idx} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 0',
-              borderBottom: idx < items.length - 1 ? '1px solid var(--border)' : 'none',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>{itemEmoji(item.name)}</span>
-                <span style={{ fontSize: 14, color: 'var(--text)', wordBreak: 'break-word' }}>{item.name}</span>
-              </div>
-              <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
-                <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{fmtGBP(item.amount)}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>{fmtTHB(item.amount, rate)}</div>
-              </div>
-            </div>
-          );
-        })}
+      {/* Tuition group */}
+      <div style={sectionHead}>🎓 ค่าเรียน (Tuition)</div>
+      <ItemList items={fc.tuition} rate={rate} />
 
+      {/* Visa group */}
+      <div style={sectionHead}>🛂 วีซ่า & สุขภาพ</div>
+      <ItemList items={fc.visa} rate={rate} />
+
+      {/* Grand total */}
+      <div style={{ background: 'var(--card)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow)', marginBottom: 12 }}>
+        <div style={subtotalRow}>
+          <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>ค่าเรียนรวม</span>
+          <span style={{ fontWeight: 600 }}>{fmtGBP(tuitionTotal)}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+          <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>วีซ่า & สุขภาพรวม</span>
+          <span style={{ fontWeight: 600 }}>{fmtGBP(visaTotal)}</span>
+        </div>
         <div style={{ marginTop: 12, borderTop: '2px solid var(--border)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--text)' }}>รวม Fixed Costs</span>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--primary)' }}>{fmtGBP(total)}</div>
-            <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{fmtTHB(total, rate)}</div>
+            <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--primary)' }}>{fmtGBP(fixedTotal)}</div>
+            <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{fmtTHB(fixedTotal, rate)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Visa Funds info box — informational only, NOT in grand total */}
+      <div style={{
+        background: '#E3F2FD', borderRadius: 14, padding: 16, marginBottom: 16,
+        border: '1px solid #90CAF9',
+      }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: '#1565C0', marginBottom: 8 }}>
+          🏦 Visa Funds — ต้องมีในบัญชี (ไม่นับใน Grand Total)
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
+          <span style={{ color: '#1565C0' }}>Tuition (LLM)</span>
+          <span style={{ fontWeight: 600, color: '#1565C0' }}>{fmtGBP(vf.tuition)}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
+          <span style={{ color: '#1565C0' }}>Pre-sessional Tuition</span>
+          <span style={{ fontWeight: 600, color: '#1565C0' }}>{fmtGBP(vf.preSess)}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
+          <span style={{ color: '#1565C0' }}>UKVI Maintenance (9 เดือน)</span>
+          <span style={{ fontWeight: 600, color: '#1565C0' }}>{fmtGBP(vf.maintenance)}</span>
+        </div>
+        <div style={{ borderTop: '1px solid #90CAF9', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ fontWeight: 700, fontSize: 15, color: '#0D47A1' }}>ยอดรวมที่ต้องแสดง</span>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontWeight: 700, fontSize: 17, color: '#0D47A1' }}>{fmtGBP(vf.total)}</div>
+            <div style={{ fontSize: 11, color: '#1565C0', marginTop: 2 }}>{vf.note}</div>
           </div>
         </div>
       </div>
@@ -524,13 +589,92 @@ function StepLiving({ budgetData, rate, livingChoices, setLivingChoices, onNext 
         background: 'var(--primary)', color: '#fff', border: 'none',
         fontWeight: 700, fontSize: 16, cursor: 'pointer',
       }}>
+        ถัดไป: ค่าใช้จ่ายเพิ่มเติม →
+      </button>
+    </div>
+  );
+}
+
+// ─── Step 4: Additional Costs ────────────────────────────────────────────────
+
+function StepAdditional({ budgetData, rate, additionalAmounts, setAdditionalAmounts, onNext }) {
+  var defaults = budgetData.additionalCosts.defaults;
+  var total = additionalAmounts.reduce(function (s, v) { return s + v; }, 0);
+
+  function setAmount(i, val) {
+    var next = additionalAmounts.slice();
+    next[i] = val;
+    setAdditionalAmounts(next);
+  }
+
+  var cardStyle = { background: 'var(--card)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow)', marginBottom: 12 };
+
+  return (
+    <div>
+      <div style={{ marginBottom: 4, fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
+        🧳 ค่าใช้จ่ายเพิ่มเติม
+      </div>
+      <div style={{ fontSize: 14, color: 'var(--text-sub)', marginBottom: 20 }}>
+        ปรับตามแผนของคุณได้
+      </div>
+
+      {defaults.map(function (item, i) {
+        var val = additionalAmounts[i];
+        var pct = item.max > item.min ? ((val - item.min) / (item.max - item.min)) * 100 : 0;
+        return (
+          <div key={i} style={cardStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div>
+                <span style={{ fontSize: 18, marginRight: 8 }}>{item.emoji}</span>
+                <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{item.name}</span>
+                <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 3 }}>{item.note}</div>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
+                <div style={{ fontWeight: 700, fontSize: 17, color: 'var(--primary)' }}>{fmtGBP(val)}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>{fmtTHB(val, rate)}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 12, color: 'var(--text-sub)', flexShrink: 0 }}>{fmtGBP(item.min)}</span>
+              <input
+                type="range"
+                min={item.min} max={item.max} step={10}
+                value={val}
+                onChange={function (e) { setAmount(i, Number(e.target.value)); }}
+                style={{ flex: 1, accentColor: 'var(--primary)', height: 6, cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: 12, color: 'var(--text-sub)', flexShrink: 0 }}>{fmtGBP(item.max)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+              <div style={{ height: 4, borderRadius: 2, background: 'var(--bg)', flex: 1, marginTop: 4, marginRight: 8, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: pct + '%', background: 'var(--primary)', borderRadius: 2 }} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Total */}
+      <div style={{ background: 'var(--card)', borderRadius: 16, padding: 16, boxShadow: 'var(--shadow)', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--text)' }}>รวมค่าใช้จ่ายเพิ่มเติม</span>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--primary)' }}>{fmtGBP(total)}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{fmtTHB(total, rate)}</div>
+        </div>
+      </div>
+
+      <button onClick={onNext} style={{
+        width: '100%', padding: '14px 0', borderRadius: 12,
+        background: 'var(--primary)', color: '#fff', border: 'none',
+        fontWeight: 700, fontSize: 16, cursor: 'pointer',
+      }}>
         ถัดไป: รายได้พาร์ทไทม์ →
       </button>
     </div>
   );
 }
 
-// ─── Step 4: Income ───────────────────────────────────────────────────────────
+// ─── Step 5: Income ───────────────────────────────────────────────────────────
 
 function StepIncome({ partTimeHours, setPartTimeHours, onNext }) {
   var hourlyRate = 12;
@@ -625,7 +769,7 @@ function StepIncome({ partTimeHours, setPartTimeHours, onNext }) {
         background: 'var(--primary)', color: '#fff', border: 'none',
         fontWeight: 700, fontSize: 16, cursor: 'pointer',
       }}>
-        ดู Dashboard →
+        ดู Dashboard 📊 →
       </button>
     </div>
   );
@@ -635,14 +779,14 @@ function StepIncome({ partTimeHours, setPartTimeHours, onNext }) {
 
 function Dashboard({
   budgetData, accomFull, rate, profile, updateProfile,
-  fixedTotal, accomCost, livingTotal, partTimeHours, grandTotal, netTotal,
-  selectedPropName, selectedRoomId, livingChoices,
+  fixedTotal, accomCost, livingTotal, additionalTotal, partTimeHours, grandTotal, netTotal,
+  selectedPropName, selectedRoomId, livingChoices, additionalAmounts,
   savedPlans, setSavedPlans,
   planName, setPlanName,
   onEdit,
 }) {
   var partTimeAnnual = partTimeHours * 12 * 40;
-  var emergency = budgetData.fixedCosts.emergencyFund || 500;
+  var vf = budgetData.fixedCosts.visaFunds;
 
   var fundsAmount = profile.fundsAmount || '';
   var fundsGBP = fundsAmount ? parseFloat(fundsAmount) / rate : 0;
@@ -653,7 +797,7 @@ function Dashboard({
     { label: '🔒 Fixed Costs', amount: fixedTotal, color: 'var(--primary)' },
     { label: '🏠 ที่พัก', amount: accomCost, color: '#7B1FA2' },
     { label: '🍽️ ค่าครองชีพ', amount: livingTotal, color: '#E65100' },
-    { label: '🆘 Emergency', amount: emergency, color: '#757575' },
+    { label: '🧳 ค่าใช้จ่ายเพิ่มเติม', amount: additionalTotal, color: '#757575' },
   ];
 
   var peakMax = Math.max.apply(null, budgetData.peakMonths.map(function (p) { return p.amount; }));
@@ -666,6 +810,7 @@ function Dashboard({
       selectedPropName: selectedPropName,
       selectedRoomId: selectedRoomId,
       livingChoices: livingChoices,
+      additionalAmounts: additionalAmounts,
       partTimeHours: partTimeHours,
       fundsAmount: fundsAmount,
     };
@@ -768,6 +913,23 @@ function Dashboard({
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--primary)' }}>{fmtGBP(netTotal)}</div>
             <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{fmtTHB(netTotal, rate)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Visa Funds reminder */}
+      <div style={{
+        background: '#E3F2FD', borderRadius: 14, padding: 16, marginBottom: 14,
+        border: '1px solid #90CAF9',
+      }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: '#1565C0', marginBottom: 6 }}>
+          🏦 Visa Funds ที่ต้องแสดง (ข้อมูลเท่านั้น ไม่รวมใน Grand Total)
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 14, color: '#1565C0' }}>ยอดรวม (Tuition + Pre-sess + Maintenance)</span>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontWeight: 700, fontSize: 17, color: '#0D47A1' }}>{fmtGBP(vf.total)}</div>
+            <div style={{ fontSize: 11, color: '#1565C0' }}>{vf.note}</div>
           </div>
         </div>
       </div>
@@ -977,6 +1139,9 @@ export default function BudgetWizard({ budgetData, accom, accomFull, rate, dark,
   var [selectedPropName, setSelectedPropName] = useState(null);
   var [selectedRoomId, setSelectedRoomId] = useState(null);
   var [livingChoices, setLivingChoices] = useState([1, 1, 1, 1, 1, 1, 1, 1]);
+  var [additionalAmounts, setAdditionalAmounts] = useState(function () {
+    return budgetData.additionalCosts.defaults.map(function (d) { return d.amount; });
+  });
   var [partTimeHours, setPartTimeHours] = useState(0);
   var [planName, setPlanName] = useState('');
   var [savedPlans, setSavedPlans] = useState(function () {
@@ -984,9 +1149,11 @@ export default function BudgetWizard({ budgetData, accom, accomFull, rate, dark,
   });
 
   // Computed values
-  var fixedTotal = budgetData.fixedCosts.beforeGo.reduce(function (s, i) { return s + i.amount; }, 0);
+  var fc = budgetData.fixedCosts;
+  var fixedTotal = fc.tuition.reduce(function (s, i) { return s + i.amount; }, 0)
+                 + fc.visa.reduce(function (s, i) { return s + i.amount; }, 0);
   var selectedUnit = accomFull.find(function (u) { return u.id === selectedRoomId; });
-  var preSessAccom = budgetData.fixedCosts.accommodation[0];
+  var preSessAccom = fc.accommodation[0];
   var accomCost = selectedUnit
     ? preSessAccom.amount + selectedUnit.room.pw * selectedUnit.room.wk + (selectedUnit.room.dep || 0)
     : 0;
@@ -998,21 +1165,22 @@ export default function BudgetWizard({ budgetData, accom, accomFull, rate, dark,
   }, 0);
   var livingTotal = Math.round(livingMonthly * 13.5);
 
+  var additionalTotal = additionalAmounts.reduce(function (s, v) { return s + v; }, 0);
   var partTimeAnnual = partTimeHours * 12 * 40;
-  var emergency = budgetData.fixedCosts.emergencyFund || 500;
-  var grandTotal = fixedTotal + accomCost + livingTotal + emergency;
+  var grandTotal = fixedTotal + accomCost + livingTotal + additionalTotal;
   var netTotal = grandTotal - partTimeAnnual;
 
-  // Load plan handler (injects into savedPlans with a _load fn)
+  // Load plan handler
   var plansWithLoad = savedPlans.map(function (plan) {
     return Object.assign({}, plan, {
       _load: function () {
         if (plan.selectedPropName) setSelectedPropName(plan.selectedPropName);
         if (plan.selectedRoomId) setSelectedRoomId(plan.selectedRoomId);
         if (plan.livingChoices) setLivingChoices(plan.livingChoices);
+        if (plan.additionalAmounts) setAdditionalAmounts(plan.additionalAmounts);
         if (typeof plan.partTimeHours === 'number') setPartTimeHours(plan.partTimeHours);
         if (plan.fundsAmount !== undefined) updateProfile('fundsAmount', plan.fundsAmount);
-        setStep(4);
+        setStep(5);
       },
     });
   });
@@ -1056,13 +1224,22 @@ export default function BudgetWizard({ budgetData, accom, accomFull, rate, dark,
           />
         )}
         {step === 3 && (
-          <StepIncome
-            partTimeHours={partTimeHours}
-            setPartTimeHours={setPartTimeHours}
+          <StepAdditional
+            budgetData={budgetData}
+            rate={rate}
+            additionalAmounts={additionalAmounts}
+            setAdditionalAmounts={setAdditionalAmounts}
             onNext={function () { setStep(4); }}
           />
         )}
         {step === 4 && (
+          <StepIncome
+            partTimeHours={partTimeHours}
+            setPartTimeHours={setPartTimeHours}
+            onNext={function () { setStep(5); }}
+          />
+        )}
+        {step === 5 && (
           <Dashboard
             budgetData={budgetData}
             accomFull={accomFull}
@@ -1072,12 +1249,14 @@ export default function BudgetWizard({ budgetData, accom, accomFull, rate, dark,
             fixedTotal={fixedTotal}
             accomCost={accomCost}
             livingTotal={livingTotal}
+            additionalTotal={additionalTotal}
             partTimeHours={partTimeHours}
             grandTotal={grandTotal}
             netTotal={netTotal}
             selectedPropName={selectedPropName}
             selectedRoomId={selectedRoomId}
             livingChoices={livingChoices}
+            additionalAmounts={additionalAmounts}
             savedPlans={plansWithLoad}
             setSavedPlans={setSavedPlans}
             planName={planName}
